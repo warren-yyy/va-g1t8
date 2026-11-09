@@ -2,7 +2,7 @@
  * The globe's canvas drawing and interaction, free of React. All animation state lives
  * in this closure, and destroy() removes every frame, listener and observer.
  *
- * Geometry comes in two levels, because full 50m takes about 53ms a frame to draw:
+ * Geometry comes in two levels, because full 50m takes 50-80ms a frame to draw:
  * - lite, simplified from 50m at build time, is drawn while the globe rotates or is dragged
  * - full 50m is fetched the first time the globe comes to rest, then cached as a bitmap, so
  *   moving the pointer between countries does not redraw the map

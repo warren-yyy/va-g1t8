@@ -138,5 +138,5 @@ To test the exact output first: `npm run build`, then `npm run preview`.
 
 - **Viz height is 827, not 800.** Tableau draws a 27px toolbar under the dashboard, inside the same iframe. At 800 the toolbar is clipped and the inner page scrolls. The one constant is `VIZ_SIZE` in `src/lib/tableau.ts`.
 - **Part pages scroll natively.** Lenis cannot see wheel events over an iframe, so it runs on the homepage and Data & Methods only. To change that, set `smoothScrollOnPartPages`.
-- **Two map files.** Drawing full 50m takes about 53ms a frame, so the globe rotates on `countries-50m-lite.json`, simplified from the same shapes at build time, and fetches full 50m the first time it stops.
+- **Two map files.** Drawing full 50m takes 50-80ms a frame, so the globe rotates on `countries-50m-lite.json`, simplified from the same shapes at build time, and fetches full 50m the first time it stops.
 - **`scripts/fix-export-paths.ts`** runs after every build. It works around a Next.js export bug on Windows that breaks link prefetching. On Linux, including Vercel, it finds nothing to do.

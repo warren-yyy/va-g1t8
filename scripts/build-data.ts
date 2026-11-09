@@ -505,7 +505,7 @@ const geometryOut = {
 
 // ---------------------------------------------- simplified geometry for rotation
 
-// Drawing full 50m takes about 53ms a frame (measured), too slow to redraw constantly. The
+// Drawing full 50m takes 50-80ms a frame (measured), too slow to redraw constantly. The
 // globe rotates on this version, simplified from the same 50m shapes, and shows full 50m at
 // rest. Arcs stay shared, so borders still meet.
 const LITE_TOLERANCE_DEGREES = 0.3;
