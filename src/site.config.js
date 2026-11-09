@@ -1,0 +1,428 @@
+/*
+ * All editable site content lives in this one file.
+ *
+ * To publish a dashboard: paste its Tableau Public link into `url`, then run
+ * `npm run check`. See README.md for the full steps.
+ *
+ * Rendering rules
+ * - Empty url on a core dashboard: a "Dashboard coming soon" panel, no Tableau script.
+ * - Empty url on an extra dashboard (D7, D12): hidden completely.
+ * - null howTo or takeaway: that line is left out, with no placeholder.
+ * - null alt: the question is used as the alt text.
+ *
+ * Numbers in text
+ * - {tokens} are filled from src/data/stats.json, which scripts/build-data.mjs
+ *   computes from the CSVs and checks against the expected values.
+ * - Every number on the site must show its year. If a takeaway has a number and
+ *   no year, add a `takeawayNote` that gives the scope, as D10 does.
+ */
+
+const answerSentence =
+  'Heat shapes where both diseases can spread; wealth tracks who stays sick, strongly for malaria and barely for dengue.';
+
+export default {
+  site: {
+    name: 'IS428 G1T8',
+    course: 'IS428 Visual Analytics for Business Intelligence, Singapore Management University',
+    group: 'Group G1T8',
+    mainQuestion: 'Why are some countries more vulnerable to mosquito-borne diseases than others?',
+    scope: 'Dengue and malaria, global 2000-2024, then Singapore as a case study.',
+  },
+
+  // DRAFT until D13 is built. It stays one value: the homepage and D13's takeaway
+  // both read it, and the homepage shows a "Draft" tag for as long as D13's url is empty.
+  answerSentence,
+
+  // Lenis is on for the homepage and Data & Methods only. Native scrolling keeps
+  // Tableau's wheel and click handling untouched on part pages.
+  smoothScrollOnPartPages: false,
+
+  // Items in extraPages are added to the end of this list automatically.
+  navigation: [
+    { label: 'Home', href: '/' },
+    { label: '1 Burden', href: '/burden' },
+    { label: '2 Drivers', href: '/drivers' },
+    { label: '3 Dengue vs Malaria', href: '/dengue-vs-malaria' },
+    { label: '4 Singapore', href: '/singapore' },
+    { label: '5 Conclusion', href: '/conclusion' },
+    { label: 'Data & Methods', href: '/data-methods' },
+  ],
+
+  // Empty for now. Do not add a user guide, poster or report page until the course
+  // is confirmed to require them. README.md has the steps for adding a page.
+  // Entry shape: { slug: 'user-guide', label: 'User guide', title: 'User guide', description: '...', body: '<p>HTML</p>' }
+  extraPages: [],
+
+  parts: [
+    {
+      number: 1,
+      slug: 'burden',
+      title: 'Burden',
+      question: 'Where is the burden?',
+      role: 'Sets the scene',
+      intro:
+        'Before asking why, we need to see where. This part sets the scene: what dengue and malaria are, where each is concentrated, and how each has moved from 2000 to 2024.',
+    },
+    {
+      number: 2,
+      slug: 'drivers',
+      title: 'Drivers',
+      question: 'What drives it?',
+      role: 'Objective 1',
+      intro:
+        'A map of the burden does not explain it. This part asks how climate and development relate to each disease, and which factor matters most for which disease. Everything here shows association, not cause.',
+    },
+    {
+      number: 3,
+      slug: 'dengue-vs-malaria',
+      title: 'Dengue vs Malaria',
+      question: 'Dengue vs malaria',
+      role: 'Objective 2',
+      intro:
+        'Both diseases are carried by mosquitoes, but by different ones: Aedes for dengue, Anopheles for malaria. This part asks whether the same countries carry both, or whether some carry one disease but not the other.',
+    },
+    {
+      number: 4,
+      slug: 'singapore',
+      title: 'Singapore',
+      question: 'Singapore case study',
+      role: 'Objective 3',
+      intro:
+        'A comparison between countries cannot show what happens inside one of them. Singapore is a high-income country with no malaria counted in our data, yet it reported 281 dengue cases per 100k in 2019. This part asks how big and regular its dengue waves are, whether local weather leads them, and where the 2020 outbreak hit.',
+    },
+    {
+      number: 5,
+      slug: 'conclusion',
+      title: 'Conclusion',
+      question: 'Global meets Singapore',
+      role: 'Conclusion',
+      intro:
+        'The last step puts the two scales side by side. Do the risk factors seen across countries also hold inside Singapore? That comparison is what answers the main question.',
+    },
+  ],
+
+  // howTo seeds are drafts taken from the workbook's controls. Owners confirm them.
+  dashboards: [
+    {
+      id: 'D1',
+      title: 'Home',
+      part: 1,
+      question: 'What are the two diseases, and how have they moved since 2000?',
+      url: '',
+      howTo: 'Pick a year to update the map and figures, then click a disease to load its Wikipedia summary.',
+      takeaway: null,
+      alt: 'Map, headline figures, divergence chart and disease picker.',
+      owner: 'Warren',
+      extra: false,
+    },
+    {
+      id: 'D2',
+      title: 'Atlas',
+      part: 1,
+      question: 'Where is each disease concentrated, and which countries lead?',
+      url: '',
+      howTo: 'Choose a disease, year and Top N, then click a region to filter or a country to highlight it.',
+      takeaway: null,
+      alt: 'Dengue and malaria maps, bump chart, region share and Top N chart.',
+      owner: 'Warren',
+      extra: false,
+    },
+    {
+      id: 'D3',
+      title: 'Trends',
+      part: 1,
+      question: 'Is dengue rising and malaria falling everywhere?',
+      url: '',
+      howTo:
+        'Choose a disease, smoothing window and year range, click a region to update the slope chart, then click a country there to open it in the explorer.',
+      takeaway: null,
+      alt: 'Regional trends, slope chart, year-on-year heatmap and country explorer.',
+      owner: 'Warren',
+      extra: false,
+    },
+    {
+      id: 'D4',
+      title: 'Climate',
+      part: 2,
+      question: 'How do temperature, rain and humidity relate to each disease?',
+      url: '',
+      howTo: null,
+      takeaway: null,
+      alt: null,
+      owner: 'Yubing',
+      extra: false,
+    },
+    {
+      id: 'D5',
+      title: 'Development',
+      part: 2,
+      question: 'Do income, services and urbanisation track burden?',
+      url: '',
+      howTo: null,
+      takeaway: null,
+      alt: null,
+      owner: 'Yubing',
+      extra: false,
+    },
+    {
+      id: 'D6',
+      title: 'Scorecard',
+      part: 2,
+      question: 'Which factor matters most, for which disease?',
+      url: '',
+      howTo: null,
+      takeaway: null,
+      alt: null,
+      owner: 'Shredha',
+      extra: false,
+    },
+    {
+      id: 'D7',
+      title: 'Climate twins',
+      part: 2,
+      question: 'Why do countries with the same climate differ?',
+      url: '',
+      howTo: null,
+      takeaway: null,
+      alt: null,
+      owner: 'Yubing',
+      extra: true,
+    },
+    {
+      id: 'D8',
+      title: 'Resilient vs vulnerable',
+      part: 3,
+      question: 'Which countries carry one disease but not the other?',
+      url: '',
+      howTo: null,
+      takeaway: null,
+      alt: null,
+      owner: 'Shredha',
+      extra: false,
+    },
+    {
+      id: 'D9',
+      title: 'Singapore pulse',
+      part: 4,
+      question: "How big and regular are Singapore's dengue waves?",
+      url: '',
+      howTo: null,
+      takeaway: null,
+      alt: null,
+      owner: 'Yurae',
+      extra: false,
+    },
+    {
+      id: 'D10',
+      title: 'Weather lag',
+      part: 4,
+      question: 'Does local weather lead dengue, and by how many months?',
+      url: '',
+      howTo: 'Choose a weather variable and a lag in months, then compare the charts.',
+      takeaway:
+        'Temperature leads dengue by about 1-2 months, but the link is weak (r about 0.19), as is every other weather link.',
+      takeawayNote: 'Singapore, monthly data, 2012-2024 (156 months).',
+      alt: 'Overlay, scatter, lag profile and average-year charts.',
+      owner: 'Warren',
+      extra: false,
+    },
+    {
+      id: 'D11',
+      title: '2020 hotspots',
+      part: 4,
+      question: 'Where did the 2020 outbreak hit, week by week?',
+      url: '',
+      howTo: null,
+      takeaway: null,
+      alt: null,
+      owner: 'Yurae',
+      extra: false,
+    },
+    {
+      id: 'D12',
+      title: 'Housing and persistence',
+      part: 4,
+      question: 'Does housing explain the hotspots, and do they repeat?',
+      url: '',
+      howTo: null,
+      takeaway: null,
+      alt: null,
+      owner: 'Yurae',
+      extra: true,
+    },
+    {
+      id: 'D13',
+      title: 'Global meets Singapore',
+      part: 5,
+      question: 'Do the global risk factors hold inside Singapore?',
+      url: '',
+      howTo: null,
+      takeaway: answerSentence,
+      alt: null,
+      owner: 'TBD',
+      extra: false,
+    },
+  ],
+
+  team: ['Warren', 'Yubing', 'Shredha', 'Yurae'],
+
+  // Homepage stat tiles. {tokens} come from src/data/stats.json.
+  statTiles: [
+    {
+      id: 'sg-dengue',
+      year: '2019',
+      value: '{sgDengue2019}',
+      countUp: true,
+      text: 'reported dengue cases per 100k in Singapore, 2019: about {ratio2019}x the high-income median ({hiMedian2019}, across {hiN2019} reporting countries)',
+    },
+    {
+      id: 'sg-malaria',
+      year: '2019',
+      value: '{sgMalaria2019}',
+      countUp: false,
+      text: "malaria cases counted for Singapore in our data, because WHO doesn't list it as endemic (2019). WHO-certified malaria-free since 1982.",
+    },
+    {
+      id: 'income-link',
+      year: '2000-2024',
+      pair: [
+        { disease: 'malaria', label: 'Malaria', value: '{medianRMalaria}' },
+        { disease: 'dengue', label: 'Dengue', value: '{medianRDengue}' },
+      ],
+      text: 'Income tracks malaria in every year since 2000 (median r = {medianRMalaria}) but barely tracks dengue ({medianRDengue}). Same countries compared each year.',
+    },
+    {
+      id: 'reporting',
+      year: '2019',
+      value: '{dengueComplete2019}',
+      countUp: true,
+      text: 'countries and territories with complete dengue reporting in 2019 ({dengueUsable2019} have a usable rate)',
+    },
+  ],
+
+  // Data & Methods page.
+  dataMethods: {
+    intro:
+      'Where every number on this site comes from, how it was computed, and what it cannot tell you. A script in the repository recomputes the headline numbers from the cleaned CSVs and stops the build if any of them change.',
+
+    datasets: [
+      {
+        name: 'OpenDengue V1.3, national extract',
+        use: 'Reported dengue cases by country, per year and per month. A country-year counts as complete when its reports cover at least 350 days; incomplete years are left blank.',
+        files: 'global_country_year.csv, global_country_month.csv',
+      },
+      {
+        name: 'OpenDengue V1.3, temporal extract',
+        use: 'Singapore weekly dengue for the years after the data.gov.sg bulletin ends (2023-2024).',
+        files: 'sg_weekly_disease.csv',
+      },
+      {
+        name: 'WHO Global Health Observatory',
+        use: 'Estimated malaria cases and incidence. Countries WHO does not list are marked "Not endemic" and given zero cases.',
+        files: 'global_country_year.csv',
+      },
+      {
+        name: 'World Bank indicators',
+        use: 'Population, density, urban share, GDP per capita (PPP), basic water, basic sanitation, health spending per capita, plus region and income group.',
+        files: 'global_country_year.csv, sg_population.csv',
+      },
+      {
+        name: 'Our World in Data, ERA5 climate',
+        use: 'Monthly surface temperature and annual precipitation by country. Annual temperature is kept only for years with all 12 months.',
+        files: 'global_country_year.csv, global_country_month.csv',
+      },
+      {
+        name: 'UNDP Human Development Index',
+        use: 'HDI by country and year, from the 2025 report\'s composite index time series.',
+        files: 'global_country_year.csv',
+      },
+      {
+        name: 'World Bank Poverty and Inequality Platform',
+        use: 'Poverty headcount at $3.00 a day, national level, survey years only with no gap-filling.',
+        files: 'global_country_year.csv',
+      },
+      {
+        name: 'Global Dengue Observatory',
+        use: 'Current-season dengue by country, 2025-2026, including months marked "Unobserved". Not used for any headline number or the globe.',
+        files: 'gdo_current_season.csv',
+      },
+      {
+        name: 'data.gov.sg, weekly infectious disease bulletin',
+        use: 'Singapore weekly cases by disease, 2012-2022.',
+        files: 'sg_weekly_disease.csv',
+      },
+      {
+        name: 'data.gov.sg, Changi climate station',
+        use: 'Monthly rainfall, temperature and humidity, lagged 0-6 months against dengue. Also fills Singapore\'s climate in the global table, because the country averages skip it.',
+        files: 'sg_monthly_lagged.csv, global_country_year.csv, global_country_month.csv',
+      },
+      {
+        name: 'data.gov.sg, Master Plan 2019 subzones',
+        use: 'Subzone boundaries and areas for Singapore.',
+        files: 'mp2019_subzones.geojson, sg_subzone_profile.csv',
+      },
+      {
+        name: 'data.gov.sg, Census 2020 dwellings by subzone',
+        use: 'Residents and housing type by subzone.',
+        files: 'sg_subzone_profile.csv',
+      },
+      {
+        name: 'data.gov.sg, HDB property information, located with OneMap',
+        use: 'Median completion year of HDB blocks per subzone, counting blocks completed up to 2020.',
+        files: 'sg_subzone_profile.csv',
+      },
+      {
+        name: 'data.gov.sg / NEA, dengue clusters',
+        use: 'Active dengue clusters on the day the file was downloaded (2026-10-23).',
+        files: 'nea_clusters_now.geojson',
+      },
+      {
+        name: 'figshare, dengue outbreak Singapore 2020',
+        use: 'Weekly dengue cluster records for the 2020 outbreak, matched to subzones.',
+        files: 'sg_clusters_2020.csv',
+      },
+      {
+        name: 'Disease reference, written in the notebook',
+        use: 'Pathogen, vector and Wikipedia link for each disease.',
+        files: 'disease_info.csv',
+      },
+    ],
+
+    // Each claim here that has a number is asserted by scripts/build-data.mjs.
+    limitations: [
+      'Dengue is reported cases and surveillance differs by country. Malaria is WHO estimates. They are not directly comparable, and low reported dengue in poorer countries may partly reflect weaker surveillance.',
+      'No Sub-Saharan African country has a dengue rate before 2023 (3 in 2023, 19 in 2024). Only 1 low-income country has a dengue rate in 2019.',
+      'The dengue-income correlation shifts with which countries report: from {dengueR2021} in 2021 to {dengueR2024} in 2024, when African reporting expands (3 Sub-Saharan countries in 2023, 19 in 2024).',
+      '{dengueComplete2019} countries and territories have complete dengue reporting in 2019, but {dengueNoPop2019} lack population, leaving {dengueUsable2019} usable rates.',
+      "The globe's dengue colours mix years from {globeDengueMinYear} to {globeDengueMaxYear}.",
+      'Correlations show association, not cause.',
+      'Singapore weather links use monthly data for 2012-2024 ({sgLagMonths} months), and all are weak.',
+      'Humidity is in the data for Singapore only, from the Changi station (2000-2024). Country-level humidity was never added to the global table, so global comparisons cover temperature and rainfall.',
+      'The country-year table behind every headline number is annual and ends in 2024. The monthly global file also ends in 2024. The Global Dengue Observatory file runs to 2026 but feeds no number on this page or the homepage.',
+    ],
+
+    sources: [
+      { label: 'OpenDengue master repository', href: 'https://github.com/OpenDengue/master-repo' },
+      { label: 'WHO GHO: estimated malaria cases', href: 'https://ghoapi.azureedge.net/api/MALARIA_EST_CASES' },
+      { label: 'WHO GHO: estimated malaria incidence', href: 'https://ghoapi.azureedge.net/api/MALARIA_EST_INCIDENCE' },
+      { label: 'World Bank Open Data', href: 'https://data.worldbank.org/' },
+      { label: 'Our World in Data: monthly surface temperature', href: 'https://ourworldindata.org/grapher/average-monthly-surface-temperature' },
+      { label: 'Our World in Data: annual precipitation', href: 'https://ourworldindata.org/grapher/average-precipitation-per-year' },
+      { label: 'UNDP Human Development Reports data', href: 'https://hdr.undp.org/sites/default/files/2025_HDR/HDR25_Composite_indices_complete_time_series.csv' },
+      { label: 'World Bank Poverty and Inequality Platform', href: 'https://pip.worldbank.org/' },
+      { label: 'Global Dengue Observatory', href: 'https://globaldengueobservatory.org/' },
+      { label: 'data.gov.sg: weekly infectious disease bulletin', href: 'https://data.gov.sg/datasets/d_ca168b2cb763640d72c4600a68f9909e/view' },
+      { label: 'data.gov.sg: Changi rainfall', href: 'https://data.gov.sg/datasets/d_b16d06b83473fdfcc92ed9d37b66ba58/view' },
+      { label: 'data.gov.sg: Changi temperature', href: 'https://data.gov.sg/datasets/d_755290a24afe70c8f9e8bcbf9f251573/view' },
+      { label: 'data.gov.sg: Changi humidity', href: 'https://data.gov.sg/datasets/d_e3b1111a26b2aefef4f386c068d4ca5d/view' },
+      { label: 'data.gov.sg: Master Plan 2019 subzones', href: 'https://data.gov.sg/datasets/d_8594ae9ff96d0c708bc2af633048edfb/view' },
+      { label: 'data.gov.sg: Census 2020 dwellings by subzone', href: 'https://data.gov.sg/datasets/d_7f243956483d5901f237e6f87b096636/view' },
+      { label: 'data.gov.sg: HDB property information', href: 'https://data.gov.sg/datasets/d_17f5382f26140b1fdae0ba2ef6239d2f/view' },
+      { label: 'data.gov.sg: NEA dengue clusters', href: 'https://data.gov.sg/datasets/d_dbfabf16158d1b0e1c420627c0819168/view' },
+      { label: 'figshare: dengue outbreak Singapore 2020', href: 'https://doi.org/10.6084/m9.figshare.20417658' },
+      { label: 'OneMap', href: 'https://www.onemap.gov.sg/' },
+      { label: 'Wikipedia: dengue fever', href: 'https://en.wikipedia.org/wiki/Dengue_fever' },
+      { label: 'Wikipedia: malaria', href: 'https://en.wikipedia.org/wiki/Malaria' },
+    ],
+  },
+};

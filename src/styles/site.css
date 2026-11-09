@@ -1,0 +1,681 @@
+/* ==========================================================================
+   Tokens
+   ========================================================================== */
+:root {
+  color-scheme: dark;
+
+  --bg: #0b0c0e;
+  --bg-raised: #141619;
+  --fg: #f1efe9;
+  --fg-soft: #d3d1ca;
+  --muted: #a8a69f;
+  --line: rgba(241, 239, 233, 0.16);
+
+  /* Dashboards hang on the dark wall like prints. */
+  --paper: #f6f4ee;
+  --ink: #17181a;
+  --ink-muted: #55565a;
+
+  /* Fills and marks only. Malaria is under 4.5:1 on near-black, so text uses the tints. */
+  --dengue: #e15759;
+  --malaria: #4e79a7;
+  --dengue-text: #f08d8e;
+  --malaria-text: #92b6dd;
+
+  --serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --sans: 'Instrument Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
+  --mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --gutter: clamp(16px, 3vw, 40px);
+  --header-h: 64px;
+  --panel-pad: clamp(8px, 2vw, 32px);
+  /* Wide enough that a 1200px dashboard fits at full size inside its panel. */
+  --page-max: calc(1200px + 2 * 32px + 2 * 40px);
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--serif);
+  font-weight: 400;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+}
+
+img,
+svg,
+canvas {
+  max-width: 100%;
+}
+
+[id] {
+  scroll-margin-top: calc(var(--header-h) + 24px);
+}
+
+[hidden] {
+  display: none !important;
+}
+
+:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 3px;
+}
+
+main:focus,
+[tabindex='-1']:focus {
+  outline: none;
+}
+
+::selection {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  top: 10px;
+  left: var(--gutter);
+  z-index: 70;
+  padding: 0.5em 0.9em;
+  background: var(--fg);
+  color: var(--bg);
+  font-weight: 500;
+}
+
+.skip-link:not(:focus) {
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   Header and menu
+   ========================================================================== */
+.site-header {
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  height: var(--header-h);
+  border-bottom: 1px solid var(--line);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  max-width: var(--page-max);
+  height: 100%;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* The blur sits on a pseudo-element: backdrop-filter on the header itself would
+   trap any fixed-position child inside the header's box. */
+.site-header::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: rgba(11, 12, 14, 0.74);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+
+.brand {
+  font-family: var(--mono);
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.site-nav ul,
+.menu-overlay ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-nav ul {
+  display: flex;
+  gap: clamp(14px, 1.7vw, 26px);
+}
+
+.site-nav a {
+  display: inline-block;
+  padding-block: 0.4em;
+  color: var(--muted);
+  font-size: 0.9375rem;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.site-nav a:hover,
+.site-nav a[aria-current='page'] {
+  color: var(--fg);
+}
+
+.site-nav a[aria-current='page'] {
+  text-decoration: underline;
+}
+
+.menu-toggle {
+  display: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-right: -10px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--fg);
+  cursor: pointer;
+}
+
+.menu-toggle span,
+.menu-toggle span::before {
+  display: block;
+  width: 24px;
+  height: 1.5px;
+  background: currentColor;
+  transition: transform 0.25s ease;
+}
+
+.menu-toggle span {
+  transform: translateY(-4px);
+}
+
+.menu-toggle span::before {
+  content: '';
+  transform: translateY(8px);
+}
+
+.menu-toggle[aria-expanded='true'] span {
+  transform: rotate(45deg);
+}
+
+.menu-toggle[aria-expanded='true'] span::before {
+  transform: rotate(-90deg);
+}
+
+.menu-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  padding: calc(var(--header-h) + 24px) var(--gutter) 32px;
+  overflow-y: auto;
+  background: rgba(11, 12, 14, 0.98);
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.25s ease,
+    visibility 0.25s;
+}
+
+.menu-overlay.is-open {
+  opacity: 1;
+  visibility: visible;
+}
+
+.menu-overlay a {
+  display: block;
+  padding-block: 0.4rem;
+  color: var(--muted);
+  font-family: var(--serif);
+  font-size: clamp(2rem, 8vw, 3rem);
+  line-height: 1.15;
+  text-decoration: none;
+}
+
+.menu-overlay a:hover,
+.menu-overlay a[aria-current='page'] {
+  color: var(--fg);
+}
+
+html.menu-open {
+  overflow: hidden;
+}
+
+@media (max-width: 1100px) {
+  html.js .site-nav {
+    display: none;
+  }
+
+  html.js .menu-toggle {
+    display: grid;
+  }
+
+  /* Without JavaScript the overlay cannot open, so the links stay in the header
+     and scroll sideways inside it. */
+  html:not(.js) .site-nav {
+    overflow-x: auto;
+  }
+}
+
+@media (min-width: 1101px) {
+  .menu-overlay {
+    display: none;
+  }
+}
+
+/* Under the navbar on part pages. Driven by scroll position. */
+.progress {
+  position: fixed;
+  inset: var(--header-h) 0 auto;
+  z-index: 49;
+  height: 2px;
+  pointer-events: none;
+}
+
+.progress span {
+  display: block;
+  height: 100%;
+  background: var(--fg);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+
+/* ==========================================================================
+   Part pages
+   ========================================================================== */
+.part {
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding: calc(var(--header-h) + clamp(48px, 8vw, 112px)) var(--gutter) clamp(48px, 7vw, 96px);
+}
+
+.part__head {
+  max-width: 64rem;
+}
+
+.part__kicker {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.part__title {
+  margin: 0.2em 0 0.35em;
+  font-size: clamp(2.75rem, 7.5vw, 6rem);
+  line-height: 1.02;
+  letter-spacing: -0.01em;
+}
+
+.part__intro {
+  max-width: 44rem;
+  color: var(--fg-soft);
+  font-size: clamp(1.125rem, 1.8vw, 1.375rem);
+  line-height: 1.5;
+}
+
+.dash {
+  margin-block: clamp(72px, 10vw, 144px);
+}
+
+.dash__head {
+  max-width: 60rem;
+}
+
+.dash__title {
+  margin: 0;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  line-height: 1.08;
+}
+
+.dash__id {
+  margin-right: 0.35em;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.42em;
+  font-variant-numeric: tabular-nums;
+  vertical-align: 0.42em;
+}
+
+.dash__question {
+  margin-top: 0.4em;
+  color: var(--fg-soft);
+  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+  line-height: 1.4;
+}
+
+.dash__howto {
+  max-width: 60rem;
+  margin-top: 0.9em;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.dash__figure {
+  position: relative;
+  margin: clamp(20px, 3vw, 32px) 0 0;
+}
+
+.skip-dash {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 5;
+  padding: 0.5em 0.9em;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.skip-dash:not(:focus) {
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.panel {
+  padding: var(--panel-pad);
+  background: var(--paper);
+  color: var(--ink);
+  color-scheme: light;
+  border-radius: 2px;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08),
+    0 40px 90px -36px rgba(0, 0, 0, 0.9);
+}
+
+.panel--empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: clamp(220px, 26vw, 340px);
+  padding: clamp(24px, 4vw, 56px);
+}
+
+.panel__badge {
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.panel__title {
+  margin-top: 0.15em;
+  font-family: var(--serif);
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+  line-height: 1.1;
+}
+
+.panel__question {
+  margin-top: 0.35em;
+  color: var(--ink-muted);
+}
+
+/* Height is reserved in CSS before any script runs, so nothing shifts and #d5-style
+   links land correctly. This wrapper and its ancestors never get a transform: only
+   .embed__stage is scaled. */
+.embed__frame {
+  position: relative;
+  width: 100%;
+  max-width: calc(var(--viz-w) * 1px);
+  margin-inline: auto;
+  aspect-ratio: var(--viz-w) / var(--viz-h);
+  overflow: hidden;
+  overflow: clip;
+}
+
+.embed__stage {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+}
+
+.embed__status {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 1rem;
+  background: var(--paper);
+  text-align: center;
+}
+
+.embed__message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+
+.embed__noscript {
+  max-width: 28rem;
+  color: var(--ink-muted);
+  font-size: 0.9375rem;
+}
+
+html:not(.js) .embed__message {
+  display: none;
+}
+
+.embed[data-state='error'] .spinner {
+  display: none;
+}
+
+.spinner {
+  flex: none;
+  width: 1em;
+  height: 1em;
+  border: 2px solid rgba(23, 24, 26, 0.2);
+  border-top-color: var(--ink);
+  border-radius: 50%;
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.dash__after {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.25rem 1.5rem;
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.dash__open a {
+  color: var(--fg);
+}
+
+.dash__desktop-note {
+  display: none;
+}
+
+@media (max-width: 899.98px) {
+  .dash__desktop-note {
+    display: block;
+  }
+}
+
+.dash__figure figcaption {
+  margin-top: clamp(20px, 3vw, 32px);
+}
+
+.dash__takeaway {
+  max-width: 46rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--line);
+  font-family: var(--serif);
+  font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+  line-height: 1.25;
+}
+
+.dash__scope {
+  display: block;
+  margin-top: 0.5em;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.pager {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  margin-top: clamp(72px, 10vw, 144px);
+  border-block: 1px solid var(--line);
+}
+
+.pager__link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2em;
+  padding: clamp(20px, 3vw, 36px) 0;
+  text-decoration: none;
+}
+
+.pager__link--next {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.pager__kicker {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.pager__label {
+  font-family: var(--serif);
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  line-height: 1.1;
+}
+
+.pager__link:hover .pager__label {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.15em;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+.site-footer {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.site-footer__inner {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.5rem 2rem;
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding: 28px var(--gutter);
+}
+
+/* ==========================================================================
+   Page fade: an overlay fades out, so no ancestor of a dashboard is touched.
+   It is pure CSS, so it cannot get stuck if a script fails.
+   ========================================================================== */
+.page-fade {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: var(--bg);
+  pointer-events: none;
+  animation: page-fade 0.6s ease-out forwards;
+}
+
+@keyframes page-fade {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+/* ==========================================================================
+   Reduced motion
+   ========================================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .page-fade {
+    display: none;
+  }
+
+  .spinner {
+    animation: none;
+    border-top-color: rgba(23, 24, 26, 0.2);
+  }
+}
