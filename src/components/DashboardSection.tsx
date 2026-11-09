@@ -31,7 +31,7 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
               Skip dashboard {id}
             </a>
             <div className="panel">
-              <DashboardEmbed url={url} label={`${id} ${title}`} />
+              <DashboardEmbed url={url} id={id} title={title} />
             </div>
             <div className="dash__after" id={`${anchor}-after`} tabIndex={-1}>
               <p className="dash__open">
@@ -46,7 +46,7 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
           <div className="panel panel--empty">
             <p className="panel__badge">Dashboard coming soon</p>
             <p className="panel__title">
-              {id} {title}
+              <span className="panel__id">{id}</span> {title}
             </p>
             <p className="panel__question">{question}</p>
           </div>

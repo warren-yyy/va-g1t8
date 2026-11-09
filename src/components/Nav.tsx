@@ -67,13 +67,23 @@ export default function Nav({ brand, items }: { brand: string; items: NavItem[] 
 
   const list = (
     <ul>
-      {items.map(({ label, href }) => (
-        <li key={href}>
-          <Link href={href} aria-current={normalizePath(href) === pathname ? 'page' : undefined}>
-            {label}
-          </Link>
-        </li>
-      ))}
+      {items.map(({ label, href }) => {
+        // "1 Burden": the number goes in the mono face, where a 1 cannot be misread as an l.
+        const numbered = label.match(/^(\d+) (.+)$/);
+        return (
+          <li key={href}>
+            <Link href={href} aria-current={normalizePath(href) === pathname ? 'page' : undefined}>
+              {numbered ? (
+                <>
+                  <span className="nav-number">{numbered[1]}</span> {numbered[2]}
+                </>
+              ) : (
+                label
+              )}
+            </Link>
+          </li>
+        );
+      })}
     </ul>
   );
 

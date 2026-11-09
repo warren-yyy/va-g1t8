@@ -10,7 +10,7 @@ const LOAD_TIMEOUT_MS = 30000;
 
 const frameVars = { '--viz-w': VIZ_SIZE.width, '--viz-h': VIZ_SIZE.height } as CSSProperties;
 
-export default function DashboardEmbed({ url, label }: { url: string; label: string }) {
+export default function DashboardEmbed({ url, id, title }: { url: string; id: string; title: string }) {
   const hostRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -103,7 +103,9 @@ export default function DashboardEmbed({ url, label }: { url: string; label: str
         <div className="embed__stage" ref={stageRef} />
         {status !== 'ready' && (
           <div className="embed__status" role={status === 'error' ? 'alert' : undefined}>
-            <p className="panel__title">{label}</p>
+            <p className="panel__title">
+              <span className="panel__id">{id}</span> {title}
+            </p>
             {status === 'loading' ? (
               <p className="embed__message">
                 <span className="spinner" aria-hidden="true" />

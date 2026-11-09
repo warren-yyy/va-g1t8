@@ -77,6 +77,10 @@ npm run data
 It reads the CSVs from `SOURCE_DATA_DIR`, which defaults to the group's path on Warren's machine. Set it to your own copy if yours is elsewhere:
 
 ```
+# PowerShell
+$env:SOURCE_DATA_DIR="path\to\cleaned_data_final"; npm run data
+
+# macOS, Linux or Git Bash
 SOURCE_DATA_DIR="path/to/cleaned_data_final" npm run data
 ```
 
