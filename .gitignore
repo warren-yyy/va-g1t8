@@ -1,7 +1,16 @@
-node_modules/
-dist/
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+
+# misc
 .vercel/
-.vite/
 *.log
 .DS_Store
 Thumbs.db

@@ -5,26 +5,42 @@
   "type": "module",
   "description": "IS428 G1T8: why are some countries more vulnerable to mosquito-borne diseases than others?",
   "engines": {
-    "node": ">=20.19"
+    "node": ">=20.9"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview",
-    "check": "node scripts/check.mjs",
-    "data": "node scripts/build-data.mjs",
-    "refresh:clusters": "node scripts/refresh-clusters.mjs"
+    "dev": "next dev",
+    "build": "next build",
+    "preview": "tsx scripts/preview.ts",
+    "typecheck": "next typegen && tsc --noEmit",
+    "lint": "eslint",
+    "check": "tsx scripts/check.ts",
+    "data": "tsx scripts/build-data.ts",
+    "refresh:clusters": "tsx scripts/refresh-clusters.ts",
+    "postbuild": "tsx scripts/fix-export-paths.ts"
   },
   "dependencies": {
     "d3-geo": "^3.1.2",
     "gsap": "^3.15.1",
     "lenis": "^1.3.27",
+    "next": "^16.4.5",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
     "topojson-client": "^3.1.0"
   },
   "devDependencies": {
+    "@types/d3-geo": "^3.1.1",
+    "@types/geojson": "^7946.0.16",
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@types/topojson-client": "^3.1.5",
+    "@types/topojson-specification": "^1.0.5",
     "csv-parse": "^7.0.3",
+    "eslint": "^9.39.5",
+    "eslint-config-next": "^16.4.5",
     "i18n-iso-countries": "^7.14.0",
-    "vite": "^8.3.6",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
     "world-atlas": "^2.0.2"
   }
 }

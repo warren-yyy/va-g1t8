@@ -11,16 +11,107 @@
  * - null alt: the question is used as the alt text.
  *
  * Numbers in text
- * - {tokens} are filled from src/data/stats.json, which scripts/build-data.mjs
+ * - {tokens} are filled from src/data/stats.json, which scripts/build-data.ts
  *   computes from the CSVs and checks against the expected values.
  * - Every number on the site must show its year. If a takeaway has a number and
  *   no year, add a `takeawayNote` that gives the scope, as D10 does.
  */
 
+export interface Dashboard {
+  id: string;
+  title: string;
+  part: number;
+  question: string;
+  /** Tableau Public link. Empty until the dashboard is published. */
+  url: string;
+  howTo: string | null;
+  takeaway: string | null;
+  /** Optional scope shown under the takeaway, so its numbers carry their years. */
+  takeawayNote?: string;
+  /** Falls back to the question when null. */
+  alt: string | null;
+  owner: string;
+  extra: boolean;
+}
+
+export interface Part {
+  number: number;
+  slug: string;
+  title: string;
+  question: string;
+  role: string;
+  intro: string;
+}
+
+export interface NavItem {
+  label: string;
+  href: string;
+}
+
+/** Added to the navbar automatically. The page itself is src/app/<slug>/page.tsx. */
+export interface ExtraPage {
+  slug: string;
+  label: string;
+}
+
+export interface StatTilePairValue {
+  disease: 'dengue' | 'malaria';
+  label: string;
+  value: string;
+}
+
+export interface StatTile {
+  id: string;
+  /** The year or years the numbers on this tile describe. */
+  year: string;
+  text: string;
+  value?: string;
+  /** Only 281 and 82 count up. */
+  countUp?: boolean;
+  pair?: StatTilePairValue[];
+}
+
+export interface DatasetRow {
+  name: string;
+  use: string;
+  files: string;
+}
+
+export interface SourceLink {
+  label: string;
+  href: string;
+}
+
+export interface DataMethods {
+  intro: string;
+  datasets: DatasetRow[];
+  limitations: string[];
+  sources: SourceLink[];
+}
+
+export interface SiteConfig {
+  site: {
+    name: string;
+    course: string;
+    group: string;
+    mainQuestion: string;
+    scope: string;
+  };
+  answerSentence: string;
+  smoothScrollOnPartPages: boolean;
+  navigation: NavItem[];
+  extraPages: ExtraPage[];
+  parts: Part[];
+  dashboards: Dashboard[];
+  team: string[];
+  statTiles: StatTile[];
+  dataMethods: DataMethods;
+}
+
 const answerSentence =
   'Heat shapes where both diseases can spread; wealth tracks who stays sick, strongly for malaria and barely for dengue.';
 
-export default {
+const config: SiteConfig = {
   site: {
     name: 'IS428 G1T8',
     course: 'IS428 Visual Analytics for Business Intelligence, Singapore Management University',
@@ -50,7 +141,6 @@ export default {
 
   // Empty for now. Do not add a user guide, poster or report page until the course
   // is confirmed to require them. README.md has the steps for adding a page.
-  // Entry shape: { slug: 'user-guide', label: 'User guide', title: 'User guide', description: '...', body: '<p>HTML</p>' }
   extraPages: [],
 
   parts: [
@@ -88,7 +178,7 @@ export default {
       question: 'Singapore case study',
       role: 'Objective 3',
       intro:
-        'A comparison between countries cannot show what happens inside one of them. Singapore is a high-income country with no malaria counted in our data, yet it reported 281 dengue cases per 100k in 2019. This part asks how big and regular its dengue waves are, whether local weather leads them, and where the 2020 outbreak hit.',
+        'A comparison between countries cannot show what happens inside one of them. Singapore is a high-income country with no malaria counted in our data, yet it reported {sgDengue2019} dengue cases per 100k in 2019. This part asks how big and regular its dengue waves are, whether local weather leads them, and where the 2020 outbreak hit.',
     },
     {
       number: 5,
@@ -279,7 +369,6 @@ export default {
       id: 'sg-malaria',
       year: '2019',
       value: '{sgMalaria2019}',
-      countUp: false,
       text: "malaria cases counted for Singapore in our data, because WHO doesn't list it as endemic (2019). WHO-certified malaria-free since 1982.",
     },
     {
@@ -303,7 +392,7 @@ export default {
   // Data & Methods page.
   dataMethods: {
     intro:
-      'Where every number on this site comes from, how it was computed, and what it cannot tell you. A script in the repository recomputes the headline numbers from the cleaned CSVs and stops the build if any of them change.',
+      'Where every number on this site comes from, how it was computed, and what it cannot tell you. A script in the repository recomputes the headline numbers from the cleaned CSVs and stops if any of them change.',
 
     datasets: [
       {
@@ -333,7 +422,7 @@ export default {
       },
       {
         name: 'UNDP Human Development Index',
-        use: 'HDI by country and year, from the 2025 report\'s composite index time series.',
+        use: "HDI by country and year, from the 2025 report's composite index time series.",
         files: 'global_country_year.csv',
       },
       {
@@ -353,7 +442,7 @@ export default {
       },
       {
         name: 'data.gov.sg, Changi climate station',
-        use: 'Monthly rainfall, temperature and humidity, lagged 0-6 months against dengue. Also fills Singapore\'s climate in the global table, because the country averages skip it.',
+        use: "Monthly rainfall, temperature and humidity, lagged 0-6 months against dengue. Also fills Singapore's climate in the global table, because the country averages skip it.",
         files: 'sg_monthly_lagged.csv, global_country_year.csv, global_country_month.csv',
       },
       {
@@ -388,7 +477,7 @@ export default {
       },
     ],
 
-    // Each claim here that has a number is asserted by scripts/build-data.mjs.
+    // Each claim here that has a number is asserted by scripts/build-data.ts.
     limitations: [
       'Dengue is reported cases and surveillance differs by country. Malaria is WHO estimates. They are not directly comparable, and low reported dengue in poorer countries may partly reflect weaker surveillance.',
       'No Sub-Saharan African country has a dengue rate before 2023 (3 in 2023, 19 in 2024). Only 1 low-income country has a dengue rate in 2019.',
@@ -426,3 +515,5 @@ export default {
     ],
   },
 };
+
+export default config;
