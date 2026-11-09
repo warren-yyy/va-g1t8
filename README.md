@@ -20,6 +20,30 @@ It is a Next.js static export. Every page is prerendered to HTML in `out/`, with
 | `npm run data` | Recompute the numbers from the CSVs (needs the source data) |
 | `npm run refresh:clusters` | Download the latest NEA dengue clusters |
 
+## Make a change
+
+`main` is protected, so nobody can push to it directly. Every change goes through a branch and a pull request, and another group member must approve it before it can merge. You can't approve your own pull request, and you need Write access to the repo.
+
+1. Get the latest `main` and create a branch:
+
+   ```
+   git switch main
+   git pull
+   git switch -c d4-link
+   ```
+
+2. Make your change, then run `npm run check` and `npm run build`.
+3. Commit and push your branch:
+
+   ```
+   git add .
+   git commit -m "Add the D4 Tableau link"
+   git push -u origin d4-link
+   ```
+
+4. On GitHub, open a pull request into `main` and ask a group member to review it.
+5. Once it's approved, merge it and delete the branch.
+
 ## Swap in a Tableau link
 
 Each owner does this when their dashboard is published.
@@ -27,7 +51,7 @@ Each owner does this when their dashboard is published.
 1. In Tableau Public, open your dashboard, choose **Share**, and copy the link.
 2. In `src/site.config.ts`, find your dashboard and paste the link into `url`. Query strings and `/app/profile/...` links are fine, because the site cleans them up.
 3. Run `npm run check`. It shows your link as `set`, and fails if the link is malformed.
-4. Commit.
+4. Commit on your branch and open a pull request, as in [Make a change](#make-a-change).
 
 If `check` rejects a `/shared/...` link, open the dashboard's own page in Tableau Public and copy that link instead.
 
@@ -96,7 +120,7 @@ The small map on the homepage is a dated snapshot of NEA's dengue clusters. To u
 npm run refresh:clusters
 ```
 
-It downloads the file from data.gov.sg in Node, then rewrites `src/data/nea-clusters.json` and `public/data/sg-clusters-map.svg`, and the page label shows the new date. Commit both files. If the download fails, nothing is written and the old snapshot stays.
+It downloads the file from data.gov.sg in Node, then rewrites `src/data/nea-clusters.json` and `public/data/sg-clusters-map.svg`, and the page label shows the new date. Commit both files on a branch and open a pull request. If the download fails, nothing is written and the old snapshot stays.
 
 It cannot run in the browser: the file it needs is on S3 with no CORS header. To seed from the data pack instead, use `npm run refresh:clusters -- --from-file=path/to/nea_clusters_now.geojson`.
 
@@ -127,10 +151,9 @@ Do not build a user guide, poster or report page until the course is confirmed t
 
 ## Deploy on Vercel
 
-1. Push this repo to GitHub.
-2. In Vercel, choose **Add New > Project** and import the repo.
-3. Keep the detected framework, **Next.js**, and the default settings. No environment variables are needed.
-4. Deploy. Every push to `main` then deploys again.
+1. In Vercel, choose **Add New > Project** and import `warren-yyy/va-g1t8` from GitHub.
+2. Keep the detected framework, **Next.js**, and the default settings. No environment variables are needed.
+3. Deploy. Every pull request merged into `main` then deploys again.
 
 To test the exact output first: `npm run build`, then `npm run preview`.
 
