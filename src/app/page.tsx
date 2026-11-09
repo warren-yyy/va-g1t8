@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import config from '@/site.config';
+import ClusterMap from '@/components/ClusterMap';
 import Hero from '@/components/Hero';
 import PartCards from '@/components/PartCards';
 import StatTiles from '@/components/StatTiles';
@@ -15,6 +16,7 @@ export default function HomePage() {
       <Hero />
       <StatTiles />
       <PartCards />
+      <ClusterMap />
     </>
   );
 }

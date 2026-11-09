@@ -82,7 +82,19 @@ SOURCE_DATA_DIR="path/to/cleaned_data_final" npm run data
 
 It computes each headline number, checks it against the value the site states, and **stops without writing anything** if one differs. If that happens because the data really changed, update the expected value in `scripts/build-data.ts` and the wording in `src/site.config.ts` together.
 
-It writes `src/data/stats.json`, `public/data/globe.json`, `public/data/countries-50m.json` and `public/data/countries-50m-lite.json`.
+It writes `src/data/stats.json`, `public/data/globe.json`, `public/data/countries-50m.json`, `public/data/countries-50m-lite.json` and `src/data/sg-subzones.json`.
+
+## Refresh the clusters
+
+The small map on the homepage is a dated snapshot of NEA's dengue clusters. To update it:
+
+```
+npm run refresh:clusters
+```
+
+It downloads the file from data.gov.sg in Node, then rewrites `src/data/nea-clusters.json` and `public/data/sg-clusters-map.svg`, and the page label shows the new date. Commit both files. If the download fails, nothing is written and the old snapshot stays.
+
+It cannot run in the browser: the file it needs is on S3 with no CORS header. To seed from the data pack instead, use `npm run refresh:clusters -- --from-file=path/to/nea_clusters_now.geojson`.
 
 ## Add an extra page
 

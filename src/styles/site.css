@@ -1144,6 +1144,55 @@ html:not(.js) .globe-only {
 }
 
 /* ==========================================================================
+   Homepage: Singapore cluster map
+   ========================================================================== */
+.clusters {
+  max-width: var(--page-max);
+  margin-inline: auto;
+  padding: 0 var(--gutter) clamp(48px, 7vw, 96px);
+}
+
+.clusters__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem clamp(32px, 4vw, 56px);
+  align-items: start;
+}
+
+@media (min-width: 1000px) {
+  .clusters__grid {
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+  }
+}
+
+.clusters__map {
+  margin: 0;
+}
+
+.clusters__map img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.clusters__text p {
+  color: var(--fg-soft);
+}
+
+.clusters__details {
+  margin-top: 0.9rem;
+}
+
+.clusters__details summary {
+  display: inline-block;
+  margin-bottom: 0.6rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+/* ==========================================================================
    Data & Methods
    ========================================================================== */
 .methods__toc {
@@ -1365,17 +1414,19 @@ html.lenis body {
 }
 
 /* ==========================================================================
-   Scroll cue. Only where the hero fits on screen with room to show it.
+   Scroll cue. Pinned to the bottom of the first screen, in the corner beside the
+   globe, which a circle always leaves empty. Wide screens only: on a phone the page
+   already runs off the bottom.
    ========================================================================== */
 .scroll-cue {
   display: none;
 }
 
-@media (min-width: 1000px) and (min-height: 860px) {
+@media (min-width: 1000px) {
   .scroll-cue {
     position: absolute;
-    bottom: 20px;
-    left: var(--gutter);
+    top: calc(100svh - 44px);
+    right: var(--gutter);
     display: flex;
     align-items: center;
     gap: 0.75rem;

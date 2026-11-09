@@ -7,6 +7,7 @@
  *   public/data/globe.json         latest rate and year per country, per disease
  *   public/data/countries-50m.json world-atlas geometry with ISO3 ids
  *   public/data/countries-50m-lite.json the same shapes, simplified for rotation
+ *   src/data/sg-subzones.json      Singapore subzones, simplified for the cluster map
  *
  * The generated files are committed, so a deploy never needs the source CSVs.
  * If anything differs, it stops with a report and writes nothing.
@@ -33,6 +34,45 @@ const MINUS = '\u2212';
 // ---------------------------------------------------------------------- helpers
 
 type CsvRow = Record<string, string>;
+type Point = [number, number];
+
+// Longitude degrees shrink towards the poles, so measure in roughly equal-area degrees.
+function offsetFromSegment(point: Point, start: Point, end: Point): number {
+  const shrink = Math.cos((point[1] * Math.PI) / 180);
+  const px = (point[0] - start[0]) * shrink;
+  const py = point[1] - start[1];
+  const ex = (end[0] - start[0]) * shrink;
+  const ey = end[1] - start[1];
+  const lengthSquared = ex * ex + ey * ey;
+  if (lengthSquared === 0) return Math.hypot(px, py);
+  const t = Math.max(0, Math.min(1, (px * ex + py * ey) / lengthSquared));
+  return Math.hypot(px - t * ex, py - t * ey);
+}
+
+/** Douglas-Peucker: keeps a point only if it is further than the tolerance from the line. */
+function simplifyLine(points: Point[], tolerance: number): Point[] {
+  const keep = new Uint8Array(points.length);
+  keep[0] = 1;
+  keep[points.length - 1] = 1;
+  const stack: [number, number][] = [[0, points.length - 1]];
+  while (stack.length) {
+    const [from, to] = stack.pop()!;
+    let furthest = -1;
+    let distance = tolerance;
+    for (let i = from + 1; i < to; i += 1) {
+      const offset = offsetFromSegment(points[i]!, points[from]!, points[to]!);
+      if (offset > distance) {
+        distance = offset;
+        furthest = i;
+      }
+    }
+    if (furthest !== -1) {
+      keep[furthest] = 1;
+      stack.push([from, furthest], [furthest, to]);
+    }
+  }
+  return points.filter((_, index) => keep[index]);
+}
 
 function readCsv(name: string): CsvRow[] {
   const file = path.join(SOURCE_DATA_DIR, name);
@@ -297,6 +337,36 @@ expect('D10: temperature r at 1 month lag', temperatureLink(1), 0.19, 2);
 expect('D10: temperature r at 2 months lag', temperatureLink(2), 0.19, 2);
 expect('D10: every weather link is weak (largest |r| under 0.2)', Math.abs(strongestLink.r) < 0.2, true);
 
+// ----------------------------------------------- Singapore subzones and clusters
+
+interface SubzoneFile {
+  features: { geometry: { type: 'Polygon' | 'MultiPolygon'; coordinates: number[][][] | number[][][][] } }[];
+}
+
+const SUBZONE_TOLERANCE_DEGREES = 0.0005;
+const MAX_SUBZONE_KB = 300;
+
+function readSourceJson<T>(name: string): T {
+  return JSON.parse(fs.readFileSync(path.join(SOURCE_DATA_DIR, name), 'utf8')) as T;
+}
+
+const subzonesLite = readSourceJson<SubzoneFile>('mp2019_subzones.geojson').features.map(({ geometry }) => {
+  const rings = geometry.type === 'Polygon' ? (geometry.coordinates as number[][][]) : (geometry.coordinates as number[][][][]).flat();
+  return {
+    rings: rings
+      .map((ring) =>
+        simplifyLine(ring as [number, number][], SUBZONE_TOLERANCE_DEGREES).map(([lon, lat]) => [round(lon, 5), round(lat, 5)]),
+      )
+      .filter((ring) => ring.length >= 4),
+  };
+});
+const subzonesJson = { generatedBy: 'scripts/build-data.ts from mp2019_subzones.geojson', subzones: subzonesLite };
+expect('Clusters: subzone shapes kept', subzonesLite.filter((subzone) => subzone.rings.length > 0).length, 332);
+expect(`Clusters: simplified subzones under ${MAX_SUBZONE_KB} KB`, JSON.stringify(subzonesJson).length < MAX_SUBZONE_KB * 1024, true);
+
+const clusterFile = readSourceJson<{ features: { properties: { download_date: string } }[] }>('nea_clusters_now.geojson');
+expect('Clusters: date of the cleaned file, as stated on the site', clusterFile.features[0]!.properties.download_date, '2026-10-23');
+
 // ---------------------------------------------------------- report, then decide
 
 const failures = checks.filter((check) => !check.ok);
@@ -441,8 +511,6 @@ const geometryOut = {
 const LITE_TOLERANCE_DEGREES = 0.3;
 const LITE_GRID_DEGREES = 0.01;
 
-type Point = [number, number];
-
 function decodeArc(arc: number[][]): Point[] {
   const [scaleX, scaleY] = topology.transform!.scale;
   const [translateX, translateY] = topology.transform!.translate;
@@ -453,43 +521,6 @@ function decodeArc(arc: number[][]): Point[] {
     y += delta[1]!;
     return [x * scaleX + translateX, y * scaleY + translateY];
   });
-}
-
-// Longitude degrees shrink towards the poles, so measure in roughly equal-area degrees.
-function offsetFromSegment(point: Point, start: Point, end: Point): number {
-  const shrink = Math.cos((point[1] * Math.PI) / 180);
-  const px = (point[0] - start[0]) * shrink;
-  const py = point[1] - start[1];
-  const ex = (end[0] - start[0]) * shrink;
-  const ey = end[1] - start[1];
-  const lengthSquared = ex * ex + ey * ey;
-  if (lengthSquared === 0) return Math.hypot(px, py);
-  const t = Math.max(0, Math.min(1, (px * ex + py * ey) / lengthSquared));
-  return Math.hypot(px - t * ex, py - t * ey);
-}
-
-function douglasPeucker(points: Point[], tolerance: number): Point[] {
-  const keep = new Uint8Array(points.length);
-  keep[0] = 1;
-  keep[points.length - 1] = 1;
-  const stack: [number, number][] = [[0, points.length - 1]];
-  while (stack.length) {
-    const [from, to] = stack.pop()!;
-    let furthest = -1;
-    let distance = tolerance;
-    for (let i = from + 1; i < to; i += 1) {
-      const offset = offsetFromSegment(points[i]!, points[from]!, points[to]!);
-      if (offset > distance) {
-        distance = offset;
-        furthest = i;
-      }
-    }
-    if (furthest !== -1) {
-      keep[furthest] = 1;
-      stack.push([from, furthest], [furthest, to]);
-    }
-  }
-  return points.filter((_, index) => keep[index]);
 }
 
 function snapToGrid(points: Point[]): Point[] {
@@ -529,7 +560,7 @@ function toleranceFor(arc: Point[]): number {
   return Math.min(LITE_TOLERANCE_DEGREES, 0.2 * Math.sqrt(planarArea(arc)));
 }
 
-const liteArcs = fullArcs.map((arc) => snapToGrid(douglasPeucker(arc, toleranceFor(arc))));
+const liteArcs = fullArcs.map((arc) => snapToGrid(simplifyLine(arc, toleranceFor(arc))));
 const restoredArcs = new Set<number>();
 
 function restoreRing(ring: number[]) {
@@ -765,3 +796,4 @@ writeJson('src/data/stats.json', stats);
 writeJson('public/data/globe.json', globe);
 writeJson('public/data/countries-50m.json', geometryOut);
 writeJson('public/data/countries-50m-lite.json', liteGeometryOut);
+writeJson('src/data/sg-subzones.json', subzonesJson);
