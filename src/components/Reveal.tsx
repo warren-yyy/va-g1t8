@@ -20,12 +20,15 @@ export default function Reveal({ as: Tag = 'div', className, children }: RevealP
     const element = ref.current;
     if (!element || !motionAllowed()) return;
 
+    // Opacity, not autoAlpha: visibility:hidden would take any link inside out of the tab order,
+    // so a keyboard user would skip every card that has not scrolled into view yet.
+    let tween: gsap.core.Tween | undefined;
     const context = gsap.context(() => {
-      gsap.fromTo(
+      tween = gsap.fromTo(
         element,
-        { autoAlpha: 0, y: 28 },
+        { opacity: 0, y: 28 },
         {
-          autoAlpha: 1,
+          opacity: 1,
           y: 0,
           duration: 1,
           ease: 'power3.out',
@@ -33,7 +36,19 @@ export default function Reveal({ as: Tag = 'div', className, children }: RevealP
         },
       );
     });
-    return () => context.revert();
+
+    // If focus lands inside before the reveal has played, finish it at once, so the focus
+    // ring is never on something invisible.
+    const showNow = () => {
+      tween?.scrollTrigger?.kill(false, true);
+      tween?.progress(1);
+    };
+    element.addEventListener('focusin', showNow);
+
+    return () => {
+      element.removeEventListener('focusin', showNow);
+      context.revert();
+    };
   }, []);
 
   return (

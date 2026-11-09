@@ -23,8 +23,8 @@ export default function HeadlineReveal({ as: Tag = 'h1', id, className, text }: 
     const context = gsap.context(() => {
       gsap.fromTo(
         '.headline__word',
-        { yPercent: 115, autoAlpha: 1 },
-        { yPercent: 0, autoAlpha: 1, duration: 1.15, stagger: 0.06, ease: 'power4.out' },
+        { yPercent: 115, opacity: 1 },
+        { yPercent: 0, opacity: 1, duration: 1.15, stagger: 0.06, ease: 'power4.out' },
       );
     }, element);
     return () => context.revert();
