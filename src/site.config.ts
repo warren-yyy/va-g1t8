@@ -82,9 +82,19 @@ export interface SourceLink {
   href: string;
 }
 
+export interface MethodNote {
+  title: string;
+  /** Each string is a paragraph. {tokens} come from src/data/stats.json. */
+  body: string[];
+}
+
 export interface DataMethods {
   intro: string;
   datasets: DatasetRow[];
+  cleaning: string[];
+  methods: MethodNote[];
+  /** Shown word for word on the page, for transparency. */
+  closestYearNote: string;
   limitations: string[];
   sources: SourceLink[];
 }
@@ -476,6 +486,62 @@ const config: SiteConfig = {
         files: 'disease_info.csv',
       },
     ],
+
+    // From the cleaning notebook, which is also on the page as a download.
+    cleaning: [
+      'Dengue: reports are summed by country and year. A country-year counts as complete when its reports cover at least 350 days, and an incomplete year is left blank rather than undercounted.',
+      'Malaria: WHO estimates only. Every country WHO does not list is marked "Not endemic" and given zero cases.',
+      'Rates per 100k use World Bank population. A territory without a population figure has no rate.',
+      'Climate: annual temperature is kept only for years with all 12 months. Country averages skip Singapore, so its values come from the Changi station.',
+      'Singapore weekly cases join the data.gov.sg bulletin (2012-2022) to OpenDengue (2023-2024). Each week counts towards the month its midpoint falls in.',
+      'Weather lag: each month of dengue is paired with the weather from 0 to 6 months earlier.',
+      'Singapore subzones: 2020 cluster records and HDB blocks are matched to Master Plan 2019 subzones. Points just outside a subzone snap to the nearest one within 200 m.',
+    ],
+
+    // Each number here is asserted by scripts/build-data.ts.
+    methods: [
+      {
+        title: 'Singapore dengue, 2019: {sgDengue2019}',
+        body: [
+          'dengue_per_100k for Singapore in 2019 is {sgDengueExact2019}. The comparison is the median across the {hiN2019} high-income countries with a dengue rate that year, Singapore included, which is {hiMedianExact2019}. The ratio rounds to {ratio2019}x.',
+        ],
+      },
+      {
+        title: 'Singapore malaria, 2019: {sgMalaria2019}',
+        body: [
+          "malaria_per_100k for Singapore in 2019. This is a status, not a measurement: the cleaning gives zero cases to every country WHO doesn't list as endemic. WHO certified Singapore malaria-free in 1982.",
+        ],
+      },
+      {
+        title: 'Income and disease, 2000-2024: {medianRMalaria} vs {medianRDengue}',
+        body: [
+          'r is the Pearson correlation between log10(gdp_pc_ppp) and ln(1 + rate per 100k), using countries with both rates and GDP in that year. The same countries are compared for both diseases, between {nMin} and {nMax} of them a year.',
+          "The tile shows the median of the 25 yearly values: {medianRMalaria} for malaria and {medianRDengue} for dengue. Malaria's link is stronger, by absolute r, in all {yearsMalariaStronger} years.",
+        ],
+      },
+      {
+        title: 'Complete dengue reporting, 2019: {dengueComplete2019}',
+        body: [
+          'Rows with dengue_complete = 1 in 2019. {dengueNoPop2019} of these territories lack population, which leaves {dengueUsable2019} usable rates.',
+        ],
+      },
+      {
+        title: 'The globe: latest available year per country',
+        body: [
+          'For each country and disease, the latest year with a rate. Dengue covers {globeDengueN} countries and territories: {globeDengueLatest} from 2024, the rest back to {globeDengueMinYear}. Malaria is 2024 everywhere except Mauritius (2021).',
+          'Singapore shows {sgDengue2024} per 100k on the globe (2024) and {sgDengue2019} on the stat tile (2019). Both are labelled with their year, so the difference is intended.',
+        ],
+      },
+      {
+        title: 'Weather lag in Singapore, 2012-2024: r about 0.19',
+        body: [
+          'Pearson r between monthly weather at the Changi station and monthly dengue cases over {sgLagMonths} months, for lags of 0 to 6 months. Temperature at 1 and 2 months is the strongest of all these links, at about 0.19.',
+        ],
+      },
+    ],
+
+    closestYearNote:
+      'All available countries, 2019: malaria {allMalariaR2019} ({allMalariaN2019} countries), dengue {allDengueR2019} ({allDengueN2019}). Same {sameN2019} countries, 2019: {sameMalariaR2019} vs {sameDengueR2019}. 2019 is the closest of the 25 years.',
 
     // Each claim here that has a number is asserted by scripts/build-data.ts.
     limitations: [

@@ -717,6 +717,7 @@ const stats = {
     hiMedian2019: String(round(highIncomeMedian, 0)),
     hiMedianExact2019: highIncomeMedian.toFixed(2),
     sgDengueExact2019: singapore2019.dengue!.toFixed(2),
+    sgDengue2024: String(round(latestDengue.get('SGP')!.rate, 0)),
     hiN2019: String(highIncomeRates.length),
     medianRMalaria: formatR(medianRMalaria),
     medianRDengue: formatR(medianRDengue),
