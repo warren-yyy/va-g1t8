@@ -1,11 +1,20 @@
+import type { Metadata } from 'next';
 import config from '@/site.config';
+import Hero from '@/components/Hero';
+import PartCards from '@/components/PartCards';
+import StatTiles from '@/components/StatTiles';
+
+export const metadata: Metadata = {
+  title: { absolute: `${config.site.mainQuestion} | ${config.site.name}` },
+  description: config.site.scope,
+};
 
 export default function HomePage() {
   return (
-    <div className="part">
-      <header className="part__head">
-        <h1 className="part__title">{config.site.mainQuestion}</h1>
-      </header>
-    </div>
+    <>
+      <Hero />
+      <StatTiles />
+      <PartCards />
+    </>
   );
 }
