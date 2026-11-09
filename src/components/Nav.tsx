@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { getLenis } from '@/lib/lenis';
 import type { NavItem } from '@/site.config';
 
 const COLLAPSE_QUERY = '(min-width: 1101px)';
@@ -39,6 +40,7 @@ export default function Nav({ brand, items }: { brand: string; items: NavItem[] 
     const behindMenu = [document.getElementById('main'), document.querySelector('.site-footer')];
     root.classList.add('menu-open');
     behindMenu.forEach((element) => element?.setAttribute('inert', ''));
+    getLenis()?.stop();
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key !== 'Escape') return;
@@ -57,6 +59,7 @@ export default function Nav({ brand, items }: { brand: string; items: NavItem[] 
     return () => {
       root.classList.remove('menu-open');
       behindMenu.forEach((element) => element?.removeAttribute('inert'));
+      getLenis()?.start();
       window.removeEventListener('keydown', onKeyDown);
       wide.removeEventListener('change', onWide);
     };

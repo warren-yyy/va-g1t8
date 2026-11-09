@@ -321,6 +321,10 @@ html.menu-open {
   pointer-events: none;
 }
 
+html.menu-open .progress {
+  display: none;
+}
+
 .progress span {
   display: block;
   height: 100%;
@@ -1159,6 +1163,116 @@ html:not(.js) .globe-only {
 }
 
 /* ==========================================================================
+   Lenis smooth scroll (required helper styles)
+   ========================================================================== */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Only during a smooth scroll. Tableau keeps its iframe in a shadow root that the iframe
+   selector cannot reach, but pointer-events inherits, so tableau-viz covers it. */
+.lenis.lenis-smooth iframe,
+.lenis.lenis-smooth tableau-viz {
+  pointer-events: none;
+}
+
+/* ==========================================================================
+   Reveals. Only html.js hides anything: without JavaScript, under reduced motion and
+   after the 2.5s failsafe (html.motion-off), all text simply shows.
+   ========================================================================== */
+@media (prefers-reduced-motion: no-preference) {
+  html.js:not(.motion-off) .reveal,
+  html.js:not(.motion-off) .headline__word {
+    opacity: 0;
+  }
+}
+
+.headline__mask {
+  display: inline-block;
+  /* Padding keeps descenders and overhanging serifs inside the mask; the negative margins
+     stop it from changing the line height or the word spacing. */
+  margin: 0 -0.05em -0.16em;
+  padding: 0 0.05em 0.16em;
+  overflow: hidden;
+  vertical-align: top;
+}
+
+.headline__word {
+  display: inline-block;
+}
+
+.count-up {
+  display: inline-block;
+  min-width: 3ch;
+}
+
+/* ==========================================================================
+   Scroll cue. Only where the hero fits on screen with room to show it.
+   ========================================================================== */
+.scroll-cue {
+  display: none;
+}
+
+@media (min-width: 1000px) and (min-height: 860px) {
+  .scroll-cue {
+    position: absolute;
+    bottom: 20px;
+    left: var(--gutter);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    color: var(--muted);
+    font-size: 0.875rem;
+  }
+}
+
+.scroll-cue__line {
+  position: relative;
+  display: block;
+  width: 56px;
+  height: 1px;
+  overflow: hidden;
+  background: var(--line);
+}
+
+.scroll-cue__line span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 24px;
+  background: var(--fg);
+  animation: scrollcue 2.2s ease-in-out infinite;
+}
+
+@keyframes scrollcue {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateX(290%);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
    Page fade: an overlay fades out, so no ancestor of a dashboard is touched.
    It is pure CSS, so it cannot get stuck if a script fails.
    ========================================================================== */
@@ -1198,5 +1312,10 @@ html:not(.js) .globe-only {
   .spinner {
     animation: none;
     border-top-color: rgba(23, 24, 26, 0.2);
+  }
+
+  .scroll-cue__line span {
+    animation: none;
+    transform: none;
   }
 }

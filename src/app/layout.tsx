@@ -3,7 +3,9 @@ import type { ReactNode } from 'react';
 import { IBM_Plex_Mono, Instrument_Sans, Instrument_Serif } from 'next/font/google';
 import config from '@/site.config';
 import Footer from '@/components/Footer';
+import MotionStart from '@/components/MotionStart';
 import Nav from '@/components/Nav';
+import SmoothScroll from '@/components/SmoothScroll';
 import '@/styles/site.css';
 
 const serif = Instrument_Serif({ subsets: ['latin'], weight: '400', variable: '--font-serif', display: 'swap' });
@@ -31,6 +33,11 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     ...config.navigation,
     ...config.extraPages.map((page) => ({ label: page.label, href: `/${page.slug}` })),
   ];
+  const smoothPaths = [
+    '/',
+    '/data-methods',
+    ...(config.smoothScrollOnPartPages ? config.parts.map((part) => `/${part.slug}`) : []),
+  ];
 
   return (
     <html
@@ -43,6 +50,8 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
         <script dangerouslySetInnerHTML={{ __html: HEAD_SCRIPT }} />
       </head>
       <body>
+        <MotionStart />
+        <SmoothScroll paths={smoothPaths} />
         <a className="skip-link" href="#main">
           Skip to content
         </a>

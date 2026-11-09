@@ -2,6 +2,7 @@ import type { Dashboard } from '@/site.config';
 import { fill } from '@/lib/fill';
 import { normalizeTableauUrl } from '@/lib/tableau';
 import DashboardEmbed from '@/components/DashboardEmbed';
+import Reveal from '@/components/Reveal';
 
 export default function DashboardSection({ dashboard }: { dashboard: Dashboard }) {
   const { id, title, question, howTo, takeaway, takeawayNote, alt } = dashboard;
@@ -17,7 +18,11 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
         <p className="dash__question">{question}</p>
       </div>
 
-      {howTo && <p className="dash__howto">{fill(howTo)}</p>}
+      {howTo && (
+        <Reveal as="p" className="dash__howto">
+          {fill(howTo)}
+        </Reveal>
+      )}
 
       <figure className="dash__figure">
         {url ? (
@@ -52,10 +57,10 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
           <figcaption>
             {url && <p className="sr-only">Dashboard contents: {alt ?? question}</p>}
             {takeaway && (
-              <p className="dash__takeaway">
+              <Reveal as="p" className="dash__takeaway">
                 {fill(takeaway)}
                 {takeawayNote && <span className="dash__scope">{fill(takeawayNote)}</span>}
-              </p>
+              </Reveal>
             )}
           </figcaption>
         )}

@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import config from '@/site.config';
 import DashboardSection from '@/components/DashboardSection';
+import HeadlineReveal from '@/components/HeadlineReveal';
+import ProgressBar from '@/components/ProgressBar';
+import Reveal from '@/components/Reveal';
 import { getPart, visibleDashboards } from '@/lib/dashboards';
 import { fill } from '@/lib/fill';
 
@@ -35,12 +38,15 @@ export default function PartPage({ partNumber }: { partNumber: number }) {
   const part = getPart(partNumber);
   return (
     <div className="part">
+      <ProgressBar />
       <header className="part__head">
         <p className="part__kicker">
           Part {part.number} &middot; {part.role}
         </p>
-        <h1 className="part__title">{part.question}</h1>
-        <p className="part__intro">{fill(part.intro)}</p>
+        <HeadlineReveal className="part__title" text={part.question} />
+        <Reveal as="p" className="part__intro">
+          {fill(part.intro)}
+        </Reveal>
       </header>
       {visibleDashboards(partNumber).map((dashboard) => (
         <DashboardSection key={dashboard.id} dashboard={dashboard} />

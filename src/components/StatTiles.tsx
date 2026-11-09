@@ -1,10 +1,13 @@
 import type { StatTile } from '@/site.config';
 import config from '@/site.config';
+import CountUp from '@/components/CountUp';
+import Reveal from '@/components/Reveal';
 import { fill } from '@/lib/fill';
 
 function Tile({ tile }: { tile: StatTile }) {
+  const value = fill(tile.value ?? '');
   return (
-    <li className="tile">
+    <Reveal as="li" className="tile">
       <p className="tile__year">{tile.year}</p>
       {tile.pair ? (
         <p className="tile__pair">
@@ -22,10 +25,10 @@ function Tile({ tile }: { tile: StatTile }) {
           ))}
         </p>
       ) : (
-        <p className="tile__value">{fill(tile.value ?? '')}</p>
+        <p className="tile__value">{tile.countUp ? <CountUp value={value} /> : value}</p>
       )}
       <p className="tile__text">{fill(tile.text)}</p>
-    </li>
+    </Reveal>
   );
 }
 

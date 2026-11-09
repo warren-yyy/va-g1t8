@@ -1,6 +1,8 @@
 import config from '@/site.config';
 import Globe from '@/components/Globe';
 import GlobeTable from '@/components/GlobeTable';
+import HeadlineReveal from '@/components/HeadlineReveal';
+import Reveal from '@/components/Reveal';
 import { normalizeTableauUrl } from '@/lib/tableau';
 import { formatRate } from '@/lib/format';
 import type { Disease, GlobeData } from '@/lib/globe-scale';
@@ -25,18 +27,22 @@ export default function Hero() {
   return (
     <section className="hero" aria-labelledby="main-question">
       <div className="hero__text">
-        <h1 className="hero__title" id="main-question">
-          {site.mainQuestion}
-        </h1>
-        <p className="hero__answer">
+        <HeadlineReveal className="hero__title" id="main-question" text={site.mainQuestion} />
+        <Reveal as="p" className="hero__answer">
           {answerSentence}
           {answerIsDraft && <span className="draft-tag">Draft until D13 is published</span>}
-        </p>
+        </Reveal>
         <p className="hero__scope">{site.scope}</p>
       </div>
       <Globe meta={globe.meta} summaries={{ dengue: summary('dengue'), malaria: summary('malaria') }}>
         <GlobeTable data={globe} />
       </Globe>
+      <div className="scroll-cue" aria-hidden="true">
+        <span>Scroll</span>
+        <span className="scroll-cue__line">
+          <span />
+        </span>
+      </div>
     </section>
   );
 }
