@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { IBM_Plex_Mono, Instrument_Sans, Instrument_Serif } from 'next/font/google';
 import config from '@/site.config';
 import Footer from '@/components/Footer';
+import InitialScroll from '@/components/InitialScroll';
 import MotionStart from '@/components/MotionStart';
 import Nav from '@/components/Nav';
 import ProgressBar from '@/components/ProgressBar';
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
       </head>
       <body>
         <MotionStart />
+        <InitialScroll />
         <a className="skip-link" href="#main">
           Skip to content
         </a>
