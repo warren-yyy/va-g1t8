@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import { useReducedMotion } from '@/lib/hooks';
 import { createGlobeEngine, type GlobeEngine, type WorldTopology } from '@/lib/globe-engine';
 import {
@@ -36,11 +36,9 @@ interface GlobeProps {
   meta: Record<Disease, DiseaseMeta>;
   /** Text for the canvas's accessible label, one per disease. */
   summaries: Record<Disease, string>;
-  /** The "View as table" details, rendered on the server. */
-  children: ReactNode;
 }
 
-export default function Globe({ meta, summaries, children }: GlobeProps) {
+export default function Globe({ meta, summaries }: GlobeProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const tooltipRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -182,8 +180,6 @@ export default function Globe({ meta, summaries, children }: GlobeProps) {
 
           <p className="globe-note">Each disease has its own log scale, so colours are not comparable between diseases.</p>
         </div>
-
-        {children}
       </div>
     </>
   );

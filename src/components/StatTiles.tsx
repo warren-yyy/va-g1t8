@@ -34,7 +34,7 @@ function Tile({ tile }: { tile: StatTile }) {
 
 export default function StatTiles() {
   return (
-    <section className="stats" aria-labelledby="stats-title">
+    <section className="stats" id="problem" aria-labelledby="stats-title" tabIndex={-1}>
       <h2 className="section-title" id="stats-title">
         Four numbers to start with
       </h2>

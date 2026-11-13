@@ -1,14 +1,8 @@
-import type { Metadata } from 'next';
 import config from '@/site.config';
 import Reveal from '@/components/Reveal';
 import { fill } from '@/lib/fill';
 import { formatR } from '@/lib/format';
 import stats from '@/data/stats.json';
-
-export const metadata: Metadata = {
-  title: 'Data & Methods',
-  description: 'Datasets, cleaning, how each headline number was computed, and the limitations.',
-};
 
 const SECTIONS = [
   { id: 'datasets', label: 'Datasets' },
@@ -26,18 +20,21 @@ function dashboardsOf(owner: string) {
     .join(', ');
 }
 
-export default function DataMethodsPage() {
+/** The last section of the page: where every number comes from. */
+export default function DataMethodsSection() {
   const { dataMethods, team, dashboards } = config;
   const owners = [...team, ...(dashboards.some((dashboard) => dashboard.owner === 'TBD') ? ['TBD'] : [])];
 
   return (
-    <div className="part methods">
+    <section className="part methods" id="data-methods" aria-labelledby="data-methods-title" tabIndex={-1}>
       <header className="part__head">
-        <h1 className="part__title">Data &amp; Methods</h1>
+        <h2 className="part__title" id="data-methods-title">
+          Data &amp; Methods
+        </h2>
         <Reveal as="p" className="part__intro">
           {dataMethods.intro}
         </Reveal>
-        <nav className="methods__toc" aria-label="On this page">
+        <nav className="methods__toc" aria-label="Data and methods contents">
           <ul>
             {SECTIONS.map((section) => (
               <li key={section.id}>
@@ -49,10 +46,10 @@ export default function DataMethodsPage() {
       </header>
 
       <section className="methods__section" id="datasets" aria-labelledby="datasets-title">
-        <h2 className="section-title" id="datasets-title">
+        <h3 className="section-title" id="datasets-title">
           Datasets
-        </h2>
-        <div className="table-wrap" tabIndex={0} role="region" aria-labelledby="datasets-title" data-lenis-prevent>
+        </h3>
+        <div className="table-wrap" tabIndex={0} role="region" aria-labelledby="datasets-title">
           <table className="data-table">
             <thead>
               <tr>
@@ -75,9 +72,9 @@ export default function DataMethodsPage() {
       </section>
 
       <section className="methods__section" id="cleaning" aria-labelledby="cleaning-title">
-        <h2 className="section-title" id="cleaning-title">
+        <h3 className="section-title" id="cleaning-title">
           Cleaning
-        </h2>
+        </h3>
         <p className="methods__lead">
           One notebook downloads and cleans every dataset.{' '}
           <a href="/downloads/mosquito_data_pipeline.ipynb" download>
@@ -93,13 +90,13 @@ export default function DataMethodsPage() {
       </section>
 
       <section className="methods__section" id="numbers" aria-labelledby="numbers-title">
-        <h2 className="section-title" id="numbers-title">
+        <h3 className="section-title" id="numbers-title">
           How each headline number was computed
-        </h2>
+        </h3>
         <div className="methods__notes">
           {dataMethods.methods.map((note) => (
             <div key={note.title} className="methods__note">
-              <h3>{fill(note.title)}</h3>
+              <h4>{fill(note.title)}</h4>
               {note.body.map((paragraph) => (
                 <p key={paragraph}>{fill(paragraph)}</p>
               ))}
@@ -107,37 +104,37 @@ export default function DataMethodsPage() {
           ))}
         </div>
         <p className="methods__callout">{fill(dataMethods.closestYearNote)}</p>
-        <details className="methods__details">
-          <summary>View r for each year, 2000-2024</summary>
-          <div className="table-wrap" tabIndex={0} role="region" aria-label="r for each year" data-lenis-prevent>
-            <table className="data-table data-table--numbers">
-              <thead>
-                <tr>
-                  <th scope="col">Year</th>
-                  <th scope="col">Same countries compared</th>
-                  <th scope="col">Malaria r</th>
-                  <th scope="col">Dengue r</th>
+        <h4 className="methods__table-title" id="r-by-year-title">
+          r for each year, 2000-2024
+        </h4>
+        <div className="table-wrap" tabIndex={0} role="region" aria-labelledby="r-by-year-title">
+          <table className="data-table data-table--numbers">
+            <thead>
+              <tr>
+                <th scope="col">Year</th>
+                <th scope="col">Same countries compared</th>
+                <th scope="col">Malaria r</th>
+                <th scope="col">Dengue r</th>
+              </tr>
+            </thead>
+            <tbody>
+              {stats.rByYear.map((row) => (
+                <tr key={row.year}>
+                  <th scope="row">{row.year}</th>
+                  <td>{row.n}</td>
+                  <td>{formatR(row.malaria)}</td>
+                  <td>{formatR(row.dengue)}</td>
                 </tr>
-              </thead>
-              <tbody>
-                {stats.rByYear.map((row) => (
-                  <tr key={row.year}>
-                    <th scope="row">{row.year}</th>
-                    <td>{row.n}</td>
-                    <td>{formatR(row.malaria)}</td>
-                    <td>{formatR(row.dengue)}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </details>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section className="methods__section" id="limitations" aria-labelledby="limitations-title">
-        <h2 className="section-title" id="limitations-title">
+        <h3 className="section-title" id="limitations-title">
           Limitations
-        </h2>
+        </h3>
         <ul className="methods__list">
           {dataMethods.limitations.map((limitation) => (
             <li key={limitation}>{fill(limitation)}</li>
@@ -146,9 +143,9 @@ export default function DataMethodsPage() {
       </section>
 
       <section className="methods__section" id="sources" aria-labelledby="sources-title">
-        <h2 className="section-title" id="sources-title">
+        <h3 className="section-title" id="sources-title">
           Sources
-        </h2>
+        </h3>
         <ul className="methods__sources">
           {dataMethods.sources.map((source) => (
             <li key={source.href}>
@@ -162,10 +159,10 @@ export default function DataMethodsPage() {
       </section>
 
       <section className="methods__section" id="team" aria-labelledby="team-title">
-        <h2 className="section-title" id="team-title">
+        <h3 className="section-title" id="team-title">
           Team
-        </h2>
-        <div className="table-wrap" tabIndex={0} role="region" aria-labelledby="team-title" data-lenis-prevent>
+        </h3>
+        <div className="table-wrap" tabIndex={0} role="region" aria-labelledby="team-title">
           <table className="data-table">
             <thead>
               <tr>
@@ -184,6 +181,6 @@ export default function DataMethodsPage() {
           </table>
         </div>
       </section>
-    </div>
+    </section>
   );
 }

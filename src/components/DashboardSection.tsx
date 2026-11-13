@@ -12,9 +12,9 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
   return (
     <section className="dash" id={anchor} aria-labelledby={`${anchor}-title`}>
       <div className="dash__head">
-        <h2 className="dash__title" id={`${anchor}-title`}>
+        <h3 className="dash__title" id={`${anchor}-title`}>
           <span className="dash__id">{id}</span> {title}
-        </h2>
+        </h3>
         <p className="dash__question">{question}</p>
       </div>
 

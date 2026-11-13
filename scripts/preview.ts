@@ -1,8 +1,8 @@
 /*
  * npm run preview
- * Serves the static export in out/ the way Vercel does: /burden serves burden.html,
- * /burden/ redirects to /burden, and anything unknown gets 404.html with a 404 status.
- * Set PORT to change the port.
+ * Serves the static export in out/ the way Vercel does: /page serves page.html, /page/
+ * redirects to /page, the exact-path redirects in vercel.json apply, and anything unknown
+ * gets 404.html with a 404 status. Set PORT to change the port.
  */
 import fs from 'node:fs';
 import http from 'node:http';
@@ -10,6 +10,18 @@ import path from 'node:path';
 
 const ROOT = path.resolve(process.cwd(), 'out');
 const PORT = Number(process.env.PORT ?? 4173);
+
+interface Redirect {
+  source: string;
+  destination: string;
+  permanent?: boolean;
+}
+
+// Only exact paths: that is all vercel.json uses. Vercel itself also supports patterns.
+const vercelFile = path.resolve(process.cwd(), 'vercel.json');
+const redirects: Redirect[] = fs.existsSync(vercelFile)
+  ? ((JSON.parse(fs.readFileSync(vercelFile, 'utf8')) as { redirects?: Redirect[] }).redirects ?? [])
+  : [];
 
 const TYPES: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -42,6 +54,13 @@ function resolveFile(pathname: string): string | null {
 
 const server = http.createServer((request, response) => {
   const { pathname } = new URL(request.url ?? '/', 'http://localhost');
+
+  const redirect = redirects.find((candidate) => candidate.source === pathname);
+  if (redirect) {
+    response.writeHead(redirect.permanent ? 308 : 307, { Location: redirect.destination });
+    response.end();
+    return;
+  }
 
   if (pathname.length > 1 && pathname.endsWith('/')) {
     response.writeHead(308, { Location: pathname.replace(/\/+$/, '') });

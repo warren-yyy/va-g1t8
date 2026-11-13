@@ -10,7 +10,7 @@ export default function Footer() {
           {site.course}. {site.group}: {team.join(', ')}.
         </p>
         <p>
-          Global figures are annual and end in 2024. <Link href="/data-methods">Data &amp; Methods</Link>
+          Global figures are annual and end in 2024. <Link href="/#data-methods">Data &amp; Methods</Link>
         </p>
       </div>
     </footer>

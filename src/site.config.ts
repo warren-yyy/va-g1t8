@@ -48,7 +48,7 @@ export interface NavItem {
   href: string;
 }
 
-/** Added to the navbar automatically. The page itself is src/app/<slug>/page.tsx. */
+/** A separate page, added to the navbar automatically. The page itself is src/app/<slug>/page.tsx. */
 export interface ExtraPage {
   slug: string;
   label: string;
@@ -108,7 +108,6 @@ export interface SiteConfig {
     scope: string;
   };
   answerSentence: string;
-  smoothScrollOnPartPages: boolean;
   navigation: NavItem[];
   extraPages: ExtraPage[];
   parts: Part[];
@@ -134,19 +133,16 @@ const config: SiteConfig = {
   // both read it, and the homepage shows a "Draft" tag for as long as D13's url is empty.
   answerSentence,
 
-  // Lenis is on for the homepage and Data & Methods only. Native scrolling keeps
-  // Tableau's wheel and click handling untouched on part pages.
-  smoothScrollOnPartPages: false,
-
-  // Items in extraPages are added to the end of this list automatically.
+  // Anchors to the sections of the one page. Items in extraPages are added to the end
+  // of this list automatically.
   navigation: [
-    { label: 'Home', href: '/' },
-    { label: '1 Burden', href: '/burden' },
-    { label: '2 Drivers', href: '/drivers' },
-    { label: '3 Dengue vs Malaria', href: '/dengue-vs-malaria' },
-    { label: '4 Singapore', href: '/singapore' },
-    { label: '5 Conclusion', href: '/conclusion' },
-    { label: 'Data & Methods', href: '/data-methods' },
+    { label: 'Home', href: '/#home' },
+    { label: '1 Burden', href: '/#burden' },
+    { label: '2 Drivers', href: '/#drivers' },
+    { label: '3 Dengue vs Malaria', href: '/#dengue-vs-malaria' },
+    { label: '4 Singapore', href: '/#singapore' },
+    { label: '5 Conclusion', href: '/#conclusion' },
+    { label: 'Data & Methods', href: '/#data-methods' },
   ],
 
   // Empty for now. Do not add a user guide, poster or report page until the course
