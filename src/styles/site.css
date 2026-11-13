@@ -389,8 +389,57 @@ html.menu-open .progress {
   line-height: 1.5;
 }
 
-.dash {
-  margin-block: clamp(72px, 10vw, 144px);
+/* Dashboard tabs: underlined labels, the active one with a thicker underline. There is
+   no separate accent colour in this palette, so the accent is the foreground. */
+.tabs {
+  margin-top: clamp(56px, 8vw, 104px);
+}
+
+.tabs__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem clamp(16px, 2.4vw, 32px);
+  margin-bottom: clamp(28px, 4vw, 48px);
+}
+
+.tabs__tab {
+  min-height: 44px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.35em;
+  transition: color 0.2s ease;
+}
+
+.tabs__tab:hover {
+  color: var(--fg);
+}
+
+.tabs__tab[aria-selected='true'] {
+  color: var(--fg);
+  text-decoration-thickness: 3px;
+}
+
+.tabs__id {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Without JavaScript the tabs cannot switch, so every panel shows, one after another. */
+html:not(.js) .tabs__list {
+  display: none;
+}
+
+html:not(.js) .tabs__panel[hidden] {
+  display: block !important;
+  margin-top: clamp(72px, 10vw, 144px);
 }
 
 .dash__head {
@@ -419,9 +468,16 @@ html.menu-open .progress {
   line-height: 1.4;
 }
 
-.dash__howto {
+.dash__description {
   max-width: 60rem;
   margin-top: 0.9em;
+  color: var(--fg-soft);
+  font-size: 1rem;
+}
+
+.dash__howto {
+  max-width: 60rem;
+  margin-top: 0.6em;
   color: var(--muted);
   font-size: 1rem;
 }

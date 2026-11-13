@@ -1,6 +1,7 @@
 import config from '@/site.config';
 import ClusterMap from '@/components/ClusterMap';
 import DashboardSection from '@/components/DashboardSection';
+import DashboardTabs from '@/components/DashboardTabs';
 import HeadlineReveal from '@/components/HeadlineReveal';
 import Reveal from '@/components/Reveal';
 import { answerIsDraft, getPart, visibleDashboards } from '@/lib/dashboards';
@@ -14,6 +15,7 @@ export default function PartSection({ partNumber }: { partNumber: number }) {
   const part = getPart(partNumber);
   const titleId = `${part.slug}-title`;
   const findingsId = `${part.slug}-findings`;
+  const dashboards = visibleDashboards(partNumber);
 
   return (
     <section className="part" id={part.slug} aria-labelledby={titleId} tabIndex={-1}>
@@ -27,9 +29,16 @@ export default function PartSection({ partNumber }: { partNumber: number }) {
         </Reveal>
       </header>
 
-      {visibleDashboards(partNumber).map((dashboard) => (
-        <DashboardSection key={dashboard.id} dashboard={dashboard} />
-      ))}
+      {dashboards.length > 0 && (
+        <DashboardTabs
+          label={`Part ${part.number} dashboards`}
+          tabs={dashboards.map((dashboard) => ({ id: dashboard.id, label: dashboard.title }))}
+        >
+          {dashboards.map((dashboard) => (
+            <DashboardSection key={dashboard.id} dashboard={dashboard} />
+          ))}
+        </DashboardTabs>
+      )}
 
       {part.slug === 'singapore' && <ClusterMap />}
 

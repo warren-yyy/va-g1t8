@@ -29,7 +29,10 @@ export default function DashboardEmbed({ url, id, title }: { url: string; id: st
     let viz: HTMLElement | null = null;
     let timeout: number | undefined;
 
+    // A hidden tab panel measures 0 wide. Keep the last scale rather than collapse the frame;
+    // the ResizeObserver fires again with the real width when the panel is shown.
     const fit = () => {
+      if (host.clientWidth === 0) return;
       const scale = Math.min(1, host.clientWidth / VIZ_SIZE.width);
       stage.style.transform = scale < 1 ? `scale(${scale})` : 'none';
       frame.style.height = `${VIZ_SIZE.height * scale}px`;
@@ -74,9 +77,12 @@ export default function DashboardEmbed({ url, id, title }: { url: string; id: st
       viz = element;
     };
 
+    // A host inside a hidden tab panel has no box, so it never intersects: the viz loads only
+    // once its tab is active and it is within LOAD_ROOT_MARGIN of the viewport. The width
+    // check is a second guard against ever starting a viz at zero size.
     const loader = new IntersectionObserver(
       (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
+        if (!entries.some((entry) => entry.isIntersecting) || host.clientWidth === 0) return;
         // Stays mounted after this, so filter state survives scrolling away and back.
         loader.disconnect();
         void mount();
