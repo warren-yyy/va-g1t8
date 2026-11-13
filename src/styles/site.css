@@ -1019,12 +1019,19 @@ html:not(.js) .globe-only {
 }
 
 /* ==========================================================================
-   Stat tiles
+   #problem: the question in prose, then four numbers about the data
    ========================================================================== */
-.stats {
-  max-width: var(--page-max);
-  margin-inline: auto;
-  padding: clamp(48px, 7vw, 96px) var(--gutter);
+.problem__intro {
+  max-width: 50rem;
+  color: var(--fg-soft);
+  font-size: clamp(1.125rem, 1.8vw, 1.375rem);
+  line-height: 1.5;
+}
+
+.problem__subtitle {
+  margin: clamp(48px, 7vw, 88px) 0 clamp(16px, 2vw, 24px);
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  line-height: 1.1;
 }
 
 .section-title {
@@ -1074,56 +1081,6 @@ html:not(.js) .globe-only {
   font-size: clamp(3rem, 5.2vw, 4.25rem);
   font-variant-numeric: tabular-nums;
   line-height: 1;
-}
-
-.tile__pair {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 0.75rem;
-  margin-top: 0.75rem;
-}
-
-.tile__pair-group {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.tile__vs {
-  padding-top: 0.55rem;
-  color: var(--muted);
-  font-size: 0.9375rem;
-}
-
-.tile__pair-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.tile__pair-value {
-  font-family: var(--mono);
-  font-size: clamp(1.875rem, 3vw, 2.25rem);
-  font-variant-numeric: tabular-nums;
-  line-height: 1.15;
-}
-
-.tile__pair-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4em;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.tile__pair-item--dengue .tile__pair-value,
-.tile__pair-item--dengue .tile__pair-label {
-  color: var(--dengue-text);
-}
-
-.tile__pair-item--malaria .tile__pair-value,
-.tile__pair-item--malaria .tile__pair-label {
-  color: var(--malaria-text);
 }
 
 .tile__text {

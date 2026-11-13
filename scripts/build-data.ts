@@ -149,7 +149,8 @@ interface CountryYear {
 
 type RateKey = 'dengue' | 'malaria';
 
-const countryYear: CountryYear[] = readCsv('global_country_year.csv').map((row) => ({
+const countryYearRows = readCsv('global_country_year.csv');
+const countryYear: CountryYear[] = countryYearRows.map((row) => ({
   iso3: row.iso3!,
   country: row.country!,
   region: row.region!,
@@ -191,6 +192,38 @@ const usableRows = completeRows.filter((row) => row.dengue !== null);
 expect('Dengue reporting: complete dengue reporting, 2019', completeRows.length, 82);
 expect('Dengue reporting: of those, usable rate', usableRows.length, 76);
 expect('Dengue reporting: of those, no population', completeRows.length - usableRows.length, 6);
+
+// --------------------------------------------------------------- the data tiles
+
+const yearsInData = [...new Set(countryYear.map((row) => row.year))].sort((a, b) => a - b);
+expect('Data: years of country data', yearsInData.length, 25);
+expect('Data: first and last year', `${yearsInData[0]}-${yearsInData.at(-1)}`, '2000-2024');
+
+// Climate and development factors, with how many countries have each in 2019. rh_pct
+// (Singapore only) and poverty_pct (survey years only) are left out, as Data & Methods says.
+const FACTORS = [
+  'temp_c',
+  'precip_mm',
+  'gdp_pc_ppp',
+  'hdi',
+  'urban_pct',
+  'pop_density',
+  'water_basic_pct',
+  'sanitation_basic_pct',
+  'health_exp_pc',
+];
+const FACTOR_MIN_COUNTRIES = 180;
+const rows2019 = countryYearRows.filter((row) => Number(row.year) === 2019);
+const coverage2019 = (column: string) => rows2019.filter((row) => num(row[column]) !== null).length;
+const factorCoverage = FACTORS.map((column) => ({ column, countries: coverage2019(column) }));
+const factorsCovered = factorCoverage.filter((factor) => factor.countries >= FACTOR_MIN_COUNTRIES);
+// 189 or 190, depending on whether the file has Singapore's Changi climate fill, so it is
+// printed and passed through rather than pinned.
+const factorMinCoverage2019 = Math.min(...factorCoverage.map((factor) => factor.countries));
+console.log(`Factor coverage, 2019: ${factorCoverage.map((factor) => `${factor.column} ${factor.countries}`).join(', ')}`);
+expect(`Data: factors with ${FACTOR_MIN_COUNTRIES}+ countries, 2019`, factorsCovered.length, FACTORS.length);
+expect('Data: humidity countries, 2019 (left out)', coverage2019('rh_pct'), 1);
+expect('Data: poverty countries, 2019 (left out)', coverage2019('poverty_pct'), 78);
 
 // ------------------------------------------------------------- Burden findings
 
@@ -858,6 +891,13 @@ const stats = {
     malariaSSA2019: `${Math.round(malariaSSA2019)}%`,
     dengueLAC2019: `${Math.round(dengueLAC2019)}%`,
     dengueEAP2019: `${Math.round(dengueEAP2019)}%`,
+    yearsCovered: String(yearsInData.length),
+    firstYear: String(yearsInData[0]),
+    lastYear: String(yearsInData.at(-1)),
+    factorCount2019: String(factorsCovered.length),
+    factorMinCoverage2019: String(factorMinCoverage2019),
+    rhCountries2019: String(coverage2019('rh_pct')),
+    povertyCountries2019: String(coverage2019('poverty_pct')),
   },
   rByYear: rByYear.map((row) => ({
     year: row.year,

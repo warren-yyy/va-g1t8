@@ -61,21 +61,21 @@ export interface ExtraPage {
   label: string;
 }
 
-export interface StatTilePairValue {
-  disease: 'dengue' | 'malaria';
-  label: string;
-  value: string;
-}
-
+/** A number that describes the data, not a result. It counts up as it scrolls in. */
 export interface StatTile {
   id: string;
-  /** The year or years the numbers on this tile describe. */
+  /** The year or years the number describes. */
   year: string;
+  /** A {token}, so the number is computed and checked by scripts/build-data.ts. */
+  value: string;
   text: string;
-  value?: string;
-  /** Only 281 and 82 count up. */
-  countUp?: boolean;
-  pair?: StatTilePairValue[];
+}
+
+export interface ProblemSection {
+  title: string;
+  /** Draft for the team to edit. */
+  intro: string;
+  dataTitle: string;
 }
 
 export interface DatasetRow {
@@ -120,6 +120,7 @@ export interface SiteConfig {
   parts: Part[];
   dashboards: Dashboard[];
   team: string[];
+  problem: ProblemSection;
   statTiles: StatTile[];
   dataMethods: DataMethods;
 }
@@ -413,40 +414,43 @@ const config: SiteConfig = {
 
   team: ['Warren', 'Yubing', 'Shredha', 'Yurae'],
 
-  // Homepage stat tiles. {tokens} come from src/data/stats.json.
+  // The section under the hero. Its tiles describe the data, not results.
+  problem: {
+    title: 'The problem',
+    intro:
+      "Dengue and malaria are both spread by mosquitoes, but they do not strike the same places, and their burden has moved in opposite directions since 2000. A country's risk could come from its climate (heat, rain and humidity), from how developed it is (income, health spending, clean water and sanitation), or from how its people live (urbanisation and density). This project tests those factors against {yearsCovered} years of country data ({firstYear}-{lastYear}) to see which matter most for each disease, then checks whether the global pattern holds inside Singapore, a hot, dense, high-income city that eliminated malaria but still has large dengue outbreaks.",
+    dataTitle: 'The data',
+  },
+
+  // {tokens} come from src/data/stats.json.
   statTiles: [
     {
-      id: 'sg-dengue',
-      year: '2019',
-      value: '{sgDengue2019}',
-      countUp: true,
-      text: 'reported dengue cases per 100k in Singapore, 2019: about {ratio2019}x the high-income median ({hiMedian2019}, across {hiN2019} reporting countries)',
+      id: 'years',
+      year: '{firstYear}-{lastYear}',
+      value: '{yearsCovered}',
+      text: 'years of country data, {firstYear}-{lastYear}',
     },
     {
-      id: 'sg-malaria',
-      year: '2019',
-      value: '{sgMalaria2019}',
-      text: "malaria cases counted for Singapore in our data, because WHO doesn't list it as endemic (2019). WHO-certified malaria-free since 1982.",
+      id: 'malaria-endemic',
+      year: '{firstYear}-{lastYear}',
+      value: '{malariaEndemicN}',
+      text: 'malaria-endemic countries with WHO estimates',
     },
     {
-      id: 'income-link',
-      year: '2000-2024',
-      pair: [
-        { disease: 'malaria', label: 'Malaria', value: '{medianRMalaria}' },
-        { disease: 'dengue', label: 'Dengue', value: '{medianRDengue}' },
-      ],
-      text: 'Income tracks malaria in every year since 2000 (median r = {medianRMalaria}) but barely tracks dengue ({medianRDengue}). Same countries compared each year.',
-    },
-    {
-      id: 'reporting',
+      id: 'dengue-reporting',
       year: '2019',
       value: '{dengueComplete2019}',
-      countUp: true,
-      text: 'countries and territories with complete dengue reporting in 2019 ({dengueUsable2019} have a usable rate)',
+      text: 'countries and territories with complete dengue reporting in 2019',
+    },
+    {
+      id: 'factors',
+      year: '2019',
+      value: '{factorCount2019}',
+      text: 'climate and development factors, each with data for at least {factorMinCoverage2019} countries in 2019',
     },
   ],
 
-  // Data & Methods page.
+  // The Data & Methods section, the last on the page.
   dataMethods: {
     intro:
       'Where every number on this site comes from, how it was computed, and what it cannot tell you. A script in the repository recomputes the headline numbers from the cleaned CSVs and stops if any of them change.',
