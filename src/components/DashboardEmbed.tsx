@@ -27,21 +27,39 @@ export default function DashboardEmbed({ url, id, title }: { url: string; id: st
     // `cancelled` covers a load that was already in flight. Only one viz is ever created.
     let cancelled = false;
     let viz: HTMLElement | null = null;
+    let interactive = false;
     let timeout: number | undefined;
+    // Bumped whenever a load is abandoned, so a stale one cannot finish.
+    let attempt = 0;
+
+    // Tableau never reaches FirstInteractive if its tab panel is hidden while it is still
+    // loading, even once the panel is shown again (measured). So an unfinished viz is
+    // discarded when its panel hides, and a fresh one starts when it is visible again. A
+    // viz that has finished loading is kept, with its filters, whatever happens.
+    const abandonUnfinished = () => {
+      if (interactive || cancelled) return;
+      attempt += 1;
+      window.clearTimeout(timeout);
+      viz?.remove();
+      viz = null;
+      setStatus('loading');
+      loader.observe(host);
+    };
 
     // A hidden tab panel measures 0 wide. Keep the last scale rather than collapse the frame;
     // the ResizeObserver fires again with the real width when the panel is shown.
     const fit = () => {
-      if (host.clientWidth === 0) return;
+      if (host.clientWidth === 0) {
+        abandonUnfinished();
+        return;
+      }
       const scale = Math.min(1, host.clientWidth / VIZ_SIZE.width);
       stage.style.transform = scale < 1 ? `scale(${scale})` : 'none';
       frame.style.height = `${VIZ_SIZE.height * scale}px`;
     };
-    const resizer = new ResizeObserver(fit);
-    resizer.observe(host);
-    fit();
 
     const mount = async () => {
+      const thisAttempt = attempt;
       setStatus('loading');
       let api;
       try {
@@ -51,7 +69,7 @@ export default function DashboardEmbed({ url, id, title }: { url: string; id: st
         if (!cancelled) setStatus('error');
         return;
       }
-      if (cancelled) return;
+      if (cancelled || thisAttempt !== attempt) return;
 
       const { TableauEventType } = api;
       const element = document.createElement('tableau-viz');
@@ -62,12 +80,17 @@ export default function DashboardEmbed({ url, id, title }: { url: string; id: st
       element.setAttribute('width', String(VIZ_SIZE.width));
       element.setAttribute('height', String(VIZ_SIZE.height));
 
-      timeout = window.setTimeout(() => setStatus('error'), LOAD_TIMEOUT_MS);
+      timeout = window.setTimeout(() => {
+        if (thisAttempt === attempt) setStatus('error');
+      }, LOAD_TIMEOUT_MS);
       element.addEventListener(TableauEventType.FirstInteractive, () => {
+        if (thisAttempt !== attempt) return;
+        interactive = true;
         window.clearTimeout(timeout);
         setStatus('ready');
       });
       element.addEventListener(TableauEventType.VizLoadError, (event) => {
+        if (thisAttempt !== attempt) return;
         window.clearTimeout(timeout);
         console.error('Tableau viz failed to load', url, (event as CustomEvent).detail);
         setStatus('error');
@@ -90,6 +113,10 @@ export default function DashboardEmbed({ url, id, title }: { url: string; id: st
       { rootMargin: LOAD_ROOT_MARGIN },
     );
     loader.observe(host);
+
+    const resizer = new ResizeObserver(fit);
+    resizer.observe(host);
+    fit();
 
     return () => {
       cancelled = true;
