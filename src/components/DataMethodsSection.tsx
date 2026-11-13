@@ -2,11 +2,16 @@ import config from '@/site.config';
 import Reveal from '@/components/Reveal';
 import { fill } from '@/lib/fill';
 import { formatR } from '@/lib/format';
+import type { GlobeData } from '@/lib/globe-scale';
 import stats from '@/data/stats.json';
+import globeJson from '../../public/data/globe.json';
+
+const globe = globeJson as unknown as GlobeData;
 
 const SECTIONS = [
   { id: 'datasets', label: 'Datasets' },
   { id: 'cleaning', label: 'Cleaning' },
+  { id: 'downloads', label: 'Downloads' },
   { id: 'numbers', label: 'Headline numbers' },
   { id: 'limitations', label: 'Limitations' },
   { id: 'sources', label: 'Sources' },
@@ -76,17 +81,38 @@ export default function DataMethodsSection() {
           Cleaning
         </h3>
         <p className="methods__lead">
-          One notebook downloads and cleans every dataset.{' '}
-          <a href="/downloads/mosquito_data_pipeline.ipynb" download>
-            Download the cleaning notebook (.ipynb)
-          </a>
-          .
+          One notebook downloads and cleans every dataset. It is under <a href="#downloads">Downloads</a>.
         </p>
         <ul className="methods__list">
           {dataMethods.cleaning.map((step) => (
             <li key={step}>{step}</li>
           ))}
         </ul>
+      </section>
+
+      <section className="methods__section" id="downloads" aria-labelledby="downloads-title">
+        <h3 className="section-title" id="downloads-title">
+          Downloads
+        </h3>
+        <ul className="methods__list">
+          <li>
+            <a href="/downloads/mosquito_data_pipeline.ipynb" download>
+              The cleaning notebook (.ipynb)
+            </a>
+            : downloads and cleans every dataset.
+          </li>
+          <li>
+            <a href="/data/globe.json" download>
+              The globe&apos;s values (globe.json)
+            </a>
+            : the latest rate and its year for each of {Object.keys(globe.countries).length} countries and
+            territories, for both diseases, as drawn on the globe at the top of the page.
+          </li>
+        </ul>
+        <p className="methods__lead methods__lead--after">
+          These {globe.tableOnly.length} places are in globe.json but have no shape on the map at its scale, so the
+          globe cannot show them: {globe.tableOnly.join('; ')}.
+        </p>
       </section>
 
       <section className="methods__section" id="numbers" aria-labelledby="numbers-title">

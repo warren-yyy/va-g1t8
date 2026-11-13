@@ -1181,6 +1181,10 @@ html:not(.js) .globe-only {
   color: var(--fg-soft);
 }
 
+.methods__lead--after {
+  margin-top: 1.25rem;
+}
+
 .methods__list {
   max-width: 50rem;
   margin: 1rem 0 0;

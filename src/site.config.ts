@@ -552,6 +552,31 @@ const config: SiteConfig = {
     // Each number here is asserted by scripts/build-data.ts.
     methods: [
       {
+        title: 'Dengue among consistent reporters, 2000-2024: {denguePanel2000} to {denguePanel2024}',
+        body: [
+          'A country reports consistently when dengue_complete = 1 in at least 20 of the 24 years 2000-2023: {dengueConsistentN} countries. For each year, their summed dengue_cases are divided by their summed population, counting only their complete rows with both values, and multiplied by 100,000. Holding the set of countries fixed keeps the trend from reflecting who started reporting.',
+        ],
+      },
+      {
+        title: 'Endemic malaria, 2000-2024: {malariaRate2000} to {malariaRate2024}',
+        body: [
+          'The {malariaEndemicN} countries with malaria_status = "Endemic", the same set in every year. Summed malaria_cases_est over summed population, times 100,000. A row with no case estimate adds its population but no cases. 2019 is {malariaRate2019}, {malariaChange2019} on 2000.',
+        ],
+      },
+      {
+        title: 'Where each disease is, 2019: {malariaSSA2019} and {dengueLAC2019}',
+        body: [
+          "Each region's share of the 2019 total. Malaria: estimated cases across the endemic countries, {malariaSSA2019} in Sub-Saharan Africa. Dengue: reported cases across rows with dengue_complete = 1, {dengueLAC2019} in Latin America & Caribbean and {dengueEAP2019} in East Asia & Pacific.",
+        ],
+      },
+      {
+        title: 'The data, in four numbers',
+        body: [
+          'Years: the distinct years in the country-year table, {firstYear}-{lastYear} ({yearsCovered}). Malaria-endemic countries: as above, {malariaEndemicN}. Complete dengue reporting: rows with dengue_complete = 1 in 2019 ({dengueComplete2019}).',
+          'Factors: temp_c, precip_mm, gdp_pc_ppp, hdi, urban_pct, pop_density, water_basic_pct, sanitation_basic_pct and health_exp_pc, {factorCount2019} in all, each with a value for at least {factorMinCoverage2019} countries in 2019. Two columns are left out: rh_pct, which only Singapore has ({rhCountries2019} country in 2019), and poverty_pct, which has survey values for only {povertyCountries2019} countries in 2019.',
+        ],
+      },
+      {
         title: 'Singapore dengue, 2019: {sgDengue2019}',
         body: [
           'dengue_per_100k for Singapore in 2019 is {sgDengueExact2019}. The comparison is the median across the {hiN2019} high-income countries with a dengue rate that year, Singapore included, which is {hiMedianExact2019}. The ratio rounds to {ratio2019}x.',
@@ -567,7 +592,7 @@ const config: SiteConfig = {
         title: 'Income and disease, 2000-2024: {medianRMalaria} vs {medianRDengue}',
         body: [
           'r is the Pearson correlation between log10(gdp_pc_ppp) and ln(1 + rate per 100k), using countries with both rates and GDP in that year. The same countries are compared for both diseases, between {nMin} and {nMax} of them a year.',
-          "The tile shows the median of the 25 yearly values: {medianRMalaria} for malaria and {medianRDengue} for dengue. Malaria's link is stronger, by absolute r, in all {yearsMalariaStronger} years.",
+          "The Conclusion's finding uses the median of the {yearsCovered} yearly values: {medianRMalaria} for malaria and {medianRDengue} for dengue. Malaria's link is stronger, by absolute r, in all {yearsMalariaStronger} years. Every yearly value is in the table below.",
         ],
       },
       {
@@ -580,19 +605,19 @@ const config: SiteConfig = {
         title: 'The globe: latest available year per country',
         body: [
           'For each country and disease, the latest year with a rate. Dengue covers {globeDengueN} countries and territories: {globeDengueLatest} from 2024, the rest back to {globeDengueMinYear}. Malaria is 2024 everywhere except Mauritius (2021).',
-          'Singapore shows {sgDengue2024} per 100k on the globe (2024) and {sgDengue2019} on the stat tile (2019). Both are labelled with their year, so the difference is intended.',
+          'Singapore shows {sgDengue2024} per 100k on the globe (2024) and {sgDengue2019} in the Singapore findings (2019). Both are labelled with their year, so the difference is intended.',
         ],
       },
       {
-        title: 'Weather lag in Singapore, 2012-2024: r about 0.19',
+        title: 'Weather lag in Singapore, 2012-2024: r about {sgTempLagR}',
         body: [
-          'Pearson r between monthly weather at the Changi station and monthly dengue cases over {sgLagMonths} months, for lags of 0 to 6 months. Temperature at 1 and 2 months is the strongest of all these links, at about 0.19.',
+          'Pearson r between monthly weather at the Changi station and monthly dengue cases over {sgLagMonths} months, for lags of 0 to 6 months. Temperature at 1 and 2 months is the strongest of all these links, at about {sgTempLagR}.',
         ],
       },
     ],
 
     closestYearNote:
-      'All available countries, 2019: malaria {allMalariaR2019} ({allMalariaN2019} countries), dengue {allDengueR2019} ({allDengueN2019}). Same {sameN2019} countries, 2019: {sameMalariaR2019} vs {sameDengueR2019}. 2019 is the closest of the 25 years.',
+      'All available countries, 2019: malaria {allMalariaR2019} ({allMalariaN2019} countries), dengue {allDengueR2019} ({allDengueN2019}). Same {sameN2019} countries, 2019: {sameMalariaR2019} vs {sameDengueR2019}. 2019 is the closest of the {yearsCovered} years.',
 
     // Each claim here that has a number is asserted by scripts/build-data.ts.
     limitations: [
@@ -604,7 +629,7 @@ const config: SiteConfig = {
       'Correlations show association, not cause.',
       'Singapore weather links use monthly data for 2012-2024 ({sgLagMonths} months), and all are weak.',
       'Humidity is in the data for Singapore only, from the Changi station (2000-2024). Country-level humidity was never added to the global table, so global comparisons cover temperature and rainfall.',
-      'The country-year table behind every headline number is annual and ends in 2024. The monthly global file also ends in 2024. The Global Dengue Observatory file runs to 2026 but feeds no number on this page or the homepage.',
+      'The country-year table behind every headline number is annual and ends in 2024. The monthly global file also ends in 2024. The Global Dengue Observatory file runs to 2026 but feeds no number on this site.',
     ],
 
     sources: [
