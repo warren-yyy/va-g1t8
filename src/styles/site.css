@@ -618,6 +618,39 @@ html:not(.js) .embed__message {
   line-height: 1.5;
 }
 
+/* "What we found" closes each part, then one bridging sentence into the next. */
+.findings {
+  max-width: 50rem;
+  margin-top: clamp(72px, 10vw, 144px);
+  padding-top: clamp(20px, 3vw, 32px);
+  border-top: 1px solid var(--line);
+}
+
+.findings__title {
+  margin: 0 0 1rem;
+  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
+  line-height: 1.1;
+}
+
+.findings__item {
+  color: var(--fg-soft);
+  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+  line-height: 1.55;
+}
+
+.findings__item + .findings__item {
+  margin-top: 1em;
+}
+
+.part__bridge {
+  max-width: 46rem;
+  margin-top: clamp(40px, 6vw, 72px);
+  color: var(--fg);
+  font-family: var(--serif);
+  font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+  line-height: 1.25;
+}
+
 /* ==========================================================================
    Homepage: hero and globe
    ========================================================================== */
@@ -637,14 +670,6 @@ html:not(.js) .embed__message {
   font-size: clamp(2.5rem, 4.2vw, 3.75rem);
   line-height: 1.04;
   letter-spacing: -0.01em;
-}
-
-.hero__answer {
-  max-width: 38rem;
-  margin-top: 1em;
-  color: var(--fg-soft);
-  font-size: clamp(1.125rem, 1.7vw, 1.375rem);
-  line-height: 1.45;
 }
 
 .draft-tag {

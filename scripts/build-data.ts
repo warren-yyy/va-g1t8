@@ -108,6 +108,7 @@ function pearson(xs: number[], ys: number[]): number {
 }
 
 const round = (value: number, dp: number) => Number(value.toFixed(dp));
+const wholeNumber = (value: number) => Math.round(value).toLocaleString('en-US');
 const formatR = (value: number) => `${value < 0 ? MINUS : '+'}${Math.abs(value).toFixed(2)}`;
 
 type CheckValue = number | string | boolean;
@@ -141,6 +142,9 @@ interface CountryYear {
   malaria: number | null;
   gdp: number | null;
   rh: number | null;
+  population: number | null;
+  dengueCases: number | null;
+  malariaCases: number | null;
 }
 
 type RateKey = 'dengue' | 'malaria';
@@ -157,12 +161,15 @@ const countryYear: CountryYear[] = readCsv('global_country_year.csv').map((row) 
   malaria: num(row.malaria_per_100k),
   gdp: num(row.gdp_pc_ppp),
   rh: num(row.rh_pct),
+  population: num(row.population),
+  dengueCases: num(row.dengue_cases),
+  malariaCases: num(row.malaria_cases_est),
 }));
 
 const inYear = (year: number) => countryYear.filter((row) => row.year === year);
 const y2019 = inYear(2019);
 
-// ---------------------------------------------------------------- tiles 1, 2 and 4
+// ------------------------------------- Singapore findings and dengue reporting
 
 const singapore2019 = y2019.find((row) => row.iso3 === 'SGP')!;
 const highIncomeRates = y2019
@@ -171,19 +178,85 @@ const highIncomeRates = y2019
 const highIncomeMedian = median(highIncomeRates);
 const ratioToMedian = singapore2019.dengue! / highIncomeMedian;
 
-expect('Tile 1: Singapore dengue per 100k, 2019', singapore2019.dengue!, 280.65, 2);
-expect('Tile 1: high-income median dengue per 100k, 2019', highIncomeMedian, 14.21, 2);
-expect('Tile 1: high-income countries reporting, 2019', highIncomeRates.length, 33);
-expect('Tile 1: Singapore as a multiple of that median, rounded', ratioToMedian, 20, 0);
+expect('Singapore: dengue per 100k, 2019', singapore2019.dengue!, 280.65, 2);
+expect('Singapore: high-income median dengue per 100k, 2019', highIncomeMedian, 14.21, 2);
+expect('Singapore: high-income countries reporting, 2019', highIncomeRates.length, 33);
+expect('Singapore: as a multiple of that median, rounded', ratioToMedian, 20, 0);
 
-expect('Tile 2: Singapore malaria per 100k, 2019', singapore2019.malaria!, 0);
-expect('Tile 2: Singapore malaria status, 2019', singapore2019.malariaStatus, 'Not endemic');
+expect('Singapore: malaria per 100k, 2019', singapore2019.malaria!, 0);
+expect('Singapore: malaria status, 2019', singapore2019.malariaStatus, 'Not endemic');
 
 const completeRows = y2019.filter((row) => row.complete === 1);
 const usableRows = completeRows.filter((row) => row.dengue !== null);
-expect('Tile 4: complete dengue reporting, 2019', completeRows.length, 82);
-expect('Tile 4: of those, usable rate', usableRows.length, 76);
-expect('Tile 4: of those, no population', completeRows.length - usableRows.length, 6);
+expect('Dengue reporting: complete dengue reporting, 2019', completeRows.length, 82);
+expect('Dengue reporting: of those, usable rate', usableRows.length, 76);
+expect('Dengue reporting: of those, no population', completeRows.length - usableRows.length, 6);
+
+// ------------------------------------------------------------- Burden findings
+
+const sumOf = (rows: CountryYear[], pick: (row: CountryYear) => number | null) =>
+  rows.reduce((sum, row) => sum + (pick(row) ?? 0), 0);
+const per100k = (cases: number, population: number) => (cases / population) * 1e5;
+
+// Consistent dengue reporters: complete in at least 20 of the 24 years 2000-2023.
+const PANEL_YEARS = YEARS.filter((year) => year <= 2023);
+const PANEL_MIN_COMPLETE = 20;
+const completeYears = new Map<string, number>();
+for (const row of countryYear) {
+  if (row.complete === 1 && PANEL_YEARS.includes(row.year)) {
+    completeYears.set(row.iso3, (completeYears.get(row.iso3) ?? 0) + 1);
+  }
+}
+const denguePanel = new Set([...completeYears].filter(([, years]) => years >= PANEL_MIN_COMPLETE).map(([iso3]) => iso3));
+
+// Panel rate: their cases over their population, complete rows with both values only.
+function denguePanelRate(year: number): number {
+  const rows = inYear(year).filter(
+    (row) => denguePanel.has(row.iso3) && row.complete === 1 && row.dengueCases !== null && row.population !== null,
+  );
+  return per100k(sumOf(rows, (row) => row.dengueCases), sumOf(rows, (row) => row.population));
+}
+
+// Endemic malaria: summed estimated cases over summed population, every endemic row.
+const endemicIn = (year: number) => inYear(year).filter((row) => row.malariaStatus === 'Endemic');
+const malariaEndemicRate = (year: number) => {
+  const rows = endemicIn(year);
+  return per100k(sumOf(rows, (row) => row.malariaCases), sumOf(rows, (row) => row.population));
+};
+const endemicCountries = new Set(countryYear.filter((row) => row.malariaStatus === 'Endemic').map((row) => row.iso3));
+const endemicCountsByYear = new Set(YEARS.map((year) => endemicIn(year).length));
+
+// 2019 regional shares: malaria over endemic rows, dengue over complete rows.
+function regionShare(rows: CountryYear[], pick: (row: CountryYear) => number | null, region: string): number {
+  return (100 * sumOf(rows.filter((row) => row.region === region), pick)) / sumOf(rows, pick);
+}
+const malariaSSA2019 = regionShare(endemicIn(2019), (row) => row.malariaCases, 'Sub-Saharan Africa');
+const dengueLAC2019 = regionShare(completeRows, (row) => row.dengueCases, 'Latin America & Caribbean');
+const dengueEAP2019 = regionShare(completeRows, (row) => row.dengueCases, 'East Asia & Pacific');
+
+const denguePanel2000 = denguePanelRate(2000);
+const denguePanel2019 = denguePanelRate(2019);
+const denguePanel2024 = denguePanelRate(2024);
+const malariaRate2000 = malariaEndemicRate(2000);
+const malariaRate2019 = malariaEndemicRate(2019);
+const malariaRate2024 = malariaEndemicRate(2024);
+const malariaChange2019 = (100 * (malariaRate2019 - malariaRate2000)) / malariaRate2000;
+
+// The brief that specified these expected 100.2, 302.3 and 63.4 for three of them; the
+// cleaned CSVs give 100.1, 301.6 and 63.3. They round to the same whole numbers on the page.
+expect('Burden: consistent dengue reporters, 2000-2023', denguePanel.size, 70);
+expect('Burden: consistent reporters, dengue per 100k, 2000', denguePanel2000, 13.1, 1);
+expect('Burden: consistent reporters, dengue per 100k, 2019', denguePanel2019, 100.1, 1);
+expect('Burden: consistent reporters, dengue per 100k, 2024', denguePanel2024, 301.6, 1);
+expect('Burden: malaria-endemic countries', endemicCountries.size, 110);
+expect('Burden: malaria-endemic countries, same in every year', [...endemicCountsByYear].join(','), '110');
+expect('Burden: endemic malaria per 100k, 2000', malariaRate2000, 4935, 0);
+expect('Burden: endemic malaria per 100k, 2019', malariaRate2019, 3767, 0);
+expect('Burden: endemic malaria per 100k, 2024', malariaRate2024, 4201, 0);
+expect('Burden: endemic malaria change, 2000-2019, %', malariaChange2019, -24, 0);
+expect('Burden: malaria share in Sub-Saharan Africa, 2019, %', malariaSSA2019, 96.3, 1);
+expect('Burden: dengue share in Latin America & Caribbean, 2019, %', dengueLAC2019, 63.3, 1);
+expect('Burden: dengue share in East Asia & Pacific, 2019, %', dengueEAP2019, 26.5, 1);
 
 // --------------------------------------------------------- correlation with income
 
@@ -216,11 +289,11 @@ const counts = rByYear.map((row) => row.n);
 const yearsMalariaStronger = rByYear.filter((row) => Math.abs(row.malaria) > Math.abs(row.dengue)).length;
 const forYear = (year: number) => rByYear.find((row) => row.year === year)!;
 
-expect('Tile 3: median r, malaria, 2000-2024', medianRMalaria, -0.61, 2);
-expect('Tile 3: median r, dengue, 2000-2024', medianRDengue, -0.09, 2);
-expect('Tile 3: fewest countries compared in a year', Math.min(...counts), 61);
-expect('Tile 3: most countries compared in a year', Math.max(...counts), 79);
-expect('Tile 3: years with the stronger link for malaria', yearsMalariaStronger, 25);
+expect('Income link: median r, malaria, 2000-2024', medianRMalaria, -0.61, 2);
+expect('Income link: median r, dengue, 2000-2024', medianRDengue, -0.09, 2);
+expect('Income link: fewest countries compared in a year', Math.min(...counts), 61);
+expect('Income link: most countries compared in a year', Math.max(...counts), 79);
+expect('Income link: years with the stronger link for malaria', yearsMalariaStronger, 25);
 expect('Dengue r, 2021', forYear(2021).dengue, -0.44, 2);
 expect('Dengue r, 2024', forYear(2024).dengue, 0.15, 2);
 
@@ -772,6 +845,19 @@ const stats = {
     globeDengueMinYear: String(globe.meta.dengue.minYear),
     globeDengueMaxYear: String(globe.meta.dengue.maxYear),
     sgLagMonths: String(lagMonths.length),
+    sgTempLagR: temperatureLink(1).toFixed(2),
+    dengueConsistentN: String(denguePanel.size),
+    denguePanel2000: wholeNumber(denguePanel2000),
+    denguePanel2019: wholeNumber(denguePanel2019),
+    denguePanel2024: wholeNumber(denguePanel2024),
+    malariaEndemicN: String(endemicCountries.size),
+    malariaRate2000: wholeNumber(malariaRate2000),
+    malariaRate2019: wholeNumber(malariaRate2019),
+    malariaRate2024: wholeNumber(malariaRate2024),
+    malariaChange2019: `${malariaChange2019 < 0 ? MINUS : '+'}${Math.abs(Math.round(malariaChange2019))}%`,
+    malariaSSA2019: `${Math.round(malariaSSA2019)}%`,
+    dengueLAC2019: `${Math.round(dengueLAC2019)}%`,
+    dengueEAP2019: `${Math.round(dengueEAP2019)}%`,
   },
   rByYear: rByYear.map((row) => ({
     year: row.year,
