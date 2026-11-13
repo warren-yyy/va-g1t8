@@ -7,11 +7,8 @@ import {
   NO_DATA_FILL,
   NO_DATA_HATCH,
   RAMPS,
-  STALE_MIX,
-  STALE_TINT,
   ZERO_COLOUR,
   legendTicks,
-  mixColours,
   type Disease,
   type DiseaseMeta,
   type GlobeData,
@@ -108,37 +105,35 @@ export default function Globe({ meta, summaries }: GlobeProps) {
   const [low, high] = RAMPS[disease];
 
   return (
-    <>
-      <div className="globe-stage">
-        <canvas ref={canvasRef} className="globe-canvas" role="img" aria-label={summaries[disease]} />
-        <div ref={tooltipRef} className="globe-tooltip" aria-hidden="true" hidden />
-        {failed && <p className="globe-error">The globe could not load. The same values are in the table.</p>}
+    <div className="hero__globe">
+      <div className="globe-slot">
+        <div className="globe-stage">
+          <canvas ref={canvasRef} className="globe-canvas" role="img" aria-label={summaries[disease]} />
+          <div ref={tooltipRef} className="globe-tooltip" aria-hidden="true" hidden />
+          {failed && (
+            <p className="globe-error">The globe could not load. Its values are in globe.json, linked in Data &amp; Methods.</p>
+          )}
+        </div>
       </div>
 
       <div ref={panelRef} className="globe-panel">
         <noscript>
-          <p className="globe-noscript">The interactive globe needs JavaScript. The same values are in this table.</p>
+          <p className="globe-noscript">
+            The interactive globe needs JavaScript. Its values are in globe.json, linked in Data &amp; Methods.
+          </p>
         </noscript>
 
         <div className="globe-only">
-          <div className="globe-controls">
-            <div className="globe-toggle" role="group" aria-label="Disease shown on the globe">
-              {(['dengue', 'malaria'] as const).map((option) => (
-                <button key={option} type="button" aria-pressed={disease === option} onClick={() => chooseDisease(option)}>
-                  <span className={`mark mark--${option}`} aria-hidden="true" />
-                  {option === 'dengue' ? 'Dengue' : 'Malaria'}
-                </button>
-              ))}
-            </div>
-            {!reducedMotion && (
-              <button className="globe-pause" type="button" aria-pressed={paused} onClick={togglePaused}>
-                {paused ? 'Resume rotation' : 'Pause rotation'}
+          <div className="globe-toggle" role="group" aria-label="Disease shown on the globe">
+            {(['dengue', 'malaria'] as const).map((option) => (
+              <button key={option} type="button" aria-pressed={disease === option} onClick={() => chooseDisease(option)}>
+                <span className={`mark mark--${option}`} aria-hidden="true" />
+                {option === 'dengue' ? 'Dengue' : 'Malaria'}
               </button>
-            )}
+            ))}
           </div>
 
-          <p className="globe-label">{current.label}</p>
-          <p className="globe-years">{current.yearLabel}</p>
+          <p className="globe-label">{current.label}, log scale</p>
 
           <div className="legend-scale" aria-hidden="true">
             <div className="legend-bar" style={{ background: `linear-gradient(to right, ${low}, ${high})` }} />
@@ -164,23 +159,19 @@ export default function Globe({ meta, summaries }: GlobeProps) {
               <span className="swatch" style={{ background: ZERO_COLOUR }} aria-hidden="true" />
               {ZERO_LABELS[disease]}
             </li>
-            <li>
-              <span className="swatch" style={{ background: `linear-gradient(to right, ${low}, ${high})` }} aria-hidden="true" />
-              A value, per 100k (log scale)
-            </li>
-            <li>
-              <span
-                className="swatch swatch--stale"
-                style={{ background: mixColours(high, STALE_TINT, STALE_MIX) }}
-                aria-hidden="true"
-              />
-              Paler with outline: latest year before {current.maxYear}
-            </li>
           </ul>
 
-          <p className="globe-note">Each disease has its own log scale, so colours are not comparable between diseases.</p>
+          <p className="globe-years">
+            Latest year per country, {current.minYear}-{current.maxYear}; paler = older
+          </p>
+
+          {!reducedMotion && (
+            <button className="globe-pause" type="button" aria-pressed={paused} onClick={togglePaused}>
+              {paused ? 'Resume rotation' : 'Pause rotation'}
+            </button>
+          )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

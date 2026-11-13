@@ -7,13 +7,12 @@ import globeJson from '../../public/data/globe.json';
 
 const globe = globeJson as unknown as GlobeData;
 
+// The canvas's accessible label: disease and measure, year range, and the highest value.
 function summary(disease: Disease): string {
   const meta = globe.meta[disease];
   const highest = globe.countries[meta.maxIso3];
-  const singapore = globe.countries.SGP?.[disease];
-  const singaporeText = singapore ? ` Singapore: ${formatRate(singapore.rate)} (${singapore.year}).` : '';
   const label = meta.label.charAt(0).toLowerCase() + meta.label.slice(1);
-  return `Globe of ${label}, covering ${meta.countries} countries and territories. ${meta.yearLabel}. Highest: ${highest?.name}, ${formatRate(meta.max)} (${meta.maxYearOfMax}).${singaporeText} The table lists every value.`;
+  return `Globe of ${label}, covering ${meta.countries} countries and territories. ${meta.yearLabel}. Highest: ${highest?.name}, ${formatRate(meta.max)} (${meta.maxYearOfMax}).`;
 }
 
 export default function Hero() {

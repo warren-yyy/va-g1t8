@@ -708,24 +708,40 @@ html:not(.js) .embed__message {
 }
 
 /* ==========================================================================
-   Homepage: hero and globe
+   Hero (#home): exactly one screen. The header sits over its top padding, the
+   text takes what it needs, and the globe and its column share the rest, so one
+   scroll reaches #problem. The globe is the only part that shrinks: its slot is a
+   size container and the globe is the largest square that fits in it.
    ========================================================================== */
 .hero {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(24px, 4vw, 40px);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(16px, 2.5vh, 32px);
   max-width: var(--page-max);
   min-height: 100svh;
   margin-inline: auto;
-  padding: calc(var(--header-h) + clamp(32px, 5vw, 56px)) var(--gutter) clamp(48px, 6vw, 72px);
+  padding: calc(var(--header-h) + clamp(16px, 4vh, 48px)) var(--gutter) clamp(16px, 4vh, 48px);
+}
+
+/* Tall enough to hold everything: pin the height so the hero is never more than a screen. */
+@media (min-height: 560px) {
+  .hero {
+    height: 100svh;
+  }
 }
 
 .hero__title {
   margin: 0;
-  font-size: clamp(2.5rem, 4.2vw, 3.75rem);
+  font-size: clamp(2rem, 4.2vw, 3.75rem);
   line-height: 1.04;
   letter-spacing: -0.01em;
+}
+
+.hero__scope {
+  margin-top: 0.75em;
+  color: var(--muted);
+  font-size: clamp(0.9375rem, 1.3vw, 1.0625rem);
 }
 
 .draft-tag {
@@ -736,22 +752,48 @@ html:not(.js) .embed__message {
   border: 1px solid var(--line);
   border-radius: 2px;
   color: var(--muted);
+  font-family: var(--sans);
   font-size: 0.8125rem;
   line-height: 1.5;
 }
 
-.hero__scope {
-  margin-top: 0.75em;
-  color: var(--muted);
-  font-size: 0.9375rem;
+/* The globe and its compact column, as a pair: side by side, or the column under the
+   globe on a narrow screen. */
+.hero__globe {
+  display: grid;
+  grid-template-rows: minmax(160px, 1fr) auto;
+  gap: 16px;
+  min-height: 0;
+}
+
+.globe-slot {
+  container-type: size;
+  min-width: 0;
+  min-height: 0;
 }
 
 .globe-stage {
   position: relative;
-  width: 100%;
-  max-width: min(100%, calc(100svh - var(--header-h) - 48px));
+  width: min(100cqw, 100cqh);
   aspect-ratio: 1;
-  justify-self: center;
+  margin-inline: auto;
+}
+
+@media (min-width: 900px) {
+  .hero__globe {
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 19rem);
+    column-gap: clamp(24px, 3vw, 48px);
+  }
+
+  .globe-panel {
+    align-self: center;
+  }
+
+  /* Next to its column, so the two read as one unit. */
+  .globe-stage {
+    margin-right: 0;
+  }
 }
 
 .globe-canvas {
@@ -798,6 +840,7 @@ html:not(.js) .embed__message {
 
 .globe-panel {
   min-width: 0;
+  font-size: 0.875rem;
 }
 
 .globe-noscript {
@@ -805,17 +848,9 @@ html:not(.js) .embed__message {
   font-size: 0.9375rem;
 }
 
-html:not(.js) .globe-stage,
+html:not(.js) .globe-slot,
 html:not(.js) .globe-only {
   display: none;
-}
-
-.globe-controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px 16px;
 }
 
 .globe-toggle {
@@ -876,18 +911,14 @@ html:not(.js) .globe-only {
 }
 
 .globe-label {
-  margin-top: 1.1rem;
+  margin-top: 0.75rem;
+  color: var(--fg);
   font-weight: 500;
 }
 
-.globe-years {
-  color: var(--muted);
-  font-size: 0.9375rem;
-}
-
 .legend-scale {
-  margin-top: 0.85rem;
-  max-width: 30rem;
+  margin-top: 0.5rem;
+  max-width: 24rem;
 }
 
 .legend-bar {
@@ -923,11 +954,10 @@ html:not(.js) .globe-only {
 .legend-states {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem 1.25rem;
-  margin: 0.6rem 0 0;
+  gap: 0.25rem 1.25rem;
+  margin: 0.25rem 0 0;
   padding: 0;
   color: var(--fg-soft);
-  font-size: 0.875rem;
   list-style: none;
 }
 
@@ -944,33 +974,41 @@ html:not(.js) .globe-only {
   border-radius: 1px;
 }
 
-.swatch--stale {
-  box-shadow: 0 0 0 1px rgba(241, 239, 233, 0.85);
-}
-
-.globe-note {
-  max-width: 34rem;
-  margin-top: 0.7rem;
+.globe-years {
+  margin-top: 0.5rem;
   color: var(--muted);
-  font-size: 0.875rem;
 }
 
-.table-scroll {
-  max-height: 22rem;
-  overflow: auto;
-  border: 1px solid var(--line);
-  overscroll-behavior: contain;
+/* On a phone the column sits under the globe: the toggle and pause share a row. */
+@media (max-width: 899.98px) {
+  .globe-only {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: 1rem;
+  }
+
+  .globe-only > :not(.globe-toggle, .globe-pause) {
+    grid-column: 1 / -1;
+  }
+
+  .globe-pause {
+    grid-row: 1;
+    grid-column: 2;
+    justify-self: end;
+  }
+
+  .globe-label {
+    margin-top: 0.5rem;
+  }
 }
 
-.table-scroll table,
 .data-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
 }
 
-.table-scroll th,
-.table-scroll td,
 .data-table th,
 .data-table td {
   padding: 0.45em 0.75em;
@@ -978,51 +1016,6 @@ html:not(.js) .globe-only {
   font-weight: 400;
   text-align: left;
   vertical-align: top;
-}
-
-.table-scroll thead th {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: var(--bg-raised);
-  color: var(--muted);
-  font-size: 0.8125rem;
-  vertical-align: bottom;
-}
-
-.table-scroll td {
-  font-family: var(--mono);
-  font-variant-numeric: tabular-nums;
-}
-
-.table-scroll td.is-none {
-  color: var(--muted);
-  font-family: var(--sans);
-}
-
-@media (min-width: 1000px) {
-  .hero {
-    grid-template-rows: auto 1fr;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    column-gap: clamp(32px, 4vw, 64px);
-    align-items: start;
-  }
-
-  .hero__text {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .globe-panel {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .globe-stage {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    align-self: center;
-  }
 }
 
 /* ==========================================================================
@@ -1388,19 +1381,18 @@ html:not(.js) .globe-only {
 }
 
 /* ==========================================================================
-   Scroll cue. Pinned to the bottom of the first screen, in the corner beside the
-   globe, which a circle always leaves empty. Wide screens only: on a phone the page
-   already runs off the bottom.
+   Scroll cue. Pinned to the bottom-left of the one-screen hero, under the text,
+   which leaves that corner empty. Wide screens only.
    ========================================================================== */
 .scroll-cue {
   display: none;
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 900px) and (min-height: 560px) {
   .scroll-cue {
     position: absolute;
-    top: calc(100svh - 44px);
-    right: var(--gutter);
+    bottom: 14px;
+    left: var(--gutter);
     display: flex;
     align-items: center;
     gap: 0.75rem;
