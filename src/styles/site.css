@@ -43,10 +43,18 @@
   box-sizing: border-box;
 }
 
+/* One page, native scrolling. Anchor jumps clear the fixed header. */
 html {
   background: var(--bg);
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  scroll-padding-top: var(--header-h);
+}
+
+/* Nav clicks glide, unless the visitor prefers reduced motion (see the end of this file).
+   InitialScroll adds the class after the first jump to a hash, which must be instant. */
+html.smooth-scroll {
+  scroll-behavior: smooth;
 }
 
 body {
@@ -63,7 +71,8 @@ body {
 
 h1,
 h2,
-h3 {
+h3,
+h4 {
   font-family: var(--serif);
   font-weight: 400;
   text-wrap: balance;
@@ -85,8 +94,14 @@ canvas {
   max-width: 100%;
 }
 
+/* Inner anchors (Data & Methods contents, dashboard panels) get breathing room under the
+   header. Top-level sections carry their own top padding. */
 [id] {
-  scroll-margin-top: calc(var(--header-h) + 24px);
+  scroll-margin-top: 24px;
+}
+
+main > section[id] {
+  scroll-margin-top: 0;
 }
 
 [hidden] {
@@ -205,7 +220,7 @@ main:focus,
 }
 
 .site-nav a:hover,
-.site-nav a[aria-current='page'] {
+.site-nav a[aria-current='true'] {
   color: var(--fg);
 }
 
@@ -215,7 +230,7 @@ main:focus,
   font-variant-numeric: tabular-nums;
 }
 
-.site-nav a[aria-current='page'] {
+.site-nav a[aria-current='true'] {
   text-decoration: underline;
 }
 
@@ -288,7 +303,7 @@ main:focus,
 }
 
 .menu-overlay a:hover,
-.menu-overlay a[aria-current='page'] {
+.menu-overlay a[aria-current='true'] {
   color: var(--fg);
 }
 
@@ -318,7 +333,7 @@ html.menu-open {
   }
 }
 
-/* Under the navbar on part pages. Driven by scroll position. */
+/* Under the navbar: how far down the one page you are. Driven by scroll position. */
 .progress {
   position: fixed;
   inset: var(--header-h) 0 auto;
@@ -340,12 +355,19 @@ html.menu-open .progress {
 }
 
 /* ==========================================================================
-   Part pages
+   Part sections
    ========================================================================== */
 .part {
   max-width: var(--page-max);
   margin-inline: auto;
-  padding: calc(var(--header-h) + clamp(48px, 8vw, 112px)) var(--gutter) clamp(48px, 7vw, 96px);
+  padding: clamp(56px, 8vw, 112px) var(--gutter) clamp(48px, 7vw, 96px);
+  border-top: 1px solid var(--line);
+}
+
+/* The 404 page is a page of its own, under the fixed header. */
+.part--page {
+  padding-top: calc(var(--header-h) + clamp(48px, 8vw, 112px));
+  border-top: 0;
 }
 
 .part__head {
@@ -371,8 +393,57 @@ html.menu-open .progress {
   line-height: 1.5;
 }
 
-.dash {
-  margin-block: clamp(72px, 10vw, 144px);
+/* Dashboard tabs: underlined labels, the active one with a thicker underline. There is
+   no separate accent colour in this palette, so the accent is the foreground. */
+.tabs {
+  margin-top: clamp(56px, 8vw, 104px);
+}
+
+.tabs__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem clamp(16px, 2.4vw, 32px);
+  margin-bottom: clamp(28px, 4vw, 48px);
+}
+
+.tabs__tab {
+  min-height: 44px;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font: inherit;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.35em;
+  transition: color 0.2s ease;
+}
+
+.tabs__tab:hover {
+  color: var(--fg);
+}
+
+.tabs__tab[aria-selected='true'] {
+  color: var(--fg);
+  text-decoration-thickness: 3px;
+}
+
+.tabs__id {
+  font-family: var(--mono);
+  font-size: 0.85em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Without JavaScript the tabs cannot switch, so every panel shows, one after another. */
+html:not(.js) .tabs__list {
+  display: none;
+}
+
+html:not(.js) .tabs__panel[hidden] {
+  display: block !important;
+  margin-top: clamp(72px, 10vw, 144px);
 }
 
 .dash__head {
@@ -401,9 +472,16 @@ html.menu-open .progress {
   line-height: 1.4;
 }
 
-.dash__howto {
+.dash__description {
   max-width: 60rem;
   margin-top: 0.9em;
+  color: var(--fg-soft);
+  font-size: 1rem;
+}
+
+.dash__howto {
+  max-width: 60rem;
+  margin-top: 0.6em;
   color: var(--muted);
   font-size: 1rem;
 }
@@ -600,71 +678,74 @@ html:not(.js) .embed__message {
   line-height: 1.5;
 }
 
-.pager {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1px;
+/* "What we found" closes each part, then one bridging sentence into the next. */
+.findings {
+  max-width: 50rem;
   margin-top: clamp(72px, 10vw, 144px);
-  border-block: 1px solid var(--line);
+  padding-top: clamp(20px, 3vw, 32px);
+  border-top: 1px solid var(--line);
 }
 
-.pager__link {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2em;
-  padding: clamp(20px, 3vw, 36px) 0;
-  text-decoration: none;
-}
-
-.pager__link--next {
-  align-items: flex-end;
-  text-align: right;
-}
-
-.pager__kicker {
-  color: var(--muted);
-  font-size: 0.9375rem;
-}
-
-.pager__label {
-  font-family: var(--serif);
-  font-size: clamp(1.5rem, 3vw, 2.5rem);
+.findings__title {
+  margin: 0 0 1rem;
+  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
   line-height: 1.1;
 }
 
-.pager__link:hover .pager__label {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.15em;
+.findings__item {
+  color: var(--fg-soft);
+  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+  line-height: 1.55;
+}
+
+.findings__item + .findings__item {
+  margin-top: 1em;
+}
+
+.part__bridge {
+  max-width: 46rem;
+  margin-top: clamp(40px, 6vw, 72px);
+  color: var(--fg);
+  font-family: var(--serif);
+  font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+  line-height: 1.25;
 }
 
 /* ==========================================================================
-   Homepage: hero and globe
+   Hero (#home): exactly one screen. The header sits over its top padding, the
+   text takes what it needs, and the globe and its column share the rest, so one
+   scroll reaches #problem. The globe is the only part that shrinks: its slot is a
+   size container and the globe is the largest square that fits in it.
    ========================================================================== */
 .hero {
   position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: clamp(24px, 4vw, 40px);
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: clamp(16px, 2.5vh, 32px);
   max-width: var(--page-max);
   min-height: 100svh;
   margin-inline: auto;
-  padding: calc(var(--header-h) + clamp(32px, 5vw, 56px)) var(--gutter) clamp(48px, 6vw, 72px);
+  padding: calc(var(--header-h) + clamp(16px, 4vh, 48px)) var(--gutter) clamp(16px, 4vh, 48px);
+}
+
+/* Tall enough to hold everything: pin the height so the hero is never more than a screen. */
+@media (min-height: 560px) {
+  .hero {
+    height: 100svh;
+  }
 }
 
 .hero__title {
   margin: 0;
-  font-size: clamp(2.5rem, 4.2vw, 3.75rem);
+  font-size: clamp(2rem, 4.2vw, 3.75rem);
   line-height: 1.04;
   letter-spacing: -0.01em;
 }
 
-.hero__answer {
-  max-width: 38rem;
-  margin-top: 1em;
-  color: var(--fg-soft);
-  font-size: clamp(1.125rem, 1.7vw, 1.375rem);
-  line-height: 1.45;
+.hero__scope {
+  margin-top: 0.75em;
+  color: var(--muted);
+  font-size: clamp(0.9375rem, 1.3vw, 1.0625rem);
 }
 
 .draft-tag {
@@ -675,22 +756,48 @@ html:not(.js) .embed__message {
   border: 1px solid var(--line);
   border-radius: 2px;
   color: var(--muted);
+  font-family: var(--sans);
   font-size: 0.8125rem;
   line-height: 1.5;
 }
 
-.hero__scope {
-  margin-top: 0.75em;
-  color: var(--muted);
-  font-size: 0.9375rem;
+/* The globe and its compact column, as a pair: side by side, or the column under the
+   globe on a narrow screen. */
+.hero__globe {
+  display: grid;
+  grid-template-rows: minmax(160px, 1fr) auto;
+  gap: 16px;
+  min-height: 0;
+}
+
+.globe-slot {
+  container-type: size;
+  min-width: 0;
+  min-height: 0;
 }
 
 .globe-stage {
   position: relative;
-  width: 100%;
-  max-width: min(100%, calc(100svh - var(--header-h) - 48px));
+  width: min(100cqw, 100cqh);
   aspect-ratio: 1;
-  justify-self: center;
+  margin-inline: auto;
+}
+
+@media (min-width: 900px) {
+  .hero__globe {
+    grid-template-rows: minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(15rem, 19rem);
+    column-gap: clamp(24px, 3vw, 48px);
+  }
+
+  .globe-panel {
+    align-self: center;
+  }
+
+  /* Next to its column, so the two read as one unit. */
+  .globe-stage {
+    margin-right: 0;
+  }
 }
 
 .globe-canvas {
@@ -737,6 +844,7 @@ html:not(.js) .embed__message {
 
 .globe-panel {
   min-width: 0;
+  font-size: 0.875rem;
 }
 
 .globe-noscript {
@@ -744,17 +852,9 @@ html:not(.js) .embed__message {
   font-size: 0.9375rem;
 }
 
-html:not(.js) .globe-stage,
+html:not(.js) .globe-slot,
 html:not(.js) .globe-only {
   display: none;
-}
-
-.globe-controls {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px 16px;
 }
 
 .globe-toggle {
@@ -815,18 +915,14 @@ html:not(.js) .globe-only {
 }
 
 .globe-label {
-  margin-top: 1.1rem;
+  margin-top: 0.75rem;
+  color: var(--fg);
   font-weight: 500;
 }
 
-.globe-years {
-  color: var(--muted);
-  font-size: 0.9375rem;
-}
-
 .legend-scale {
-  margin-top: 0.85rem;
-  max-width: 30rem;
+  margin-top: 0.5rem;
+  max-width: 24rem;
 }
 
 .legend-bar {
@@ -862,11 +958,10 @@ html:not(.js) .globe-only {
 .legend-states {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.35rem 1.25rem;
-  margin: 0.6rem 0 0;
+  gap: 0.25rem 1.25rem;
+  margin: 0.25rem 0 0;
   padding: 0;
   color: var(--fg-soft);
-  font-size: 0.875rem;
   list-style: none;
 }
 
@@ -883,52 +978,41 @@ html:not(.js) .globe-only {
   border-radius: 1px;
 }
 
-.swatch--stale {
-  box-shadow: 0 0 0 1px rgba(241, 239, 233, 0.85);
-}
-
-.globe-note {
-  max-width: 34rem;
-  margin-top: 0.7rem;
+.globe-years {
+  margin-top: 0.5rem;
   color: var(--muted);
-  font-size: 0.875rem;
 }
 
-.globe-table {
-  margin-top: 0.9rem;
+/* On a phone the column sits under the globe: the toggle and pause share a row. */
+@media (max-width: 899.98px) {
+  .globe-only {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    column-gap: 1rem;
+  }
+
+  .globe-only > :not(.globe-toggle, .globe-pause) {
+    grid-column: 1 / -1;
+  }
+
+  .globe-pause {
+    grid-row: 1;
+    grid-column: 2;
+    justify-self: end;
+  }
+
+  .globe-label {
+    margin-top: 0.5rem;
+  }
 }
 
-.globe-table summary {
-  display: inline-block;
-  min-height: 24px;
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
-}
-
-.globe-table__note {
-  margin-block: 0.6rem;
-  color: var(--muted);
-  font-size: 0.875rem;
-}
-
-.table-scroll {
-  max-height: 22rem;
-  overflow: auto;
-  border: 1px solid var(--line);
-  overscroll-behavior: contain;
-}
-
-.table-scroll table,
 .data-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.875rem;
 }
 
-.table-scroll th,
-.table-scroll td,
 .data-table th,
 .data-table td {
   padding: 0.45em 0.75em;
@@ -938,59 +1022,20 @@ html:not(.js) .globe-only {
   vertical-align: top;
 }
 
-.table-scroll thead th {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: var(--bg-raised);
-  color: var(--muted);
-  font-size: 0.8125rem;
-  vertical-align: bottom;
-}
-
-.table-scroll td {
-  font-family: var(--mono);
-  font-variant-numeric: tabular-nums;
-}
-
-.table-scroll td.is-none {
-  color: var(--muted);
-  font-family: var(--sans);
-}
-
-@media (min-width: 1000px) {
-  .hero {
-    grid-template-rows: auto 1fr;
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    column-gap: clamp(32px, 4vw, 64px);
-    align-items: start;
-  }
-
-  .hero__text {
-    grid-column: 1;
-    grid-row: 1;
-  }
-
-  .globe-panel {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
-  .globe-stage {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-    align-self: center;
-  }
-}
-
 /* ==========================================================================
-   Homepage: stat tiles and part cards
+   #problem: the question in prose, then four numbers about the data
    ========================================================================== */
-.stats,
-.story {
-  max-width: var(--page-max);
-  margin-inline: auto;
-  padding: clamp(48px, 7vw, 96px) var(--gutter);
+.problem__intro {
+  max-width: 50rem;
+  color: var(--fg-soft);
+  font-size: clamp(1.125rem, 1.8vw, 1.375rem);
+  line-height: 1.5;
+}
+
+.problem__subtitle {
+  margin: clamp(48px, 7vw, 88px) 0 clamp(16px, 2vw, 24px);
+  font-size: clamp(1.5rem, 2.6vw, 2rem);
+  line-height: 1.1;
 }
 
 .section-title {
@@ -1042,56 +1087,6 @@ html:not(.js) .globe-only {
   line-height: 1;
 }
 
-.tile__pair {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 0.75rem;
-  margin-top: 0.75rem;
-}
-
-.tile__pair-group {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-}
-
-.tile__vs {
-  padding-top: 0.55rem;
-  color: var(--muted);
-  font-size: 0.9375rem;
-}
-
-.tile__pair-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.tile__pair-value {
-  font-family: var(--mono);
-  font-size: clamp(1.875rem, 3vw, 2.25rem);
-  font-variant-numeric: tabular-nums;
-  line-height: 1.15;
-}
-
-.tile__pair-label {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4em;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
-
-.tile__pair-item--dengue .tile__pair-value,
-.tile__pair-item--dengue .tile__pair-label {
-  color: var(--dengue-text);
-}
-
-.tile__pair-item--malaria .tile__pair-value,
-.tile__pair-item--malaria .tile__pair-label {
-  color: var(--malaria-text);
-}
-
 .tile__text {
   margin-top: 0.9rem;
   color: var(--fg-soft);
@@ -1099,70 +1094,37 @@ html:not(.js) .globe-only {
   line-height: 1.5;
 }
 
-.cards {
-  margin: 0;
+/* ==========================================================================
+   Singapore cluster map, inside Part 4
+   ========================================================================== */
+.clusters {
+  margin-top: clamp(72px, 10vw, 144px);
+}
+
+.clusters__list {
+  margin: 1rem 0 0;
   padding: 0;
+  border-top: 1px solid var(--line);
   list-style: none;
+  font-size: 0.9375rem;
+}
+
+.clusters__list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.45em 0;
   border-bottom: 1px solid var(--line);
 }
 
-.card {
-  display: grid;
-  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
-  align-items: baseline;
-  gap: 0 1rem;
-  padding: clamp(18px, 2.6vw, 30px) 0.25rem;
-  border-top: 1px solid var(--line);
-  text-decoration: none;
-  transition: background-color 0.2s ease;
-}
-
-.card:hover {
-  background: var(--bg-raised);
-}
-
-.card__number {
-  color: var(--muted);
-  font-family: var(--mono);
-  font-size: 0.9375rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.card__body {
-  display: flex;
-  flex-direction: column;
-  gap: 0.1rem;
-}
-
-.card__title {
-  font-family: var(--serif);
-  font-size: clamp(1.75rem, 3.6vw, 2.75rem);
-  line-height: 1.1;
-}
-
-.card:hover .card__title {
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.12em;
-}
-
-.card__question {
+.clusters__locality {
   color: var(--fg-soft);
 }
 
-.card__count {
-  color: var(--muted);
-  font-size: 0.9375rem;
-  white-space: nowrap;
-}
-
-/* ==========================================================================
-   Homepage: Singapore cluster map
-   ========================================================================== */
-.clusters {
-  max-width: var(--page-max);
-  margin-inline: auto;
-  padding: 0 var(--gutter) clamp(48px, 7vw, 96px);
+.clusters__cases {
+  flex: none;
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
 }
 
 .clusters__grid {
@@ -1190,19 +1152,6 @@ html:not(.js) .globe-only {
 
 .clusters__text p {
   color: var(--fg-soft);
-}
-
-.clusters__details {
-  margin-top: 0.9rem;
-}
-
-.clusters__details summary {
-  display: inline-block;
-  margin-bottom: 0.6rem;
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
 }
 
 /* ==========================================================================
@@ -1236,6 +1185,10 @@ html:not(.js) .globe-only {
   color: var(--fg-soft);
 }
 
+.methods__lead--after {
+  margin-top: 1.25rem;
+}
+
 .methods__list {
   max-width: 50rem;
   margin: 1rem 0 0;
@@ -1259,7 +1212,7 @@ html:not(.js) .globe-only {
   }
 }
 
-.methods__note h3 {
+.methods__note h4 {
   margin: 0 0 0.4rem;
   font-size: clamp(1.375rem, 2.2vw, 1.75rem);
   line-height: 1.15;
@@ -1281,17 +1234,10 @@ html:not(.js) .globe-only {
   color: var(--fg);
 }
 
-.methods__details {
-  margin-top: 1.5rem;
-}
-
-.methods__details summary {
-  display: inline-block;
-  margin-bottom: 0.75rem;
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
+.methods__table-title {
+  margin: 2.5rem 0 0.75rem;
+  font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+  line-height: 1.15;
 }
 
 .methods__sources {
@@ -1370,33 +1316,6 @@ html:not(.js) .globe-only {
 }
 
 /* ==========================================================================
-   Lenis smooth scroll (required helper styles)
-   ========================================================================== */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-
-.lenis.lenis-smooth [data-lenis-prevent] {
-  overscroll-behavior: contain;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-
-/* Only during a smooth scroll. Tableau keeps its iframe in a shadow root that the iframe
-   selector cannot reach, but pointer-events inherits, so tableau-viz covers it. */
-.lenis.lenis-smooth iframe,
-.lenis.lenis-smooth tableau-viz {
-  pointer-events: none;
-}
-
-/* ==========================================================================
    Reveals. Only html.js hides anything: without JavaScript, under reduced motion and
    after the 2.5s failsafe (html.motion-off), all text simply shows.
    ========================================================================== */
@@ -1427,19 +1346,18 @@ html.lenis body {
 }
 
 /* ==========================================================================
-   Scroll cue. Pinned to the bottom of the first screen, in the corner beside the
-   globe, which a circle always leaves empty. Wide screens only: on a phone the page
-   already runs off the bottom.
+   Scroll cue. Pinned to the bottom-left of the one-screen hero, under the text,
+   which leaves that corner empty. Wide screens only.
    ========================================================================== */
 .scroll-cue {
   display: none;
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 900px) and (min-height: 560px) {
   .scroll-cue {
     position: absolute;
-    top: calc(100svh - 44px);
-    right: var(--gutter);
+    bottom: 14px;
+    left: var(--gutter);
     display: flex;
     align-items: center;
     gap: 0.75rem;
