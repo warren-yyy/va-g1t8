@@ -847,20 +847,26 @@ html:not(.js) .embed__message {
   margin-inline: auto;
 }
 
+/* Side by side, the globe and its column are one unit, centred in the hero. The globe's
+   column is exactly as wide as the globe: the largest square that fits the height and
+   leaves room for the column, measured against .hero__globe as a size container. */
 @media (min-width: 900px) {
   .hero__globe {
+    --pair-gap: clamp(24px, 3vw, 48px);
+    --panel-w: 19rem;
+    container-type: size;
     grid-template-rows: minmax(0, 1fr);
-    grid-template-columns: minmax(0, 1fr) minmax(15rem, 19rem);
-    column-gap: clamp(24px, 3vw, 48px);
+    grid-template-columns: auto var(--panel-w);
+    justify-content: center;
+    column-gap: var(--pair-gap);
+  }
+
+  .globe-slot {
+    width: max(0px, min(100cqh, 100cqw - var(--panel-w) - var(--pair-gap)));
   }
 
   .globe-panel {
     align-self: center;
-  }
-
-  /* Next to its column, so the two read as one unit. */
-  .globe-stage {
-    margin-right: 0;
   }
 }
 
