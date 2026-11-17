@@ -288,6 +288,8 @@ expect('Burden: endemic malaria per 100k, 2000', malariaRate2000, 4935, 0);
 expect('Burden: endemic malaria per 100k, 2019', malariaRate2019, 3767, 0);
 expect('Burden: endemic malaria per 100k, 2024', malariaRate2024, 4201, 0);
 expect('Burden: endemic malaria change, 2000-2019, %', malariaChange2019, -24, 0);
+// The Conclusion says malaria "fell" by this much, so it must be a fall.
+expect('Burden: endemic malaria fell between 2000 and 2019', malariaChange2019 < 0, true);
 expect('Burden: malaria share in Sub-Saharan Africa, 2019, %', malariaSSA2019, 96.3, 1);
 expect('Burden: dengue share in Latin America & Caribbean, 2019, %', dengueLAC2019, 63.3, 1);
 expect('Burden: dengue share in East Asia & Pacific, 2019, %', dengueEAP2019, 26.5, 1);
@@ -345,6 +347,53 @@ expect('Note: same countries, how many, 2019', forYear(2019).n, 68);
 expect('Note: same countries, malaria r, 2019', forYear(2019).malaria, -0.51, 2);
 expect('Note: same countries, dengue r, 2019', forYear(2019).dengue, -0.49, 2);
 expect('Note: the closest of the 25 years', closestYear, 2019);
+
+// ------------------------------------------- Drivers: climate and development, 2019
+
+// The same method as D6's scorecard: Pearson r between the factor and log10(1 + rate per
+// 100k), with log10 for gdp_pc_ppp. Dengue uses rows with dengue_complete = 1 and malaria
+// the endemic rows, each only where both the factor and the rate have a value.
+type DriverFactor = 'temp_c' | 'sanitation_basic_pct' | 'water_basic_pct' | 'gdp_pc_ppp';
+
+function driverCorrelation(factor: DriverFactor, disease: RateKey) {
+  const usable = rows2019.filter((row) => {
+    const value = num(row[factor]);
+    const inScope = disease === 'dengue' ? Number(row.dengue_complete) === 1 : row.malaria_status === 'Endemic';
+    return inScope && value !== null && (factor !== 'gdp_pc_ppp' || value > 0) && num(row[`${disease}_per_100k`]) !== null;
+  });
+  return {
+    n: usable.length,
+    r: pearson(
+      usable.map((row) => (factor === 'gdp_pc_ppp' ? Math.log10(num(row[factor])!) : num(row[factor])!)),
+      usable.map((row) => Math.log10(1 + num(row[`${disease}_per_100k`])!)),
+    ),
+  };
+}
+
+const DRIVER_EXPECTED: Record<DriverFactor, { dengue: number; malaria: number }> = {
+  temp_c: { dengue: 0.46, malaria: 0.51 },
+  sanitation_basic_pct: { dengue: -0.15, malaria: -0.86 },
+  water_basic_pct: { dengue: -0.16, malaria: -0.79 },
+  gdp_pc_ppp: { dengue: -0.49, malaria: -0.72 },
+};
+const drivers = Object.fromEntries(
+  (Object.keys(DRIVER_EXPECTED) as DriverFactor[]).map((factor) => [
+    factor,
+    { dengue: driverCorrelation(factor, 'dengue'), malaria: driverCorrelation(factor, 'malaria') },
+  ]),
+) as Record<DriverFactor, Record<RateKey, { n: number; r: number }>>;
+
+for (const [factor, expected] of Object.entries(DRIVER_EXPECTED) as [DriverFactor, { dengue: number; malaria: number }][]) {
+  for (const disease of ['dengue', 'malaria'] as const) {
+    const { r, n } = drivers[factor][disease];
+    expect(`Drivers: ${factor} r with ${disease}, 2019 (${n} countries)`, r, expected[disease], 2);
+  }
+}
+const driverCounts = (disease: RateKey) => Object.values(drivers).map((pair) => pair[disease].n);
+expect('Drivers: fewest dengue countries in a 2019 driver r', Math.min(...driverCounts('dengue')), 59);
+expect('Drivers: most dengue countries in a 2019 driver r', Math.max(...driverCounts('dengue')), 69);
+expect('Drivers: fewest malaria countries in a 2019 driver r', Math.min(...driverCounts('malaria')), 102);
+expect('Drivers: most malaria countries in a 2019 driver r', Math.max(...driverCounts('malaria')), 107);
 
 // ------------------------------------------------------------------------- globe
 
@@ -909,6 +958,20 @@ const stats = {
     malariaRate2019: wholeNumber(malariaRate2019),
     malariaRate2024: wholeNumber(malariaRate2024),
     malariaChange2019: `${malariaChange2019 < 0 ? MINUS : '+'}${Math.abs(Math.round(malariaChange2019))}%`,
+    // Unsigned, for "fell {malariaDrop2019}". Asserted above to be a fall.
+    malariaDrop2019: `${Math.abs(Math.round(malariaChange2019))}%`,
+    rTempDengue2019: formatR(drivers.temp_c.dengue.r),
+    rTempMalaria2019: formatR(drivers.temp_c.malaria.r),
+    rSanDengue2019: formatR(drivers.sanitation_basic_pct.dengue.r),
+    rSanMalaria2019: formatR(drivers.sanitation_basic_pct.malaria.r),
+    rWaterDengue2019: formatR(drivers.water_basic_pct.dengue.r),
+    rWaterMalaria2019: formatR(drivers.water_basic_pct.malaria.r),
+    rGdpDengue2019: formatR(drivers.gdp_pc_ppp.dengue.r),
+    rGdpMalaria2019: formatR(drivers.gdp_pc_ppp.malaria.r),
+    driverDengueNMin2019: String(Math.min(...driverCounts('dengue'))),
+    driverDengueNMax2019: String(Math.max(...driverCounts('dengue'))),
+    driverMalariaNMin2019: String(Math.min(...driverCounts('malaria'))),
+    driverMalariaNMax2019: String(Math.max(...driverCounts('malaria'))),
     malariaSSA2019: `${Math.round(malariaSSA2019)}%`,
     dengueLAC2019: `${Math.round(dengueLAC2019)}%`,
     dengueEAP2019: `${Math.round(dengueEAP2019)}%`,

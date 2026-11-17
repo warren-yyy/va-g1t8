@@ -778,6 +778,14 @@ const config: SiteConfig = {
         ],
       },
       {
+        title: 'What tracks each disease, 2019: temperature, sanitation, water and income',
+        body: [
+          "r is the Pearson correlation between each factor and log10(1 + rate per 100k), as D6a's scorecard computes it, with log10 for gdp_pc_ppp. Dengue uses the 2019 rows with dengue_complete = 1, and malaria the endemic countries, each only where both the factor and the rate have a value: {driverDengueNMin2019}-{driverDengueNMax2019} countries for dengue and {driverMalariaNMin2019}-{driverMalariaNMax2019} for malaria.",
+          'Dengue: temp_c {rTempDengue2019}, sanitation_basic_pct {rSanDengue2019}, water_basic_pct {rWaterDengue2019}, gdp_pc_ppp {rGdpDengue2019}. Malaria, in the same order: {rTempMalaria2019}, {rSanMalaria2019}, {rWaterMalaria2019}, {rGdpMalaria2019}.',
+          "Malaria's income r here ({rGdpMalaria2019}) differs from the all-countries {allMalariaR2019} under Income and disease, which also counts the countries given zero cases as not endemic.",
+        ],
+      },
+      {
         title: 'The data, in four numbers',
         body: [
           'Years: the distinct years in the country-year table, {firstYear}-{lastYear} ({yearsCovered}). Malaria-endemic countries: as above, {malariaEndemicN}. Complete dengue reporting: rows with dengue_complete = 1 in 2019 ({dengueComplete2019}).',
