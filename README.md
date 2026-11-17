@@ -2,7 +2,7 @@
 
 **Why are some countries more vulnerable to mosquito-borne diseases than others?**
 
-A website for IS428 Visual Analytics for Business Intelligence (SMU) that presents its Tableau dashboards, split into 22 views, as a story on one long page: dengue and malaria globally from 2000 to 2024, then Singapore as a case study. Group G1T8: Warren, Yubing, Shredha, Yurae.
+A website for IS428 Visual Analytics for Business Intelligence (SMU) that presents its Tableau dashboards, split into 24 views, as a story on one long page: dengue and malaria globally from 2000 to 2024, then Singapore as a case study. Group G1T8: Warren, Yubing, Shredha, Yurae.
 
 It is a Next.js static export, prerendered to HTML in `out/`, with no server. All the editable content is in one file, [`src/site.config.ts`](src/site.config.ts).
 
@@ -15,7 +15,7 @@ Everything is on `/`, in this order. Each section's id is its link, and the navb
 | Hero | `#home` | The main question and the globe. Exactly one screen tall. |
 | The problem | `#problem` | The question in prose, a card for each disease, four numbers about the data, then how to use the site. |
 | Part 1 Burden | `#burden` | D1, D2a-D2c, D3a-D3b |
-| Part 2 Drivers | `#drivers` | D4, D5, D6a, D6c, D7 |
+| Part 2 Drivers | `#drivers` | D4a-D4b, D5a-D5b, D6a, D6c, D7 |
 | Part 3 Dengue vs Malaria | `#dengue-vs-malaria` | D8a, D8b, D6b |
 | Part 4 Singapore | `#singapore` | D9a-D9b, D10, D11a-D11b, D12a-D12b, then the NEA cluster map until D12b is published |
 | Part 5 Conclusion | `#conclusion` | D13 |
@@ -27,7 +27,7 @@ Each part shows, in order: a kicker, its question as the title, `intro`, the vie
 
 **Deep links.** A view's id in lower case is its link: `/#d2b` scrolls to Part 1 and selects D2b, and `/#d6b` opens Part 3 on D6b. Choosing a tab updates the address bar the same way, so you can copy a link to any view.
 
-Links from before the split still work, and open the first view of the old dashboard: `#d2` opens D2a, `#d3` D3a, `#d6` D6a, `#d8` D8a, `#d9` D9a, `#d11` D11a and `#d12` D12a. The list is `LEGACY_ANCHORS` in [`src/lib/anchors.ts`](src/lib/anchors.ts). `#d12` (D12a) does nothing while D12a, an extra, has no url.
+Links from before the split still work, and open the first view of the old dashboard: `#d2` opens D2a, `#d3` D3a, `#d4` D4a, `#d5` D5a, `#d6` D6a, `#d8` D8a, `#d9` D9a, `#d11` D11a and `#d12` D12a. The list is `LEGACY_ANCHORS` in [`src/lib/anchors.ts`](src/lib/anchors.ts). `#d12` (D12a) does nothing while D12a, an extra, has no url.
 
 **Old links.** `/burden`, `/drivers`, `/dengue-vs-malaria`, `/singapore`, `/conclusion` and `/data-methods`, with or without `.html`, redirect permanently to the matching section. The redirects are in [`vercel.json`](vercel.json), so they work on Vercel and in `npm run preview`, but **not in `npm run dev`**.
 
@@ -95,8 +95,10 @@ Each Tableau dashboard is split into views that answer one question each, and ea
 | D2c | Who stays on top | 1 | Warren | core | 600 |
 | D3a | Change by region | 1 | Warren | core | 600 |
 | D3b | Drill down | 1 | Warren | core | 750 |
-| D4 | Climate | 2 | Yubing | core | not confirmed |
-| D5 | Development | 2 | Yubing | core | not confirmed |
+| D4a | Hottest places | 2 | Yubing | core | not confirmed |
+| D4b | Best temperature | 2 | Yubing | core | not confirmed |
+| D5a | Factor by factor | 2 | Yubing | core | not confirmed |
+| D5b | Richer, less disease? | 2 | Yubing | core | not confirmed |
 | D6a | Scorecard | 2 | Shredha | core | not confirmed |
 | D6c | How stable | 2 | Shredha | core | not confirmed |
 | D7 | Climate twins | 2 | Yubing | extra | not confirmed |
@@ -112,7 +114,7 @@ Each Tableau dashboard is split into views that answer one question each, and ea
 | D12b | Do hotspots repeat? | 4 | Yurae | extra | not confirmed |
 | D13 | Global meets Singapore | 5 | Shredha | core | not confirmed |
 
-D6b sits in Part 3 on purpose: it answers that section's question. D4, D5 and D7 stay single views until they are split. `npm run check` prints this table from the config, so it is the up-to-date version.
+D6b sits in Part 3 on purpose: it answers that section's question. D7 stays a single view. `npm run check` prints this table from the config, so it is the up-to-date version.
 
 **Cluster map.** D12b will show the current NEA clusters. Until D12b has a `url`, the Singapore section shows the site's own cluster map under its tabs; once it has one, that map is hidden.
 

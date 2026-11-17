@@ -1,9 +1,9 @@
 /*
- * Deep links to views: #d4, #d2a, #d12b... A view's anchor is its id in lower case.
+ * Deep links to views: #d1, #d2a, #d12b... A view's anchor is its id in lower case.
  * Kept free of site.config.ts so client components can import it cheaply.
  */
 
-/** Matches a view anchor, such as d4 or d12b, and the legacy anchors below. */
+/** Matches a view anchor, such as d10 or d12b, and the legacy anchors below. */
 export const VIEW_ANCHOR = /^d\d+[a-z]?$/i;
 
 /**
@@ -13,6 +13,8 @@ export const VIEW_ANCHOR = /^d\d+[a-z]?$/i;
 export const LEGACY_ANCHORS: Readonly<Record<string, string>> = {
   d2: 'd2a',
   d3: 'd3a',
+  d4: 'd4a',
+  d5: 'd5a',
   d6: 'd6a',
   d8: 'd8a',
   d9: 'd9a',
