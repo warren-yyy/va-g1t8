@@ -2,7 +2,7 @@ import Link from 'next/link';
 import config from '@/site.config';
 
 export default function Footer() {
-  const { site, team } = config;
+  const { site, team, dataMethods } = config;
   return (
     <footer className="site-footer">
       <div className="site-footer__inner">
@@ -10,7 +10,7 @@ export default function Footer() {
           {site.course}. {site.group}: {team.join(', ')}.
         </p>
         <p>
-          Global figures are annual and end in 2024. <Link href="/#data-methods">Data &amp; Methods</Link>
+          Global figures are annual and end in 2024. <Link href="/#data-methods">{dataMethods.title}</Link>
         </p>
       </div>
     </footer>

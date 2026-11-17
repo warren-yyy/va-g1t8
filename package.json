@@ -16,7 +16,7 @@
     "check": "tsx scripts/check.ts",
     "data": "tsx scripts/build-data.ts",
     "refresh:clusters": "tsx scripts/refresh-clusters.ts",
-    "postbuild": "tsx scripts/fix-export-paths.ts"
+    "postbuild": "tsx scripts/fix-export-paths.ts && tsx scripts/check-build.ts"
   },
   "dependencies": {
     "d3-geo": "^3.1.2",

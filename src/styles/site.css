@@ -1242,25 +1242,74 @@ html:not(.js) .globe-only {
 }
 
 /* ==========================================================================
-   Data & Methods
+   Data, methods & limitations: heading, intro, key limits and team always show;
+   the rest is in the site's one <details>.
    ========================================================================== */
-.methods__toc {
+.methods__key-limits {
+  max-width: 50rem;
   margin-top: 1.5rem;
+  padding-left: 1rem;
+  border-left: 2px solid var(--line);
+  color: var(--fg);
 }
 
-.methods__toc ul {
+.methods__team {
+  margin-top: clamp(40px, 6vw, 72px);
+}
+
+.methods__team-title {
+  margin: 0 0 0.75rem;
+  font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+  line-height: 1.15;
+}
+
+.methods__details {
+  margin-top: clamp(40px, 6vw, 72px);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.methods__details > summary {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 1.25rem;
-  margin: 0;
-  padding: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 44px;
+  padding-block: 1.1rem;
+  font-family: var(--serif);
+  font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+  line-height: 1.15;
   list-style: none;
+  cursor: pointer;
 }
 
-.methods__toc a {
-  display: inline-block;
-  padding-block: 0.25rem;
-  color: var(--fg-soft);
+.methods__details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* A plus that turns into a minus when open. */
+.methods__details > summary::after {
+  content: '+';
+  flex: none;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 1.25rem;
+}
+
+.methods__details[open] > summary::after {
+  content: '\2212';
+}
+
+.methods__details > summary:hover::after {
+  color: var(--fg);
+}
+
+.methods__details-body {
+  padding-bottom: clamp(40px, 6vw, 72px);
+}
+
+.methods__details-body > .methods__section:first-child {
+  margin-top: clamp(24px, 3vw, 40px);
 }
 
 .methods__section {
@@ -1274,6 +1323,10 @@ html:not(.js) .globe-only {
 
 .methods__lead--after {
   margin-top: 1.25rem;
+}
+
+.methods__lead--before {
+  margin-bottom: 2rem;
 }
 
 .methods__list {
@@ -1321,10 +1374,8 @@ html:not(.js) .globe-only {
   color: var(--fg);
 }
 
-.methods__table-title {
-  margin: 2.5rem 0 0.75rem;
-  font-size: clamp(1.375rem, 2.2vw, 1.75rem);
-  line-height: 1.15;
+.methods__callout--first {
+  margin: 0 0 1.5rem;
 }
 
 .methods__sources {

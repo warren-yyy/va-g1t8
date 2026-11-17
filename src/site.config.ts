@@ -105,7 +105,14 @@ export interface MethodNote {
 }
 
 export interface DataMethods {
+  /** The section heading and its navbar label. The section's id stays #data-methods. */
+  title: string;
+  /** One sentence, always visible, saying what the section holds. */
   intro: string;
+  /** One line of caveats, always visible. */
+  keyLimits: string;
+  /** The summary of the one collapsible block, which holds everything below the team. */
+  detailsSummary: string;
   datasets: DatasetRow[];
   cleaning: string[];
   methods: MethodNote[];
@@ -159,7 +166,7 @@ const config: SiteConfig = {
     { label: '3 Dengue vs Malaria', href: '/#dengue-vs-malaria' },
     { label: '4 Singapore', href: '/#singapore' },
     { label: '5 Conclusion', href: '/#conclusion' },
-    { label: 'Data & Methods', href: '/#data-methods' },
+    { label: 'Data, methods & limitations', href: '/#data-methods' },
   ],
 
   // Empty for now. The user guide is a block at the end of #problem (problem.guide), not a
@@ -646,10 +653,15 @@ const config: SiteConfig = {
     },
   ],
 
-  // The Data & Methods section, the last on the page.
+  // The last section on the page. Its heading, intro, key limits and team are always
+  // visible; everything else sits in one collapsible block, which opens by itself when a
+  // link points at the section or anything inside it.
   dataMethods: {
-    intro:
-      'Where every number on this site comes from, how it was computed, and what it cannot tell you. A script in the repository recomputes the headline numbers from the cleaned CSVs and stops if any of them change.',
+    title: 'Data, methods & limitations',
+    intro: 'Where every number on this site comes from, how it was computed, and what it cannot tell you.',
+    keyLimits:
+      "Key limits: dengue figures are reported cases and malaria figures are WHO estimates, so they aren't directly comparable; correlations show association, not cause; some regions report little or no dengue data.",
+    detailsSummary: 'Full data, methods and limitations',
 
     datasets: [
       {
