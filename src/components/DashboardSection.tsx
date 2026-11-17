@@ -33,7 +33,7 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
               Skip dashboard {id}
             </a>
             <div className="panel">
-              <DashboardEmbed url={url} id={id} title={title} />
+              <DashboardEmbed url={url} id={id} title={title} height={dashboard.height} />
             </div>
             <div className="dash__after" id={`${anchor}-after`} tabIndex={-1}>
               <p className="dash__open">
