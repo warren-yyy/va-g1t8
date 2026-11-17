@@ -735,17 +735,28 @@ html:not(.js) .embed__message {
   }
 }
 
+/* Centred above the globe and its column, at a readable line length. Only the hero is centred. */
+.hero__text {
+  width: 100%;
+  max-width: 52rem;
+  margin-inline: auto;
+  text-align: center;
+}
+
 .hero__title {
   margin: 0;
   font-size: clamp(2rem, 4.2vw, 3.75rem);
   line-height: 1.04;
   letter-spacing: -0.01em;
+  text-wrap: balance;
 }
 
 .hero__scope {
-  margin-top: 0.75em;
+  max-width: 40rem;
+  margin: 0.75em auto 0;
   color: var(--muted);
   font-size: clamp(0.9375rem, 1.3vw, 1.0625rem);
+  text-wrap: balance;
 }
 
 .draft-tag {
