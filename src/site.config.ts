@@ -82,6 +82,9 @@ export interface ProblemSection {
   /** Draft for the team to edit. */
   intro: string;
   dataTitle: string;
+  /** The user guide the course requires, at the end of #problem. Plain visible text. */
+  guideTitle: string;
+  guide: string[];
 }
 
 export interface DatasetRow {
@@ -159,8 +162,8 @@ const config: SiteConfig = {
     { label: 'Data & Methods', href: '/#data-methods' },
   ],
 
-  // Empty for now. Do not add a user guide, poster or report page until the course
-  // is confirmed to require them. README.md has the steps for adding a page.
+  // Empty for now. The user guide is a block at the end of #problem (problem.guide), not a
+  // page. README.md has the steps for adding a page.
   extraPages: [],
 
   // intro, findings and bridge are drafts for the team to edit. Every number in findings
@@ -573,6 +576,13 @@ const config: SiteConfig = {
     intro:
       "Dengue and malaria are both spread by mosquitoes, but they do not strike the same places, and their burden has moved in opposite directions since 2000. A country's risk could come from its climate (heat, rain and humidity), from how developed it is (income, health spending, clean water and sanitation), or from how its people live (urbanisation and density). This project tests those factors against {yearsCovered} years of country data ({firstYear}-{lastYear}) to see which matter most for each disease, then checks whether the global pattern holds inside Singapore, a hot, dense, high-income city that eliminated malaria but still has large dengue outbreaks.",
     dataTitle: 'The data',
+    guideTitle: 'How to use this site',
+    guide: [
+      'Use the navbar to jump to any section.',
+      "Each section's tabs switch between its dashboard views.",
+      'The dashboards are interactive: use their controls, click marks to filter or highlight, and hover over anything for details. Each one has an "Open in Tableau Public" link underneath.',
+      'Best viewed on a desktop screen.',
+    ],
   },
 
   // {tokens} come from src/data/stats.json.

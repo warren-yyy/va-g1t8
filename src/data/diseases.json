@@ -1,0 +1,1 @@
+{"generatedBy":"scripts/build-data.ts from disease_info.csv","diseases":[{"disease":"Dengue","pathogen":"Dengue virus (DENV-1 to 4)","vector":"Aedes aegypti and Aedes albopictus","wikiUrl":"https://en.wikipedia.org/wiki/Dengue_fever"},{"disease":"Malaria","pathogen":"Plasmodium parasites","vector":"Anopheles mosquitoes","wikiUrl":"https://en.wikipedia.org/wiki/Malaria"}]}

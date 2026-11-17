@@ -1023,7 +1023,8 @@ html:not(.js) .globe-only {
 }
 
 /* ==========================================================================
-   #problem: the question in prose, then four numbers about the data
+   #problem: the question in prose, the disease cards, four numbers about the
+   data, then how to use the site
    ========================================================================== */
 .problem__intro {
   max-width: 50rem;
@@ -1092,6 +1093,81 @@ html:not(.js) .globe-only {
   color: var(--fg-soft);
   font-size: 1rem;
   line-height: 1.5;
+}
+
+/* The two disease cards, under the intro. --accent is set per card. */
+.diseases {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: clamp(16px, 2vw, 24px);
+  max-width: 50rem;
+  margin: clamp(32px, 4vw, 48px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 640px) {
+  .diseases {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.disease,
+.disease__card {
+  height: 100%;
+}
+
+.disease__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.25rem 1.25rem 1.4rem;
+  background: var(--bg-raised);
+  border-top: 3px solid var(--accent, var(--line));
+}
+
+.disease__name {
+  margin: 0;
+  font-size: clamp(1.375rem, 2.2vw, 1.625rem);
+  line-height: 1.1;
+}
+
+.disease__facts {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.disease__facts dt {
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+}
+
+.disease__facts dd {
+  margin: 0.1rem 0 0;
+  color: var(--fg-soft);
+  line-height: 1.45;
+}
+
+.disease__link {
+  margin-top: auto;
+  color: var(--fg);
+  font-size: 0.9375rem;
+}
+
+/* How to use this site: plain text at the end of #problem. */
+.guide__list {
+  max-width: 50rem;
+  margin: 0;
+  padding-left: 1.25rem;
+  color: var(--fg-soft);
+  font-size: 1.0625rem;
+  line-height: 1.55;
+}
+
+.guide__list li + li {
+  margin-top: 0.4rem;
 }
 
 /* ==========================================================================
