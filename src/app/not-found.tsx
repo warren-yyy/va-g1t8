@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 export default function NotFound() {
   return (
-    <div className="part">
+    <div className="part part--page">
       <header className="part__head">
         <h1 className="part__title">Page not found</h1>
         <p className="part__intro">

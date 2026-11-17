@@ -9,9 +9,9 @@ export default function ClusterMap() {
 
   return (
     <section className="clusters" aria-labelledby="clusters-title">
-      <h2 className="section-title" id="clusters-title">
+      <h3 className="section-title" id="clusters-title">
         {label}
-      </h2>
+      </h3>
       <div className="clusters__grid">
         <figure className="clusters__map">
           {/* A static SVG, loaded lazily. next/image needs a server or a custom loader in a static export. */}
@@ -21,7 +21,7 @@ export default function ClusterMap() {
             width={map.width}
             height={map.height}
             loading="lazy"
-            alt={`Map of Singapore with ${clusters.length} dengue clusters marked as of ${asOf}. The table beside it lists each one.`}
+            alt={`Map of Singapore with ${clusters.length} dengue clusters marked as of ${asOf}. The list beside it gives each one.`}
           />
         </figure>
         <div className="clusters__text">
@@ -29,27 +29,16 @@ export default function ClusterMap() {
             {clusters.length} clusters and {totalCases} cases in the file from {source}, downloaded on {asOf}. Circle area
             shows cases. This is a snapshot: it changes only when the file is downloaded again.
           </p>
-          <details className="clusters__details">
-            <summary>View as table</summary>
-            <div className="table-scroll" tabIndex={0} role="region" aria-label={label} data-lenis-prevent>
-              <table>
-                <thead>
-                  <tr>
-                    <th scope="col">Locality</th>
-                    <th scope="col">Cases, as of {asOf}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {ordered.map((cluster) => (
-                    <tr key={cluster.locality}>
-                      <th scope="row">{cluster.locality}</th>
-                      <td>{cluster.cases}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </details>
+          <ul className="clusters__list" aria-label={`Clusters by cases, as of ${asOf}`}>
+            {ordered.map((cluster) => (
+              <li key={cluster.locality}>
+                <span className="clusters__locality">{cluster.locality}</span>
+                <span className="clusters__cases">
+                  {cluster.cases} {cluster.cases === 1 ? 'case' : 'cases'}
+                </span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </section>

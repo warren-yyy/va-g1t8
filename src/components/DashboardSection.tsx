@@ -4,27 +4,29 @@ import { normalizeTableauUrl } from '@/lib/tableau';
 import DashboardEmbed from '@/components/DashboardEmbed';
 import Reveal from '@/components/Reveal';
 
+/**
+ * The contents of one dashboard's tab panel: title and question, description, howTo, the
+ * skip link, the light panel with the embed (or "coming soon"), then the takeaway. The
+ * panel element itself, with the #d1-style id, belongs to DashboardTabs.
+ */
 export default function DashboardSection({ dashboard }: { dashboard: Dashboard }) {
-  const { id, title, question, howTo, takeaway, takeawayNote, alt } = dashboard;
+  const { id, title, question, description, howTo, takeaway, takeawayNote, alt } = dashboard;
   const url = normalizeTableauUrl(dashboard.url);
   const anchor = id.toLowerCase();
 
   return (
-    <section className="dash" id={anchor} aria-labelledby={`${anchor}-title`}>
+    <div className="dash">
       <div className="dash__head">
-        <h2 className="dash__title" id={`${anchor}-title`}>
+        <h3 className="dash__title" id={`${anchor}-title`}>
           <span className="dash__id">{id}</span> {title}
-        </h2>
+        </h3>
         <p className="dash__question">{question}</p>
       </div>
 
-      {howTo && (
-        <Reveal as="p" className="dash__howto">
-          {fill(howTo)}
-        </Reveal>
-      )}
+      {description && <p className="dash__description">{fill(description)}</p>}
+      {howTo && <p className="dash__howto">{fill(howTo)}</p>}
 
-      <figure className="dash__figure">
+      <figure className="dash__figure" aria-labelledby={`${anchor}-title`}>
         {url ? (
           <>
             <a className="skip-dash" href={`#${anchor}-after`}>
@@ -65,6 +67,6 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
           </figcaption>
         )}
       </figure>
-    </section>
+    </div>
   );
 }

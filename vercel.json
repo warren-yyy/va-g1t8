@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    { "source": "/burden", "destination": "/#burden", "permanent": true },
+    { "source": "/burden.html", "destination": "/#burden", "permanent": true },
+    { "source": "/drivers", "destination": "/#drivers", "permanent": true },
+    { "source": "/drivers.html", "destination": "/#drivers", "permanent": true },
+    { "source": "/dengue-vs-malaria", "destination": "/#dengue-vs-malaria", "permanent": true },
+    { "source": "/dengue-vs-malaria.html", "destination": "/#dengue-vs-malaria", "permanent": true },
+    { "source": "/singapore", "destination": "/#singapore", "permanent": true },
+    { "source": "/singapore.html", "destination": "/#singapore", "permanent": true },
+    { "source": "/conclusion", "destination": "/#conclusion", "permanent": true },
+    { "source": "/conclusion.html", "destination": "/#conclusion", "permanent": true },
+    { "source": "/data-methods", "destination": "/#data-methods", "permanent": true },
+    { "source": "/data-methods.html", "destination": "/#data-methods", "permanent": true }
+  ]
+}

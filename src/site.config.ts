@@ -7,7 +7,7 @@
  * Rendering rules
  * - Empty url on a core dashboard: a "Dashboard coming soon" panel, no Tableau script.
  * - Empty url on an extra dashboard (D7, D12): hidden completely.
- * - null howTo or takeaway: that line is left out, with no placeholder.
+ * - null description, howTo or takeaway: that line is left out, with no placeholder.
  * - null alt: the question is used as the alt text.
  *
  * Numbers in text
@@ -24,6 +24,8 @@ export interface Dashboard {
   question: string;
   /** Tableau Public link. Empty until the dashboard is published. */
   url: string;
+  /** What is on the dashboard, in a sentence or two. null shows nothing. */
+  description: string | null;
   howTo: string | null;
   takeaway: string | null;
   /** Optional scope shown under the takeaway, so its numbers carry their years. */
@@ -40,7 +42,12 @@ export interface Part {
   title: string;
   question: string;
   role: string;
+  /** Why these dashboards are grouped together. */
   intro: string;
+  /** Paragraphs under "What we found". null shows nothing. {tokens} come from stats.json. */
+  findings: string[] | null;
+  /** One sentence leading into the next section. null shows nothing. */
+  bridge: string | null;
 }
 
 export interface NavItem {
@@ -48,27 +55,27 @@ export interface NavItem {
   href: string;
 }
 
-/** Added to the navbar automatically. The page itself is src/app/<slug>/page.tsx. */
+/** A separate page, added to the navbar automatically. The page itself is src/app/<slug>/page.tsx. */
 export interface ExtraPage {
   slug: string;
   label: string;
 }
 
-export interface StatTilePairValue {
-  disease: 'dengue' | 'malaria';
-  label: string;
-  value: string;
-}
-
+/** A number that describes the data, not a result. It counts up as it scrolls in. */
 export interface StatTile {
   id: string;
-  /** The year or years the numbers on this tile describe. */
+  /** The year or years the number describes. */
   year: string;
+  /** A {token}, so the number is computed and checked by scripts/build-data.ts. */
+  value: string;
   text: string;
-  value?: string;
-  /** Only 281 and 82 count up. */
-  countUp?: boolean;
-  pair?: StatTilePairValue[];
+}
+
+export interface ProblemSection {
+  title: string;
+  /** Draft for the team to edit. */
+  intro: string;
+  dataTitle: string;
 }
 
 export interface DatasetRow {
@@ -108,12 +115,12 @@ export interface SiteConfig {
     scope: string;
   };
   answerSentence: string;
-  smoothScrollOnPartPages: boolean;
   navigation: NavItem[];
   extraPages: ExtraPage[];
   parts: Part[];
   dashboards: Dashboard[];
   team: string[];
+  problem: ProblemSection;
   statTiles: StatTile[];
   dataMethods: DataMethods;
 }
@@ -130,29 +137,28 @@ const config: SiteConfig = {
     scope: 'Dengue and malaria, global 2000-2024, then Singapore as a case study.',
   },
 
-  // DRAFT until D13 is built. It stays one value: the homepage and D13's takeaway
-  // both read it, and the homepage shows a "Draft" tag for as long as D13's url is empty.
+  // DRAFT until D13 is built. It is the first of the Conclusion's findings, and shows a
+  // "Draft" tag for as long as D13's url is empty.
   answerSentence,
 
-  // Lenis is on for the homepage and Data & Methods only. Native scrolling keeps
-  // Tableau's wheel and click handling untouched on part pages.
-  smoothScrollOnPartPages: false,
-
-  // Items in extraPages are added to the end of this list automatically.
+  // Anchors to the sections of the one page. Items in extraPages are added to the end
+  // of this list automatically.
   navigation: [
-    { label: 'Home', href: '/' },
-    { label: '1 Burden', href: '/burden' },
-    { label: '2 Drivers', href: '/drivers' },
-    { label: '3 Dengue vs Malaria', href: '/dengue-vs-malaria' },
-    { label: '4 Singapore', href: '/singapore' },
-    { label: '5 Conclusion', href: '/conclusion' },
-    { label: 'Data & Methods', href: '/data-methods' },
+    { label: 'Home', href: '/#home' },
+    { label: '1 Burden', href: '/#burden' },
+    { label: '2 Drivers', href: '/#drivers' },
+    { label: '3 Dengue vs Malaria', href: '/#dengue-vs-malaria' },
+    { label: '4 Singapore', href: '/#singapore' },
+    { label: '5 Conclusion', href: '/#conclusion' },
+    { label: 'Data & Methods', href: '/#data-methods' },
   ],
 
   // Empty for now. Do not add a user guide, poster or report page until the course
   // is confirmed to require them. README.md has the steps for adding a page.
   extraPages: [],
 
+  // intro, findings and bridge are drafts for the team to edit. Every number in findings
+  // is a {token} computed and checked by scripts/build-data.ts.
   parts: [
     {
       number: 1,
@@ -161,7 +167,13 @@ const config: SiteConfig = {
       question: 'Where is the burden?',
       role: 'Sets the scene',
       intro:
-        'Before asking why, we need to see where. This part sets the scene: what dengue and malaria are, where each is concentrated, and how each has moved from 2000 to 2024.',
+        'Before asking why some countries are more vulnerable, we need to know where the burden is and how it has changed. D1 introduces both diseases and their global trend since 2000, D2 shows where cases concentrate and which countries lead, and D3 checks whether those trends hold in every region.',
+      findings: [
+        'Reported dengue is rising fast: among the {dengueConsistentN} countries that report consistently, it went from {denguePanel2000} cases per 100k in 2000 to {denguePanel2019} in 2019 and {denguePanel2024} in 2024.',
+        'Estimated malaria in the {malariaEndemicN} endemic countries fell from {malariaRate2000} to {malariaRate2019} per 100k between 2000 and 2019 ({malariaChange2019}), then rose to {malariaRate2024} in 2024.',
+        "The two diseases hit different places: in 2019, {malariaSSA2019} of estimated malaria cases were in Sub-Saharan Africa, while {dengueLAC2019} of reported dengue was in Latin America & Caribbean and {dengueEAP2019} in East Asia & Pacific. Africa's dengue is largely unreported before 2023, so part of this gap is reporting.",
+      ],
+      bridge: 'So what makes these places different? The next section tests the candidates.',
     },
     {
       number: 2,
@@ -170,7 +182,9 @@ const config: SiteConfig = {
       question: 'What drives it?',
       role: 'Objective 1',
       intro:
-        'A map of the burden does not explain it. This part asks how climate and development relate to each disease, and which factor matters most for which disease. Everything here shows association, not cause.',
+        'With the burden mapped, this section tests the candidate explanations. D4 looks at climate, D5 at development and infrastructure, and D6 ranks every factor side by side for each disease. D7 compares countries with similar climates to separate climate from everything else.',
+      findings: null,
+      bridge: null,
     },
     {
       number: 3,
@@ -179,7 +193,10 @@ const config: SiteConfig = {
       question: 'Dengue vs malaria',
       role: 'Objective 2',
       intro:
-        'Both diseases are carried by mosquitoes, but by different ones: Aedes for dengue, Anopheles for malaria. This part asks whether the same countries carry both, or whether some carry one disease but not the other.',
+        "The same factor may not work the same way for both diseases. D8 groups countries by whether they carry dengue, malaria, both or neither, to show where the two diseases' risk profiles split.",
+      // D8's takeaway already carries this part's finding.
+      findings: null,
+      bridge: 'Next, we test whether the global pattern holds in one city: Singapore.',
     },
     {
       number: 4,
@@ -188,7 +205,13 @@ const config: SiteConfig = {
       question: 'Singapore case study',
       role: 'Objective 3',
       intro:
-        'A comparison between countries cannot show what happens inside one of them. Singapore is a high-income country with no malaria counted in our data, yet it reported {sgDengue2019} dengue cases per 100k in 2019. This part asks how big and regular its dengue waves are, whether local weather leads them, and where the 2020 outbreak hit.',
+        'Singapore is hot, wet, dense and rich. It has been certified malaria-free since 1982, yet still has recurring dengue outbreaks. D9 measures those waves, D10 tests whether weather leads them, and D11 and D12 zoom in on where outbreaks hit and whether housing explains them.',
+      findings: [
+        'Singapore reported {sgDengue2019} dengue cases per 100k in 2019, about {ratio2019} times the median for high-income countries ({hiMedian2019}, across {hiN2019} reporting countries).',
+        "Our data counts {sgMalaria2019} malaria cases for Singapore in 2019, because WHO doesn't list it as endemic. WHO certified it malaria-free in 1982.",
+        "In monthly data for 2012-2024 ({sgLagMonths} months), temperature leads Singapore's dengue by about 1-2 months, but the link is weak (r about {sgTempLagR}), as is every other weather link.",
+      ],
+      bridge: "The last section sets Singapore's results against the global ones.",
     },
     {
       number: 5,
@@ -197,7 +220,13 @@ const config: SiteConfig = {
       question: 'Global meets Singapore',
       role: 'Conclusion',
       intro:
-        'The last step puts the two scales side by side. Do the risk factors seen across countries also hold inside Singapore? That comparison is what answers the main question.',
+        'D13 puts the global findings and the Singapore findings side by side, factor by factor, to answer the main question.',
+      // The answer sentence shows a "Draft" tag until D13 has a url.
+      findings: [
+        answerSentence,
+        'Comparing the same countries each year, income tracks malaria in all {yearsMalariaStronger} years from 2000 to 2024 (median r = {medianRMalaria}) but barely tracks dengue ({medianRDengue}).',
+      ],
+      bridge: null,
     },
   ],
 
@@ -209,6 +238,8 @@ const config: SiteConfig = {
       part: 1,
       question: 'What are the two diseases, and how have they moved since 2000?',
       url: '',
+      description:
+        'Headline figures for the chosen year, a world map of the selected disease, and a divergence chart of how dengue and malaria have moved since 2000, with a short Wikipedia summary of each disease.',
       howTo: 'Pick a year to update the map and figures, then click a disease to load its Wikipedia summary.',
       takeaway: null,
       alt: 'Map, headline figures, divergence chart and disease picker.',
@@ -221,6 +252,8 @@ const config: SiteConfig = {
       part: 1,
       question: 'Where is each disease concentrated, and which countries lead?',
       url: '',
+      description:
+        "Side-by-side world maps of dengue and malaria, the top countries for the chosen year, how country rankings changed over time, and each region's share of cases.",
       howTo: 'Choose a disease, year and Top N, then click a region to filter or a country to highlight it.',
       takeaway: null,
       alt: 'Dengue and malaria maps, bump chart, region share and Top N chart.',
@@ -233,6 +266,8 @@ const config: SiteConfig = {
       part: 1,
       question: 'Is dengue rising and malaria falling everywhere?',
       url: '',
+      description:
+        "Regional trend lines, a year-on-year change heatmap by region, a slope chart of the countries that changed most, and a country explorer for any single country's history.",
       howTo:
         'Choose a disease, smoothing window and year range, click a region to update the slope chart, then click a country there to open it in the explorer.',
       takeaway: null,
@@ -246,6 +281,7 @@ const config: SiteConfig = {
       part: 2,
       question: 'How do temperature, rain and humidity relate to each disease?',
       url: '',
+      description: null,
       howTo: null,
       takeaway: null,
       alt: null,
@@ -258,6 +294,7 @@ const config: SiteConfig = {
       part: 2,
       question: 'Do income, services and urbanisation track burden?',
       url: '',
+      description: null,
       howTo: null,
       takeaway: null,
       alt: null,
@@ -270,6 +307,7 @@ const config: SiteConfig = {
       part: 2,
       question: 'Which factor matters most, for which disease?',
       url: '',
+      description: null,
       howTo: null,
       takeaway: null,
       alt: null,
@@ -282,6 +320,7 @@ const config: SiteConfig = {
       part: 2,
       question: 'Why do countries with the same climate differ?',
       url: '',
+      description: null,
       howTo: null,
       takeaway: null,
       alt: null,
@@ -294,6 +333,8 @@ const config: SiteConfig = {
       part: 3,
       question: 'Which countries carry one disease but not the other?',
       url: 'https://public.tableau.com/views/G1T8_D6-D8/D8ResilientvsVulnerable?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
+      description:
+        'A world map, a dengue-versus-malaria scatter, income-group bars and a country list, grouping countries by whether dengue, malaria or both exceed a threshold.',
       howTo: 'Move the year slider and the two thresholds, then click a group in any chart to list its countries.',
       takeaway: 'In 2019, 96% of low-income countries had high malaria with no dengue reporting, while 45% of high-income countries were dengue only.',
       alt: 'World map, dengue-versus-malaria scatter, income-group bars and a country list, grouping countries by whether dengue, malaria or both exceed a threshold.',
@@ -306,6 +347,7 @@ const config: SiteConfig = {
       part: 4,
       question: "How big and regular are Singapore's dengue waves?",
       url: '',
+      description: null,
       howTo: null,
       takeaway: null,
       alt: null,
@@ -318,9 +360,11 @@ const config: SiteConfig = {
       part: 4,
       question: 'Does local weather lead dengue, and by how many months?',
       url: '',
+      description:
+        "How strongly each weather variable tracks dengue at lags of 0-6 months, the chosen weather series overlaid on monthly dengue cases, a month-by-month scatter, and Singapore's typical year.",
       howTo: 'Choose a weather variable and a lag in months, then compare the charts.',
       takeaway:
-        'Temperature leads dengue by about 1-2 months, but the link is weak (r about 0.19), as is every other weather link.',
+        'Temperature leads dengue by about 1-2 months, but the link is weak (r about {sgTempLagR}), as is every other weather link.',
       takeawayNote: 'Singapore, monthly data, 2012-2024 (156 months).',
       alt: 'Overlay, scatter, lag profile and average-year charts.',
       owner: 'Warren',
@@ -332,6 +376,7 @@ const config: SiteConfig = {
       part: 4,
       question: 'Where did the 2020 outbreak hit, week by week?',
       url: '',
+      description: null,
       howTo: null,
       takeaway: null,
       alt: null,
@@ -344,6 +389,7 @@ const config: SiteConfig = {
       part: 4,
       question: 'Does housing explain the hotspots, and do they repeat?',
       url: '',
+      description: null,
       howTo: null,
       takeaway: null,
       alt: null,
@@ -356,8 +402,10 @@ const config: SiteConfig = {
       part: 5,
       question: 'Do the global risk factors hold inside Singapore?',
       url: '',
+      description: null,
       howTo: null,
-      takeaway: answerSentence,
+      // Was the answer sentence, which now leads the Conclusion's findings just below.
+      takeaway: null,
       alt: null,
       owner: 'TBD',
       extra: false,
@@ -366,40 +414,43 @@ const config: SiteConfig = {
 
   team: ['Warren', 'Yubing', 'Shredha', 'Yurae'],
 
-  // Homepage stat tiles. {tokens} come from src/data/stats.json.
+  // The section under the hero. Its tiles describe the data, not results.
+  problem: {
+    title: 'The problem',
+    intro:
+      "Dengue and malaria are both spread by mosquitoes, but they do not strike the same places, and their burden has moved in opposite directions since 2000. A country's risk could come from its climate (heat, rain and humidity), from how developed it is (income, health spending, clean water and sanitation), or from how its people live (urbanisation and density). This project tests those factors against {yearsCovered} years of country data ({firstYear}-{lastYear}) to see which matter most for each disease, then checks whether the global pattern holds inside Singapore, a hot, dense, high-income city that eliminated malaria but still has large dengue outbreaks.",
+    dataTitle: 'The data',
+  },
+
+  // {tokens} come from src/data/stats.json.
   statTiles: [
     {
-      id: 'sg-dengue',
-      year: '2019',
-      value: '{sgDengue2019}',
-      countUp: true,
-      text: 'reported dengue cases per 100k in Singapore, 2019: about {ratio2019}x the high-income median ({hiMedian2019}, across {hiN2019} reporting countries)',
+      id: 'years',
+      year: '{firstYear}-{lastYear}',
+      value: '{yearsCovered}',
+      text: 'years of country data, {firstYear}-{lastYear}',
     },
     {
-      id: 'sg-malaria',
-      year: '2019',
-      value: '{sgMalaria2019}',
-      text: "malaria cases counted for Singapore in our data, because WHO doesn't list it as endemic (2019). WHO-certified malaria-free since 1982.",
+      id: 'malaria-endemic',
+      year: '{firstYear}-{lastYear}',
+      value: '{malariaEndemicN}',
+      text: 'malaria-endemic countries with WHO estimates',
     },
     {
-      id: 'income-link',
-      year: '2000-2024',
-      pair: [
-        { disease: 'malaria', label: 'Malaria', value: '{medianRMalaria}' },
-        { disease: 'dengue', label: 'Dengue', value: '{medianRDengue}' },
-      ],
-      text: 'Income tracks malaria in every year since 2000 (median r = {medianRMalaria}) but barely tracks dengue ({medianRDengue}). Same countries compared each year.',
-    },
-    {
-      id: 'reporting',
+      id: 'dengue-reporting',
       year: '2019',
       value: '{dengueComplete2019}',
-      countUp: true,
-      text: 'countries and territories with complete dengue reporting in 2019 ({dengueUsable2019} have a usable rate)',
+      text: 'countries and territories with complete dengue reporting in 2019',
+    },
+    {
+      id: 'factors',
+      year: '2019',
+      value: '{factorCount2019}',
+      text: 'climate and development factors, each with data for at least {factorMinCoverage2019} countries in 2019',
     },
   ],
 
-  // Data & Methods page.
+  // The Data & Methods section, the last on the page.
   dataMethods: {
     intro:
       'Where every number on this site comes from, how it was computed, and what it cannot tell you. A script in the repository recomputes the headline numbers from the cleaned CSVs and stops if any of them change.',
@@ -501,6 +552,31 @@ const config: SiteConfig = {
     // Each number here is asserted by scripts/build-data.ts.
     methods: [
       {
+        title: 'Dengue among consistent reporters, 2000-2024: {denguePanel2000} to {denguePanel2024}',
+        body: [
+          'A country reports consistently when dengue_complete = 1 in at least 20 of the 24 years 2000-2023: {dengueConsistentN} countries. For each year, their summed dengue_cases are divided by their summed population, counting only their complete rows with both values, and multiplied by 100,000. Holding the set of countries fixed keeps the trend from reflecting who started reporting.',
+        ],
+      },
+      {
+        title: 'Endemic malaria, 2000-2024: {malariaRate2000} to {malariaRate2024}',
+        body: [
+          'The {malariaEndemicN} countries with malaria_status = "Endemic", the same set in every year. Summed malaria_cases_est over summed population, times 100,000. A row with no case estimate adds its population but no cases. 2019 is {malariaRate2019}, {malariaChange2019} on 2000.',
+        ],
+      },
+      {
+        title: 'Where each disease is, 2019: {malariaSSA2019} and {dengueLAC2019}',
+        body: [
+          "Each region's share of the 2019 total. Malaria: estimated cases across the endemic countries, {malariaSSA2019} in Sub-Saharan Africa. Dengue: reported cases across rows with dengue_complete = 1, {dengueLAC2019} in Latin America & Caribbean and {dengueEAP2019} in East Asia & Pacific.",
+        ],
+      },
+      {
+        title: 'The data, in four numbers',
+        body: [
+          'Years: the distinct years in the country-year table, {firstYear}-{lastYear} ({yearsCovered}). Malaria-endemic countries: as above, {malariaEndemicN}. Complete dengue reporting: rows with dengue_complete = 1 in 2019 ({dengueComplete2019}).',
+          'Factors: temp_c, precip_mm, gdp_pc_ppp, hdi, urban_pct, pop_density, water_basic_pct, sanitation_basic_pct and health_exp_pc, {factorCount2019} in all, each with a value for at least {factorMinCoverage2019} countries in 2019. Two columns are left out: rh_pct, which only Singapore has ({rhCountries2019} country in 2019), and poverty_pct, which has survey values for only {povertyCountries2019} countries in 2019.',
+        ],
+      },
+      {
         title: 'Singapore dengue, 2019: {sgDengue2019}',
         body: [
           'dengue_per_100k for Singapore in 2019 is {sgDengueExact2019}. The comparison is the median across the {hiN2019} high-income countries with a dengue rate that year, Singapore included, which is {hiMedianExact2019}. The ratio rounds to {ratio2019}x.',
@@ -516,7 +592,7 @@ const config: SiteConfig = {
         title: 'Income and disease, 2000-2024: {medianRMalaria} vs {medianRDengue}',
         body: [
           'r is the Pearson correlation between log10(gdp_pc_ppp) and ln(1 + rate per 100k), using countries with both rates and GDP in that year. The same countries are compared for both diseases, between {nMin} and {nMax} of them a year.',
-          "The tile shows the median of the 25 yearly values: {medianRMalaria} for malaria and {medianRDengue} for dengue. Malaria's link is stronger, by absolute r, in all {yearsMalariaStronger} years.",
+          "The Conclusion's finding uses the median of the {yearsCovered} yearly values: {medianRMalaria} for malaria and {medianRDengue} for dengue. Malaria's link is stronger, by absolute r, in all {yearsMalariaStronger} years. Every yearly value is in the table below.",
         ],
       },
       {
@@ -529,19 +605,19 @@ const config: SiteConfig = {
         title: 'The globe: latest available year per country',
         body: [
           'For each country and disease, the latest year with a rate. Dengue covers {globeDengueN} countries and territories: {globeDengueLatest} from 2024, the rest back to {globeDengueMinYear}. Malaria is 2024 everywhere except Mauritius (2021).',
-          'Singapore shows {sgDengue2024} per 100k on the globe (2024) and {sgDengue2019} on the stat tile (2019). Both are labelled with their year, so the difference is intended.',
+          'Singapore shows {sgDengue2024} per 100k on the globe (2024) and {sgDengue2019} in the Singapore findings (2019). Both are labelled with their year, so the difference is intended.',
         ],
       },
       {
-        title: 'Weather lag in Singapore, 2012-2024: r about 0.19',
+        title: 'Weather lag in Singapore, 2012-2024: r about {sgTempLagR}',
         body: [
-          'Pearson r between monthly weather at the Changi station and monthly dengue cases over {sgLagMonths} months, for lags of 0 to 6 months. Temperature at 1 and 2 months is the strongest of all these links, at about 0.19.',
+          'Pearson r between monthly weather at the Changi station and monthly dengue cases over {sgLagMonths} months, for lags of 0 to 6 months. Temperature at 1 and 2 months is the strongest of all these links, at about {sgTempLagR}.',
         ],
       },
     ],
 
     closestYearNote:
-      'All available countries, 2019: malaria {allMalariaR2019} ({allMalariaN2019} countries), dengue {allDengueR2019} ({allDengueN2019}). Same {sameN2019} countries, 2019: {sameMalariaR2019} vs {sameDengueR2019}. 2019 is the closest of the 25 years.',
+      'All available countries, 2019: malaria {allMalariaR2019} ({allMalariaN2019} countries), dengue {allDengueR2019} ({allDengueN2019}). Same {sameN2019} countries, 2019: {sameMalariaR2019} vs {sameDengueR2019}. 2019 is the closest of the {yearsCovered} years.',
 
     // Each claim here that has a number is asserted by scripts/build-data.ts.
     limitations: [
@@ -553,7 +629,7 @@ const config: SiteConfig = {
       'Correlations show association, not cause.',
       'Singapore weather links use monthly data for 2012-2024 ({sgLagMonths} months), and all are weak.',
       'Humidity is in the data for Singapore only, from the Changi station (2000-2024). Country-level humidity was never added to the global table, so global comparisons cover temperature and rainfall.',
-      'The country-year table behind every headline number is annual and ends in 2024. The monthly global file also ends in 2024. The Global Dengue Observatory file runs to 2026 but feeds no number on this page or the homepage.',
+      'The country-year table behind every headline number is annual and ends in 2024. The monthly global file also ends in 2024. The Global Dengue Observatory file runs to 2026 but feeds no number on this site.',
     ],
 
     sources: [
