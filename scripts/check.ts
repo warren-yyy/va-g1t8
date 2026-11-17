@@ -2,16 +2,18 @@
  * npm run check
  * Prints the status of every view's url, height, description, howTo and takeaway, and
  * of every part's findings and bridge. An empty value is only reported, and a view whose
- * height is not confirmed gets a warning. A malformed url or height fails, and so does anything else that would break the page (too many embeds in one
- * part's tabs, an extra page with no route).
+ * height is not confirmed gets a warning. A malformed url or height fails, and so does
+ * anything else that would break the page (more than 8 tabs in one part, a duplicate id,
+ * an extra page with no route).
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import config from '../src/site.config';
 import { DEFAULT_DASHBOARD_HEIGHT, normalizeTableauUrl, vizSize } from '../src/lib/tableau';
 
-// Only the active tab loads, but every embed in a part's tabs can end up loaded at once.
-const MAX_EMBEDS_PER_PART = 4;
+// Only the active tab loads, so more views per part cost nothing until they are opened.
+// The limit keeps a part's tab bar readable. Extras count, as they may get a url later.
+const MAX_TABS_PER_PART = 8;
 const problems: string[] = [];
 const warnings: string[] = [];
 
@@ -69,9 +71,9 @@ for (const row of rows.filter((candidate) => candidate.normalized)) {
 }
 
 for (const part of config.parts) {
-  const embeds = rows.filter((row) => row.part === String(part.number) && row.normalized).length;
-  if (embeds > MAX_EMBEDS_PER_PART) {
-    problems.push(`Part ${part.number} has ${embeds} embeds; the most a part may have is ${MAX_EMBEDS_PER_PART}.`);
+  const tabs = config.dashboards.filter((d) => d.part === part.number).length;
+  if (tabs > MAX_TABS_PER_PART) {
+    problems.push(`Part ${part.number} has ${tabs} views; the most a part may have is ${MAX_TABS_PER_PART} tabs.`);
   }
 }
 

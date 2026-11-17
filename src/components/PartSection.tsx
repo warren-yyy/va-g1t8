@@ -4,12 +4,12 @@ import DashboardSection from '@/components/DashboardSection';
 import DashboardTabs from '@/components/DashboardTabs';
 import HeadlineReveal from '@/components/HeadlineReveal';
 import Reveal from '@/components/Reveal';
-import { answerIsDraft, getPart, visibleDashboards } from '@/lib/dashboards';
+import { answerIsDraft, getPart, showClusterMap, visibleDashboards } from '@/lib/dashboards';
 import { fill } from '@/lib/fill';
 
 /**
  * One part of the story, as a section of the single page. Its id is the part's slug.
- * Order: kicker, title, intro, dashboards, (Singapore's cluster map), findings, bridge.
+ * Order: kicker, title, intro, view tabs, (Singapore's cluster map), findings, bridge.
  */
 export default function PartSection({ partNumber }: { partNumber: number }) {
   const part = getPart(partNumber);
@@ -40,7 +40,8 @@ export default function PartSection({ partNumber }: { partNumber: number }) {
         </DashboardTabs>
       )}
 
-      {part.slug === 'singapore' && <ClusterMap />}
+      {/* Until D12b, which shows the current clusters, is published. */}
+      {part.slug === 'singapore' && showClusterMap() && <ClusterMap />}
 
       {part.findings && part.findings.length > 0 && (
         <div className="findings" aria-labelledby={findingsId}>

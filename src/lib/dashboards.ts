@@ -13,6 +13,14 @@ export function answerIsDraft(): boolean {
   return normalizeTableauUrl(config.dashboards.find((dashboard) => dashboard.id === 'D13')?.url) === '';
 }
 
+/**
+ * D12b shows the current NEA clusters, so the site's own cluster map is only needed until
+ * D12b has a url.
+ */
+export function showClusterMap(): boolean {
+  return normalizeTableauUrl(config.dashboards.find((dashboard) => dashboard.id === 'D12b')?.url) === '';
+}
+
 export function getPart(partNumber: number): Part {
   const part = config.parts.find((candidate) => candidate.number === partNumber);
   if (!part) throw new Error(`No part ${partNumber} in src/site.config.ts`);
