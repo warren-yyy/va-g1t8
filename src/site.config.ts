@@ -249,7 +249,7 @@ const config: SiteConfig = {
       title: 'Two diseases',
       part: 1,
       question: 'What are the two diseases, and how have they moved since 2000?',
-      url: '',
+      url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D1Home',
       height: 600,
       description:
         'Headline figures for the chosen year (countries reporting dengue, countries with malaria, reported dengue cases, estimated malaria cases) and how each disease has changed since 2000.',
@@ -264,7 +264,7 @@ const config: SiteConfig = {
       title: 'Highest rates',
       part: 1,
       question: 'Where are rates highest?',
-      url: '',
+      url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D2aAtlas',
       height: 650,
       description:
         'A world map of cases per 100,000 for the chosen disease and year, beside the countries with the highest rates.',
@@ -279,7 +279,7 @@ const config: SiteConfig = {
       title: 'Where the cases are',
       part: 1,
       question: 'Where are the cases, and are they rising?',
-      url: '',
+      url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D2bAtlas',
       height: 800,
       description:
         "A treemap of cases by country, sized by cases and coloured by the change from the year before, beside each region's share of cases since 2000.",
@@ -294,7 +294,7 @@ const config: SiteConfig = {
       title: 'Who stays on top',
       part: 1,
       question: 'Which countries stay on top?',
-      url: '',
+      url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D2cAtlas',
       height: 600,
       description:
         'How the 10 countries with the highest average rate ranked each year from 2010 to 2023, coloured by region.',
@@ -309,7 +309,7 @@ const config: SiteConfig = {
       title: 'Change by region',
       part: 1,
       question: 'Is dengue rising and malaria falling everywhere?',
-      url: '',
+      url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D3aTrends',
       height: 600,
       description: "Each region's dengue and malaria rates since 2000, indexed so that 2000 = 100.",
       howTo: 'Compare each line with the grey line at 100, which marks no change since 2000.',
@@ -323,7 +323,7 @@ const config: SiteConfig = {
       title: 'Drill down',
       part: 1,
       question: 'Where is each disease rising or falling?',
-      url: '',
+      url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D3bTrends',
       height: 750,
       description:
         "Year-on-year change by region, the countries that changed most between two chosen years, and any one country's history.",
@@ -515,7 +515,7 @@ const config: SiteConfig = {
       title: 'Weather lag',
       part: 4,
       question: 'Does local weather lead dengue, and by how many months?',
-      url: '',
+      url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D10WeatherLag',
       height: 800,
       description:
         "How strongly each weather variable tracks dengue at lags of 0-6 months, the chosen weather series overlaid on monthly dengue cases, a month-by-month scatter, and Singapore's typical year.",
