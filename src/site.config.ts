@@ -192,8 +192,13 @@ const config: SiteConfig = {
       role: 'Objective 1',
       intro:
         'With the burden mapped, this section tests the candidate explanations. D4 looks at climate and D5 at development and infrastructure; D6 ranks every factor for each disease and shows how stable those links are over time. D7 compares countries with similar climates to separate climate from everything else.',
-      findings: null,
-      bridge: null,
+      findings: [
+        'Heat is a precondition, not an explanation. Both diseases are almost absent in countries averaging below about 18-20 °C, yet among hot countries rates differ more than a thousandfold: in 2019 temperature explained only about a fifth of the variation in dengue rates, and rates kept rising past the lab-optimum range instead of peaking.',
+        'Malaria behaves like a disease of poverty. In 2019 its typical rate fell from about 25,000 per 100,000 in low-income countries to near zero in upper-middle and high-income ones, and its strongest links were basic sanitation (r = -0.86) and drinking water (-0.79). It was more strongly tied to wealth than dengue in all {yearsMalariaStronger} years from {firstYear} to {lastYear}.',
+        "Dengue does not follow wealth the same way. In 2019 it peaked in upper-middle-income countries, and water and sanitation barely mattered (r about -0.15). Its link with wealth is also unstable: near zero in the early 2000s, strongest in 2019 ({allDengueR2019}), and reversed by 2024 ({dengueR2024}) as more African countries began reporting. Contrary to our proposal, denser and more urban countries did not report more dengue.",
+        "Holding climate fixed shows the split directly. Singapore's climate twins (2010-2023 averages) range from 90 dengue cases per 100,000 a year in Thailand to 3,852 in Seychelles, yet only the two poorer twins have malaria. Rich tropical places such as Singapore, New Caledonia and French Polynesia escape malaria but not dengue, so for wealthy tropical countries development alone will not remove dengue risk.",
+      ],
+      bridge: 'A country can therefore be resilient to one disease and vulnerable to the other. The next section maps where that split happens.',
     },
     {
       number: 3,
@@ -375,7 +380,7 @@ const config: SiteConfig = {
       description:
         'How the chosen factor relates to dengue and to malaria across countries, with the correlation (r) for each disease; a switch shows all factors at once.',
       howTo: 'Pick a factor in Compare against and a year, or switch the view to see all factors at once.',
-      takeaway: 'Malaria falls far more steeply than dengue as countries develop: for GDP per person, r is -0.72 for malaria and -0.49 for dengue.',
+      takeaway: 'Basic sanitation separates the two diseases most: r is -0.86 for malaria but only -0.15 for dengue.',
       takeawayNote: '2019, cases per 100,000 on a log scale.',
       alt: null,
       owner: 'Yubing',
@@ -390,7 +395,8 @@ const config: SiteConfig = {
       height: 600,
       description: 'Dengue and malaria rates in each World Bank income group for the chosen year, as box plots.',
       howTo: 'Move the year slider; hover over a dot to see the country.',
-      takeaway: 'Malaria drops step by step from low to high income, while dengue stays at a similar level in every income group.',
+      takeaway: 'Malaria falls from about 25,000 cases per 100,000 in low-income countries to near zero in richer ones; dengue instead peaks in upper-middle-income countries.',
+      takeawayNote: '2019 medians per income group.',
       alt: null,
       owner: 'Yubing',
       extra: false,
