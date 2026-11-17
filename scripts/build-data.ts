@@ -8,6 +8,7 @@
  *   public/data/countries-50m.json world-atlas geometry with ISO3 ids
  *   public/data/countries-50m-lite.json the same shapes, simplified for rotation
  *   src/data/sg-subzones.json      Singapore subzones, simplified for the cluster map
+ *   src/data/diseases.json         pathogen, vector and Wikipedia link, for the disease cards
  *
  * The generated files are committed, so a deploy never needs the source CSVs.
  * If anything differs, it stops with a report and writes nothing.
@@ -473,6 +474,26 @@ expect(`Clusters: simplified subzones under ${MAX_SUBZONE_KB} KB`, JSON.stringif
 const clusterFile = readSourceJson<{ features: { properties: { download_date: string } }[] }>('nea_clusters_now.geojson');
 expect('Clusters: date of the cleaned file, as stated on the site', clusterFile.features[0]!.properties.download_date, '2026-10-23');
 
+// ------------------------------------------------- disease cards in #problem
+
+// Copied field for field: the cards show only these values, with no other text about either disease.
+const diseaseRows = readCsv('disease_info.csv');
+const diseases = ['Dengue', 'Malaria'].map((name) => {
+  const row = diseaseRows.find((candidate) => candidate.disease === name);
+  return {
+    disease: name,
+    pathogen: row?.pathogen?.trim() ?? '',
+    vector: row?.vector?.trim() ?? '',
+    wikiUrl: row?.wiki_url?.trim() ?? '',
+  };
+});
+expect('Diseases: rows in disease_info.csv', diseaseRows.length, 2);
+for (const disease of diseases) {
+  expect(`Diseases: ${disease.disease} has a pathogen and a vector`, disease.pathogen !== '' && disease.vector !== '', true);
+  expect(`Diseases: ${disease.disease} links to English Wikipedia`, disease.wikiUrl.startsWith('https://en.wikipedia.org/wiki/'), true);
+}
+const diseasesJson = { generatedBy: 'scripts/build-data.ts from disease_info.csv', diseases };
+
 // ---------------------------------------------------------- report, then decide
 
 const failures = checks.filter((check) => !check.ok);
@@ -923,3 +944,4 @@ writeJson('public/data/globe.json', globe);
 writeJson('public/data/countries-50m.json', geometryOut);
 writeJson('public/data/countries-50m-lite.json', liteGeometryOut);
 writeJson('src/data/sg-subzones.json', subzonesJson);
+writeJson('src/data/diseases.json', diseasesJson);

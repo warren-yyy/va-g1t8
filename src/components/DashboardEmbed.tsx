@@ -1,16 +1,24 @@
 'use client';
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { VIZ_SIZE, loadTableauApi } from '@/lib/tableau';
+import { loadTableauApi, vizSize } from '@/lib/tableau';
 
 type Status = 'loading' | 'ready' | 'error';
 
 const LOAD_ROOT_MARGIN = '800px 0px';
 const LOAD_TIMEOUT_MS = 30000;
 
-const frameVars = { '--viz-w': VIZ_SIZE.width, '--viz-h': VIZ_SIZE.height } as CSSProperties;
+interface DashboardEmbedProps {
+  url: string;
+  id: string;
+  title: string;
+  /** The view's own height from site.config.ts; null falls back to the default. */
+  height: number | null;
+}
 
-export default function DashboardEmbed({ url, id, title }: { url: string; id: string; title: string }) {
+export default function DashboardEmbed({ url, id, title, height }: DashboardEmbedProps) {
+  const size = vizSize(height);
+  const frameVars = { '--viz-w': size.width, '--viz-h': size.height } as CSSProperties;
   const hostRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -53,9 +61,9 @@ export default function DashboardEmbed({ url, id, title }: { url: string; id: st
         abandonUnfinished();
         return;
       }
-      const scale = Math.min(1, host.clientWidth / VIZ_SIZE.width);
+      const scale = Math.min(1, host.clientWidth / size.width);
       stage.style.transform = scale < 1 ? `scale(${scale})` : 'none';
-      frame.style.height = `${VIZ_SIZE.height * scale}px`;
+      frame.style.height = `${size.height * scale}px`;
     };
 
     const mount = async () => {
@@ -77,8 +85,8 @@ export default function DashboardEmbed({ url, id, title }: { url: string; id: st
       element.setAttribute('toolbar', 'bottom');
       element.setAttribute('hide-tabs', '');
       element.setAttribute('device', 'desktop');
-      element.setAttribute('width', String(VIZ_SIZE.width));
-      element.setAttribute('height', String(VIZ_SIZE.height));
+      element.setAttribute('width', String(size.width));
+      element.setAttribute('height', String(size.height));
 
       timeout = window.setTimeout(() => {
         if (thisAttempt === attempt) setStatus('error');
@@ -125,7 +133,7 @@ export default function DashboardEmbed({ url, id, title }: { url: string; id: st
       window.clearTimeout(timeout);
       viz?.remove();
     };
-  }, [url]);
+  }, [url, size.width, size.height]);
 
   return (
     <div className="embed" ref={hostRef} data-state={status}>

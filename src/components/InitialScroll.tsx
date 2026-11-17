@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect } from 'react';
-
-// Tab panels (#d1 to #d13) are scrolled to by DashboardTabs once the right tab is selected.
-const TAB_PANEL = /^d\d+$/i;
+// View anchors (#d1, #d2a, and legacy ones like #d2) are scrolled to by DashboardTabs
+// once the right tab is selected.
+import { VIEW_ANCHOR as TAB_PANEL } from '@/lib/anchors';
 
 /**
  * Lands a link like /#singapore on its section, then turns on smooth scrolling.

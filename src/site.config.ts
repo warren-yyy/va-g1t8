@@ -1,12 +1,13 @@
 /*
  * All editable site content lives in this one file.
  *
- * To publish a dashboard: paste its Tableau Public link into `url`, then run
- * `npm run check`. See README.md for the full steps.
+ * Each entry in `dashboards` is one Tableau view (D2a, D2b...), shown as one tab.
+ * To publish a view: paste its Tableau Public link into `url`, copy its height from
+ * the dashboard's Size panel into `height`, then run `npm run check`. See README.md.
  *
  * Rendering rules
- * - Empty url on a core dashboard: a "Dashboard coming soon" panel, no Tableau script.
- * - Empty url on an extra dashboard (D7, D12): hidden completely.
+ * - Empty url on a core view: a "Dashboard coming soon" panel, no Tableau script.
+ * - Empty url on an extra view (D7, D12a, D12b): hidden completely.
  * - null description, howTo or takeaway: that line is left out, with no placeholder.
  * - null alt: the question is used as the alt text.
  *
@@ -24,6 +25,11 @@ export interface Dashboard {
   question: string;
   /** Tableau Public link. Empty until the dashboard is published. */
   url: string;
+  /**
+   * The Tableau dashboard's own height in px, from its Size panel. The width is always
+   * 1200. null until confirmed: the embed then assumes 800 and `npm run check` warns.
+   */
+  height: number | null;
   /** What is on the dashboard, in a sentence or two. null shows nothing. */
   description: string | null;
   howTo: string | null;
@@ -76,6 +82,9 @@ export interface ProblemSection {
   /** Draft for the team to edit. */
   intro: string;
   dataTitle: string;
+  /** The user guide the course requires, at the end of #problem. Plain visible text. */
+  guideTitle: string;
+  guide: string[];
 }
 
 export interface DatasetRow {
@@ -153,8 +162,8 @@ const config: SiteConfig = {
     { label: 'Data & Methods', href: '/#data-methods' },
   ],
 
-  // Empty for now. Do not add a user guide, poster or report page until the course
-  // is confirmed to require them. README.md has the steps for adding a page.
+  // Empty for now. The user guide is a block at the end of #problem (problem.guide), not a
+  // page. README.md has the steps for adding a page.
   extraPages: [],
 
   // intro, findings and bridge are drafts for the team to edit. Every number in findings
@@ -167,7 +176,7 @@ const config: SiteConfig = {
       question: 'Where is the burden?',
       role: 'Sets the scene',
       intro:
-        'Before asking why some countries are more vulnerable, we need to know where the burden is and how it has changed. D1 introduces both diseases and their global trend since 2000, D2 shows where cases concentrate and which countries lead, and D3 checks whether those trends hold in every region.',
+        'Before asking why some countries are more vulnerable, we need to know where the burden is and how it has changed. D1 introduces both diseases and their trend since 2000; D2 maps where rates are highest, where the cases are and which countries stay on top; D3 checks whether those trends hold in every region and country.',
       findings: [
         'Reported dengue is rising fast: among the {dengueConsistentN} countries that report consistently, it went from {denguePanel2000} cases per 100k in 2000 to {denguePanel2019} in 2019 and {denguePanel2024} in 2024.',
         'Estimated malaria in the {malariaEndemicN} endemic countries fell from {malariaRate2000} to {malariaRate2019} per 100k between 2000 and 2019 ({malariaChange2019}), then rose to {malariaRate2024} in 2024.',
@@ -182,7 +191,7 @@ const config: SiteConfig = {
       question: 'What drives it?',
       role: 'Objective 1',
       intro:
-        'With the burden mapped, this section tests the candidate explanations. D4 looks at climate, D5 at development and infrastructure, and D6 ranks every factor side by side for each disease. D7 compares countries with similar climates to separate climate from everything else.',
+        'With the burden mapped, this section tests the candidate explanations. D4 looks at climate and D5 at development and infrastructure; D6 ranks every factor for each disease and shows how stable those links are over time. D7 compares countries with similar climates to separate climate from everything else.',
       findings: null,
       bridge: null,
     },
@@ -193,8 +202,8 @@ const config: SiteConfig = {
       question: 'Dengue vs malaria',
       role: 'Objective 2',
       intro:
-        "The same factor may not work the same way for both diseases. D8 groups countries by whether they carry dengue, malaria, both or neither, to show where the two diseases' risk profiles split.",
-      // D8's takeaway already carries this part's finding.
+        "The same factor may not work the same way for both diseases. D8 groups countries by whether they carry dengue, malaria, both or neither, and D6b shows which factors separate the two diseases most.",
+      // D8b's takeaway already carries this part's finding.
       findings: null,
       bridge: 'Next, we test whether the global pattern holds in one city: Singapore.',
     },
@@ -230,83 +239,181 @@ const config: SiteConfig = {
     },
   ],
 
-  // howTo seeds are drafts taken from the workbook's controls. Owners confirm them.
+  // One entry per Tableau view, in page order. `title` is the short tab label.
+  // `height` is the Tableau dashboard's own height in px, from its Size panel; the width
+  // is always 1200. While it is null the embed assumes 800 and `npm run check` warns.
+  // Seeded description and howTo text are drafts for owners to confirm.
   dashboards: [
     {
       id: 'D1',
-      title: 'Home',
+      title: 'Two diseases',
       part: 1,
       question: 'What are the two diseases, and how have they moved since 2000?',
-      url: '',
+      url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D1Home',
+      height: 600,
       description:
-        'Headline figures for the chosen year, a world map of the selected disease, and a divergence chart of how dengue and malaria have moved since 2000, with a short Wikipedia summary of each disease.',
-      howTo: 'Pick a year to update the map and figures, then click a disease to load its Wikipedia summary.',
+        'Headline figures for the chosen year (countries reporting dengue, countries with malaria, reported dengue cases, estimated malaria cases) and how each disease has changed since 2000.',
+      howTo: 'Move the year slider to update the figures.',
       takeaway: null,
-      alt: 'Map, headline figures, divergence chart and disease picker.',
+      alt: null,
       owner: 'Warren',
       extra: false,
     },
     {
-      id: 'D2',
-      title: 'Atlas',
+      id: 'D2a',
+      title: 'Highest rates',
       part: 1,
-      question: 'Where is each disease concentrated, and which countries lead?',
-      url: '',
+      question: 'Where are rates highest?',
+      url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D2aAtlas',
+      height: 650,
       description:
-        "Side-by-side world maps of dengue and malaria, the top countries for the chosen year, how country rankings changed over time, and each region's share of cases.",
-      howTo: 'Choose a disease, year and Top N, then click a region to filter or a country to highlight it.',
+        'A world map of cases per 100,000 for the chosen disease and year, beside the countries with the highest rates.',
+      howTo: 'Choose a disease, year and number of countries; click a country in the bar chart to find it on the map.',
       takeaway: null,
-      alt: 'Dengue and malaria maps, bump chart, region share and Top N chart.',
+      alt: null,
       owner: 'Warren',
       extra: false,
     },
     {
-      id: 'D3',
-      title: 'Trends',
+      id: 'D2b',
+      title: 'Where the cases are',
+      part: 1,
+      question: 'Where are the cases, and are they rising?',
+      url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D2bAtlas',
+      height: 800,
+      description:
+        "A treemap of cases by country, sized by cases and coloured by the change from the year before, beside each region's share of cases since 2000.",
+      howTo: "Choose a disease and year; hover over a box to see that country's cases and change.",
+      takeaway: null,
+      alt: null,
+      owner: 'Warren',
+      extra: false,
+    },
+    {
+      id: 'D2c',
+      title: 'Who stays on top',
+      part: 1,
+      question: 'Which countries stay on top?',
+      url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D2cAtlas',
+      height: 600,
+      description:
+        'How the 10 countries with the highest average rate ranked each year from 2010 to 2023, coloured by region.',
+      howTo: 'Choose a disease, then hover over a line to follow one country.',
+      takeaway: null,
+      alt: null,
+      owner: 'Warren',
+      extra: false,
+    },
+    {
+      id: 'D3a',
+      title: 'Change by region',
       part: 1,
       question: 'Is dengue rising and malaria falling everywhere?',
-      url: '',
-      description:
-        "Regional trend lines, a year-on-year change heatmap by region, a slope chart of the countries that changed most, and a country explorer for any single country's history.",
-      howTo:
-        'Choose a disease, smoothing window and year range, click a region to update the slope chart, then click a country there to open it in the explorer.',
+      url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D3aTrends',
+      height: 600,
+      description: "Each region's dengue and malaria rates since 2000, indexed so that 2000 = 100.",
+      howTo: 'Compare each line with the grey line at 100, which marks no change since 2000.',
       takeaway: null,
-      alt: 'Regional trends, slope chart, year-on-year heatmap and country explorer.',
+      alt: null,
       owner: 'Warren',
       extra: false,
     },
     {
-      id: 'D4',
-      title: 'Climate',
+      id: 'D3b',
+      title: 'Drill down',
+      part: 1,
+      question: 'Where is each disease rising or falling?',
+      url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D3bTrends',
+      height: 750,
+      description:
+        "Year-on-year change by region, the countries that changed most between two chosen years, and any one country's history.",
+      howTo:
+        'Choose a disease and years, click a region in the heatmap, then click a line in the slope chart to see that country.',
+      takeaway: null,
+      alt: null,
+      owner: 'Warren',
+      extra: false,
+    },
+    {
+      id: 'D4a',
+      title: 'Hottest places',
       part: 2,
-      question: 'How do temperature, rain and humidity relate to each disease?',
+      question: "Is disease highest where it's hottest?",
       url: '',
-      description: null,
-      howTo: null,
+      height: null,
+      description:
+        'A world map shaded by average temperature, with a dot for each country sized by its cases per 100,000 for the chosen disease and year.',
+      howTo: 'Choose a disease and year; hover over a country for its temperature and rate.',
       takeaway: null,
       alt: null,
       owner: 'Yubing',
       extra: false,
     },
     {
-      id: 'D5',
-      title: 'Development',
+      id: 'D4b',
+      title: 'Best temperature',
       part: 2,
-      question: 'Do income, services and urbanisation track burden?',
+      question: 'Is there a best temperature for the disease?',
       url: '',
-      description: null,
-      howTo: null,
+      height: null,
+      description:
+        "Typical cases per 100,000 in each 2 °C temperature band, beside every country's rate plotted against its average temperature, with the lab-optimum temperature range shaded.",
+      howTo: 'Choose a disease and year; hover over a bar or dot for the countries behind it.',
       takeaway: null,
       alt: null,
       owner: 'Yubing',
       extra: false,
     },
     {
-      id: 'D6',
+      id: 'D5a',
+      title: 'Factor by factor',
+      part: 2,
+      question: 'How does each factor relate to dengue and malaria?',
+      url: '',
+      height: null,
+      description:
+        'How the chosen factor relates to dengue and to malaria across countries, with the correlation (r) for each disease; a switch shows all factors at once.',
+      howTo: 'Pick a factor in Compare against and a year, or switch the view to see all factors at once.',
+      takeaway: null,
+      alt: null,
+      owner: 'Yubing',
+      extra: false,
+    },
+    {
+      id: 'D5b',
+      title: 'Richer, less disease?',
+      part: 2,
+      question: 'Does disease fall as countries get richer?',
+      url: '',
+      height: null,
+      description: 'Dengue and malaria rates in each World Bank income group for the chosen year, as box plots.',
+      howTo: 'Move the year slider; hover over a dot to see the country.',
+      takeaway: null,
+      alt: null,
+      owner: 'Yubing',
+      extra: false,
+    },
+    {
+      id: 'D6a',
       title: 'Scorecard',
       part: 2,
       question: 'Which factor matters most, for which disease?',
       url: '',
+      height: null,
+      description: null,
+      howTo: null,
+      takeaway: null,
+      alt: null,
+      owner: 'Shredha',
+      extra: false,
+    },
+    {
+      id: 'D6c',
+      title: 'How stable',
+      part: 2,
+      question: 'How stable is each correlation over time?',
+      url: '',
+      height: null,
       description: null,
       howTo: null,
       takeaway: null,
@@ -320,33 +427,82 @@ const config: SiteConfig = {
       part: 2,
       question: 'Why do countries with the same climate differ?',
       url: '',
-      description: null,
-      howTo: null,
+      height: null,
+      description:
+        'Countries with a similar climate to the chosen one, compared on temperature, rainfall, dengue, malaria, GDP per person and clean water (2010–2023 averages).',
+      howTo:
+        'Pick a country and adjust the temperature and rainfall ranges, or click a country in the table to see its own twins.',
       takeaway: null,
       alt: null,
       owner: 'Yubing',
       extra: true,
     },
     {
-      id: 'D8',
-      title: 'Resilient vs vulnerable',
+      id: 'D8a',
+      title: 'Which disease where',
       part: 3,
-      question: 'Which countries carry one disease but not the other?',
-      url: 'https://public.tableau.com/views/G1T8_D6-D8/D8ResilientvsVulnerable?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
+      question: 'Which countries carry which disease?',
+      url: '',
+      height: null,
       description:
-        'A world map, a dengue-versus-malaria scatter, income-group bars and a country list, grouping countries by whether dengue, malaria or both exceed a threshold.',
-      howTo: 'Move the year slider and the two thresholds, then click a group in any chart to list its countries.',
-      takeaway: 'In 2019, 96% of low-income countries had high malaria with no dengue reporting, while 45% of high-income countries were dengue only.',
-      alt: 'World map, dengue-versus-malaria scatter, income-group bars and a country list, grouping countries by whether dengue, malaria or both exceed a threshold.',
+        "Each country's dengue rate against its malaria rate, grouped by which disease is above its threshold, with the factor profiles of any countries you select.",
+      howTo: null,
+      takeaway: null,
+      alt: null,
       owner: 'Shredha',
       extra: false,
     },
     {
-      id: 'D9',
-      title: 'Singapore pulse',
+      id: 'D8b',
+      title: 'By income and region',
+      part: 3,
+      question: 'How does it vary by income and region?',
+      url: '',
+      height: null,
+      description: 'How those groups split by income level, and the typical dengue and malaria rate in each region.',
+      howTo: null,
+      takeaway:
+        'In 2019, 96% of low-income countries had high malaria with no dengue reporting, while 45% of high-income countries were dengue only.',
+      alt: null,
+      owner: 'Shredha',
+      extra: false,
+    },
+    // In Part 3 on purpose: it answers that section's question.
+    {
+      id: 'D6b',
+      title: 'What separates them',
+      part: 3,
+      question: 'Which factors separate dengue from malaria?',
+      url: '',
+      height: null,
+      description: "Each factor's correlation with dengue and with malaria side by side, sorted by the gap between them.",
+      howTo: null,
+      takeaway: null,
+      alt: null,
+      owner: 'Shredha',
+      extra: false,
+    },
+    {
+      id: 'D9a',
+      title: 'Weekly waves',
       part: 4,
       question: "How big and regular are Singapore's dengue waves?",
       url: '',
+      height: null,
+      description: null,
+      howTo: null,
+      takeaway: null,
+      alt: null,
+      owner: 'Yurae',
+      extra: false,
+    },
+    {
+      id: 'D9b',
+      title: 'Peaks and worst years',
+      part: 4,
+      question: 'When does dengue peak, and which years were worst?',
+      url: '',
+      height: null,
       description: null,
       howTo: null,
       takeaway: null,
@@ -359,23 +515,25 @@ const config: SiteConfig = {
       title: 'Weather lag',
       part: 4,
       question: 'Does local weather lead dengue, and by how many months?',
-      url: '',
+      url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D10WeatherLag',
+      height: 800,
       description:
         "How strongly each weather variable tracks dengue at lags of 0-6 months, the chosen weather series overlaid on monthly dengue cases, a month-by-month scatter, and Singapore's typical year.",
       howTo: 'Choose a weather variable and a lag in months, then compare the charts.',
       takeaway:
         'Temperature leads dengue by about 1-2 months, but the link is weak (r about {sgTempLagR}), as is every other weather link.',
       takeawayNote: 'Singapore, monthly data, 2012-2024 (156 months).',
-      alt: 'Overlay, scatter, lag profile and average-year charts.',
+      alt: null,
       owner: 'Warren',
       extra: false,
     },
     {
-      id: 'D11',
-      title: '2020 hotspots',
+      id: 'D11a',
+      title: 'Week by week',
       part: 4,
       question: 'Where did the 2020 outbreak hit, week by week?',
       url: '',
+      height: null,
       description: null,
       howTo: null,
       takeaway: null,
@@ -384,11 +542,41 @@ const config: SiteConfig = {
       extra: false,
     },
     {
-      id: 'D12',
-      title: 'Housing and persistence',
+      id: 'D11b',
+      title: 'Hardest-hit subzones',
       part: 4,
-      question: 'Does housing explain the hotspots, and do they repeat?',
+      question: 'Which subzones were hit hardest in 2020?',
       url: '',
+      height: null,
+      description: null,
+      howTo: null,
+      takeaway: null,
+      alt: null,
+      owner: 'Yurae',
+      extra: false,
+    },
+    {
+      id: 'D12a',
+      title: 'Housing',
+      part: 4,
+      question: 'Does housing explain which subzones were hit?',
+      url: '',
+      height: null,
+      description: null,
+      howTo: null,
+      takeaway: null,
+      alt: null,
+      owner: 'Yurae',
+      extra: true,
+    },
+    // Will show the current NEA clusters. Once it has a url, the site's own cluster map is hidden.
+    {
+      id: 'D12b',
+      title: 'Do hotspots repeat?',
+      part: 4,
+      question: 'Are the same places hit again?',
+      url: '',
+      height: null,
       description: null,
       howTo: null,
       takeaway: null,
@@ -402,12 +590,13 @@ const config: SiteConfig = {
       part: 5,
       question: 'Do the global risk factors hold inside Singapore?',
       url: '',
+      height: null,
       description: null,
       howTo: null,
       // Was the answer sentence, which now leads the Conclusion's findings just below.
       takeaway: null,
       alt: null,
-      owner: 'TBD',
+      owner: 'Shredha',
       extra: false,
     },
   ],
@@ -420,6 +609,13 @@ const config: SiteConfig = {
     intro:
       "Dengue and malaria are both spread by mosquitoes, but they do not strike the same places, and their burden has moved in opposite directions since 2000. A country's risk could come from its climate (heat, rain and humidity), from how developed it is (income, health spending, clean water and sanitation), or from how its people live (urbanisation and density). This project tests those factors against {yearsCovered} years of country data ({firstYear}-{lastYear}) to see which matter most for each disease, then checks whether the global pattern holds inside Singapore, a hot, dense, high-income city that eliminated malaria but still has large dengue outbreaks.",
     dataTitle: 'The data',
+    guideTitle: 'How to use this site',
+    guide: [
+      'Use the navbar to jump to any section.',
+      "Each section's tabs switch between its dashboard views.",
+      'The dashboards are interactive: use their controls, click marks to filter or highlight, and hover over anything for details. Each one has an "Open in Tableau Public" link underneath.',
+      'Best viewed on a desktop screen.',
+    ],
   },
 
   // {tokens} come from src/data/stats.json.

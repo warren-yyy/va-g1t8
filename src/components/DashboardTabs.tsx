@@ -1,10 +1,11 @@
 'use client';
 
 import { Children, useEffect, useRef, useState, type KeyboardEvent, type ReactNode } from 'react';
+import { resolveViewAnchor } from '@/lib/anchors';
 import { ScrollTrigger } from '@/lib/gsap';
 
 export interface TabInfo {
-  /** Dashboard id, such as "D1". Its lowercase form is the panel's id and deep link. */
+  /** View id, such as "D2a". Its lowercase form is the panel's id and deep link. */
   id: string;
   label: string;
 }
@@ -26,7 +27,12 @@ const anchorOf = (id: string) => id.toLowerCase();
  * back. A hidden panel has no size, so its embed's IntersectionObserver never fires and no
  * viz starts until its tab is active and near the viewport.
  *
- * #d1 to #d13 select the matching tab and scroll to it, on load and on hashchange.
+ * A view anchor (#d1, #d2a...) selects the matching tab and scrolls to it, on load and on
+ * hashchange. Legacy anchors from before the split (#d2) open the old dashboard's first
+ * view (D2a); see src/lib/anchors.ts.
+ *
+ * Panels can differ in height. The tab bar sits above them, so a switch only changes the
+ * page below it and the reader stays put; ScrollTrigger then re-measures the new layout.
  */
 export default function DashboardTabs({ label, tabs, children }: DashboardTabsProps) {
   const panels = Children.toArray(children);
@@ -40,7 +46,7 @@ export default function DashboardTabs({ label, tabs, children }: DashboardTabsPr
 
   useEffect(() => {
     const fromHash = (behavior: ScrollBehavior) => {
-      const hash = window.location.hash.slice(1).toLowerCase();
+      const hash = resolveViewAnchor(window.location.hash.slice(1));
       const index = tabs.findIndex((tab) => anchorOf(tab.id) === hash);
       if (index === -1) return;
       if (index === activeRef.current) {
@@ -61,12 +67,16 @@ export default function DashboardTabs({ label, tabs, children }: DashboardTabsPr
   // After a switch: finish any deep-link scroll, and let ScrollTrigger measure the new layout.
   useEffect(() => {
     activeRef.current = active;
-    if (pendingScroll.current) {
-      const behavior = pendingScroll.current;
-      pendingScroll.current = null;
-      rootRef.current?.scrollIntoView({ behavior, block: 'start' });
-    }
-    const frame = window.requestAnimationFrame(() => ScrollTrigger.refresh());
+    const behavior = pendingScroll.current;
+    pendingScroll.current = null;
+    // On load, jump at once, before anything paints.
+    if (behavior === 'instant') rootRef.current?.scrollIntoView({ behavior, block: 'start' });
+    const frame = window.requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+      // A smooth scroll started before the refresh is cancelled by it (measured: a
+      // hashchange to another tab selected it and never scrolled), so start it after.
+      if (behavior === 'smooth') rootRef.current?.scrollIntoView({ behavior, block: 'start' });
+    });
     return () => window.cancelAnimationFrame(frame);
   }, [active]);
 

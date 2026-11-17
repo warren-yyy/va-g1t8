@@ -1,13 +1,24 @@
 /*
  * Tableau helpers. Nothing here touches the DOM on import, so Server Components and
- * scripts/check.ts can use VIZ_SIZE and normalizeTableauUrl too.
+ * scripts/check.ts can use vizSize and normalizeTableauUrl too.
  */
 
-// The one place the viz size is set. The dashboards are fixed at 1200 x 800. Tableau
-// draws its 27px bottom toolbar directly under the dashboard, inside the same iframe.
-// Measured in Chrome: with an iframe only as tall as the dashboard, the toolbar is
-// clipped and the inner document scrolls. With 27px more, it fits exactly.
-export const VIZ_SIZE = { width: 1200, height: 827 } as const;
+/** Every view is 1200 wide in Tableau. Only the height differs. */
+export const VIZ_WIDTH = 1200;
+/** Assumed while a view's height is null in site.config.ts. */
+export const DEFAULT_DASHBOARD_HEIGHT = 800;
+// Tableau draws its 27px bottom toolbar directly under the dashboard, inside the same
+// iframe. Measured in Chrome: with an iframe only as tall as the dashboard, the toolbar
+// is clipped and the inner document scrolls. With 27px more, it fits exactly.
+export const TOOLBAR_HEIGHT = 27;
+
+/**
+ * The one place the iframe size is worked out: the dashboard's width, and its height
+ * plus the toolbar. `dashboardHeight` is the `height` field of a view in site.config.ts.
+ */
+export function vizSize(dashboardHeight: number | null): { width: number; height: number } {
+  return { width: VIZ_WIDTH, height: (dashboardHeight ?? DEFAULT_DASHBOARD_HEIGHT) + TOOLBAR_HEIGHT };
+}
 
 const TABLEAU_HOST = 'public.tableau.com';
 
