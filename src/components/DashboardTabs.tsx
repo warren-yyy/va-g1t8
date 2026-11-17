@@ -67,12 +67,16 @@ export default function DashboardTabs({ label, tabs, children }: DashboardTabsPr
   // After a switch: finish any deep-link scroll, and let ScrollTrigger measure the new layout.
   useEffect(() => {
     activeRef.current = active;
-    if (pendingScroll.current) {
-      const behavior = pendingScroll.current;
-      pendingScroll.current = null;
-      rootRef.current?.scrollIntoView({ behavior, block: 'start' });
-    }
-    const frame = window.requestAnimationFrame(() => ScrollTrigger.refresh());
+    const behavior = pendingScroll.current;
+    pendingScroll.current = null;
+    // On load, jump at once, before anything paints.
+    if (behavior === 'instant') rootRef.current?.scrollIntoView({ behavior, block: 'start' });
+    const frame = window.requestAnimationFrame(() => {
+      ScrollTrigger.refresh();
+      // A smooth scroll started before the refresh is cancelled by it (measured: a
+      // hashchange to another tab selected it and never scrolled), so start it after.
+      if (behavior === 'smooth') rootRef.current?.scrollIntoView({ behavior, block: 'start' });
+    });
     return () => window.cancelAnimationFrame(frame);
   }, [active]);
 
