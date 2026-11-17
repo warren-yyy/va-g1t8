@@ -27,7 +27,7 @@ Each part shows, in order: a kicker, its question as the title, `intro`, the vie
 
 **Deep links.** A view's id in lower case is its link: `/#d2b` scrolls to Part 1 and selects D2b, and `/#d6b` opens Part 3 on D6b. Choosing a tab updates the address bar the same way, so you can copy a link to any view.
 
-Links from before the split still work, and open the first view of the old dashboard: `#d2` opens D2a, `#d3` D3a, `#d4` D4a, `#d5` D5a, `#d6` D6a, `#d8` D8a, `#d9` D9a, `#d11` D11a and `#d12` D12a. The list is `LEGACY_ANCHORS` in [`src/lib/anchors.ts`](src/lib/anchors.ts). `#d12` (D12a) does nothing while D12a, an extra, has no url.
+Links from before the split still work, and open the first view of the old dashboard: `#d2` opens D2a, `#d3` D3a, `#d4` D4a, `#d5` D5a, `#d6` D6a, `#d8` D8a, `#d9` D9a, `#d11` D11a and `#d12` D12a. The list is `LEGACY_ANCHORS` in [`src/lib/anchors.ts`](src/lib/anchors.ts).
 
 **Old links.** `/burden`, `/drivers`, `/dengue-vs-malaria`, `/singapore`, `/conclusion` and `/data-methods`, with or without `.html`, redirect permanently to the matching section. The redirects are in [`vercel.json`](vercel.json), so they work on Vercel and in `npm run preview`, but **not in `npm run dev`**.
 
@@ -81,7 +81,7 @@ Each owner does this when their view is published.
 
 If `check` rejects a `/shared/...` link, open the view's own page in Tableau Public and copy that link instead.
 
-Until a core view has a `url`, its panel says "Dashboard coming soon". The extras (D7, D12a, D12b) get no tab until they have one. A part can have at most 8 views; `npm run check` fails above that.
+Until a core view has a `url`, its panel says "Dashboard coming soon". An extra view (`extra: true`) gets no tab at all until it has one; no view is an extra at the moment. A part can have at most 8 views; `npm run check` fails above that.
 
 ## The views
 
@@ -101,7 +101,7 @@ Each Tableau dashboard is split into views that answer one question each, and ea
 | D5b | Richer, less disease? | 2 | Yubing | core | not confirmed |
 | D6a | Scorecard | 2 | Shredha | core | not confirmed |
 | D6c | How stable | 2 | Shredha | core | not confirmed |
-| D7 | Climate twins | 2 | Yubing | extra | not confirmed |
+| D7 | Climate twins | 2 | Yubing | core | not confirmed |
 | D8a | Which disease where | 3 | Shredha | core | not confirmed |
 | D8b | By income and region | 3 | Shredha | core | not confirmed |
 | D6b | What separates them | 3 | Shredha | core | not confirmed |
@@ -110,8 +110,8 @@ Each Tableau dashboard is split into views that answer one question each, and ea
 | D10 | Weather lag | 4 | Warren | core | 800 |
 | D11a | Week by week | 4 | Yurae | core | not confirmed |
 | D11b | Hardest-hit subzones | 4 | Yurae | core | not confirmed |
-| D12a | Housing | 4 | Yurae | extra | not confirmed |
-| D12b | Do hotspots repeat? | 4 | Yurae | extra | not confirmed |
+| D12a | Housing | 4 | Yurae | core | not confirmed |
+| D12b | Do hotspots repeat? | 4 | Yurae | core | not confirmed |
 | D13 | Global meets Singapore | 5 | Shredha | core | not confirmed |
 
 D6b sits in Part 3 on purpose: it answers that section's question. D7 stays a single view. `npm run check` prints this table from the config, so it is the up-to-date version.

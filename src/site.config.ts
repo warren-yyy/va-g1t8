@@ -7,7 +7,7 @@
  *
  * Rendering rules
  * - Empty url on a core view: a "Dashboard coming soon" panel, no Tableau script.
- * - Empty url on an extra view (D7, D12a, D12b): hidden completely.
+ * - Empty url on an extra view: hidden completely. No view is an extra at the moment.
  * - null description, howTo or takeaway: that line is left out, with no placeholder.
  * - null alt: the question is used as the alt text.
  *
@@ -442,7 +442,7 @@ const config: SiteConfig = {
       takeaway: null,
       alt: null,
       owner: 'Yubing',
-      extra: true,
+      extra: false,
     },
     {
       id: 'D8a',
@@ -574,7 +574,7 @@ const config: SiteConfig = {
       takeaway: null,
       alt: null,
       owner: 'Yurae',
-      extra: true,
+      extra: false,
     },
     // Will show the current NEA clusters. Once it has a url, the site's own cluster map is hidden.
     {
@@ -589,7 +589,7 @@ const config: SiteConfig = {
       takeaway: null,
       alt: null,
       owner: 'Yurae',
-      extra: true,
+      extra: false,
     },
     {
       id: 'D13',
