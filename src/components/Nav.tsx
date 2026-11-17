@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type { NavItem } from '@/site.config';
 
-const COLLAPSE_QUERY = '(min-width: 1101px)';
+// The eight section links need about 1150px; below 1200px they collapse into the menu.
+const COLLAPSE_QUERY = '(min-width: 1200px)';
 
 // Sections with no nav item of their own count towards the item before them.
 const SECTION_ALIASES: Record<string, string> = { problem: 'home' };

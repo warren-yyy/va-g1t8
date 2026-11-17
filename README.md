@@ -12,24 +12,29 @@ Everything is on `/`, in this order. Each section's id is its link, and the navb
 
 | Section | Id | What it holds |
 | --- | --- | --- |
-| Hero | `#home` | The main question and the globe. Exactly one screen tall. |
+| Hero | `#home` | The main question, centred above the globe. Exactly one screen tall. |
 | The problem | `#problem` | The question in prose, a card for each disease, four numbers about the data, then how to use the site. |
 | Part 1 Burden | `#burden` | D1, D2a-D2c, D3a-D3b |
 | Part 2 Drivers | `#drivers` | D4a-D4b, D5a-D5b, D6a, D6c, D7 |
 | Part 3 Dengue vs Malaria | `#dengue-vs-malaria` | D8a, D8b, D6b |
 | Part 4 Singapore | `#singapore` | D9a-D9b, D10, D11a-D11b, D12a-D12b, then the NEA cluster map until D12b is published |
-| Part 5 Conclusion | `#conclusion` | D13 |
-| Data & Methods | `#data-methods` | Datasets, cleaning, downloads, how each number was computed, limitations, sources, team |
+| Part 5 Global meets Singapore | `#global-meets-singapore` | D13 |
+| Conclusion | `#conclusion` | Text only: the answer, one key finding per part, "What this means" once written, and a link to the limits |
+| Data, methods & limitations | `#data-methods` | Always visible: a one-line intro, the key limits and the team. In one collapsible block: limitations, datasets, cleaning, how each number was computed, the r-by-year table, downloads and sources |
+
+The navbar collapses into a menu below 1200px wide, where its eight links no longer fit.
 
 Each part shows, in order: a kicker, its question as the title, `intro`, the view tabs, "What we found" (`findings`), and one sentence into the next part (`bridge`).
 
 **Tabs.** A part's views are tabs ("D1 Two diseases", "D2a Highest rates"...). Only the selected tab's view loads, and only once it is within about 800px of the screen. A view that has loaded stays loaded when you switch tabs, so its filters are kept. Views differ in height, so switching tabs can change the length of the page below the tab bar; the tab bar itself stays where it is. A part with one view (Part 5 today) shows it without a tab bar. Arrow keys, Home and End move between tabs; Enter or Space selects.
 
+**The collapsible block.** "Full data, methods and limitations" is the site's only `<details>`, and `npm run build` fails if any other appears. It opens by itself when the page loads or the hash changes to `#data-methods` or anything inside that section (`#limitations`, `#sources`...), and when a link to one of those is clicked. See `src/components/MethodsDetails.tsx`.
+
 **Deep links.** A view's id in lower case is its link: `/#d2b` scrolls to Part 1 and selects D2b, and `/#d6b` opens Part 3 on D6b. Choosing a tab updates the address bar the same way, so you can copy a link to any view.
 
 Links from before the split still work, and open the first view of the old dashboard: `#d2` opens D2a, `#d3` D3a, `#d4` D4a, `#d5` D5a, `#d6` D6a, `#d8` D8a, `#d9` D9a, `#d11` D11a and `#d12` D12a. The list is `LEGACY_ANCHORS` in [`src/lib/anchors.ts`](src/lib/anchors.ts).
 
-**Old links.** `/burden`, `/drivers`, `/dengue-vs-malaria`, `/singapore`, `/conclusion` and `/data-methods`, with or without `.html`, redirect permanently to the matching section. The redirects are in [`vercel.json`](vercel.json), so they work on Vercel and in `npm run preview`, but **not in `npm run dev`**.
+**Old links.** `/burden`, `/drivers`, `/dengue-vs-malaria`, `/singapore`, `/conclusion` and `/data-methods`, with or without `.html`, redirect permanently to the matching section. `/conclusion` goes to the Conclusion; Part 5 is now `#global-meets-singapore`, and `#d13` still opens D13. The redirects are in [`vercel.json`](vercel.json), so they work on Vercel and in `npm run preview`, but **not in `npm run dev`**.
 
 ## Commands
 
@@ -160,7 +165,13 @@ Each view (`dashboards`):
 
 Only state what a view or a script in this repo shows. Never describe the data as live: the global data is annual and ends in 2024.
 
-The answer sentence is one value, `answerSentence`. It leads the Conclusion's findings, marked as a draft until D13 has a `url`, and the tag then goes away by itself.
+The Conclusion is `conclusion` in `src/site.config.ts`:
+
+- `answer`: the answer sentence. It shows a "Draft until D13 is published" tag until D13 has a `url`, and the tag then goes away by itself.
+- `keyFindings`: one `{ part, text }` per part, shown as a list where each item links to its part. Part 3's is D8b's takeaway, written once and used in both places.
+- `implications`: the paragraphs under "What this means", or `null`. While it is `null`, the heading is left out too.
+
+`npm run check` shows whether `implications` is still empty.
 
 ## Regenerate the data
 
@@ -238,4 +249,5 @@ To test the exact output first: `npm run build`, then `npm run preview`.
 - **Native scrolling only.** Lenis was removed: the page has Tableau iframes throughout, and Lenis cannot see wheel events over an iframe. Nav clicks glide with CSS `scroll-behavior: smooth` (instant under reduced motion), and `scroll-padding-top` keeps section titles clear of the header. `InitialScroll` turns smooth scrolling on only after the first jump to a hash, because Chrome otherwise animates that jump too and stops partway.
 - **A tab hidden mid-load restarts its viz.** Tableau never finishes loading a viz whose panel is hidden while it loads, so `DashboardEmbed` discards an unfinished viz when its panel hides and starts a fresh one when the panel is visible again. A viz that has finished loading is kept.
 - **Two map files.** Drawing full 50m takes 50-80ms a frame, so the globe rotates on `countries-50m-lite.json`, simplified from the same shapes at build time, and fetches full 50m the first time it stops.
+- **`scripts/check-build.ts`** runs after every build, after the path fix. It fails the build unless the built HTML has exactly one `<details>`, inside `#data-methods`.
 - **`scripts/fix-export-paths.ts`** runs after every build. It works around a Next.js export bug on Windows that breaks link prefetching. On Linux, including Vercel, it finds nothing to do.

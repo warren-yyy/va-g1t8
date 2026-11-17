@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import config from '@/site.config';
+import ConclusionSection from '@/components/ConclusionSection';
 import DataMethodsSection from '@/components/DataMethodsSection';
 import Hero from '@/components/Hero';
 import PartSection from '@/components/PartSection';
@@ -19,6 +20,7 @@ export default function HomePage() {
       {config.parts.map((part) => (
         <PartSection key={part.number} partNumber={part.number} />
       ))}
+      <ConclusionSection />
       <DataMethodsSection />
     </>
   );
