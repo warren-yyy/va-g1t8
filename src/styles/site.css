@@ -692,11 +692,17 @@ html:not(.js) .embed__message {
   max-width: none;
 }
 
+/* The key insight as a callout: it stands out through the panel, not a bigger font. */
 .dash__takeaway--full {
   max-width: none;
-  color: var(--fg-soft);
+  padding: clamp(16px, 2.2vw, 24px) clamp(18px, 2.6vw, 28px);
+  border-left: 3px solid var(--fg-soft);
+  border-radius: 0 6px 6px 0;
+  background: var(--bg-raised);
+  color: var(--fg);
   font-family: var(--sans);
-  line-height: 1.4;
+  font-size: clamp(1.0625rem, 1.4vw, 1.1875rem);
+  line-height: 1.6;
 }
 
 .dash__scope {
