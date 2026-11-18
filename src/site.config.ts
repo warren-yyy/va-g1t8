@@ -23,6 +23,12 @@ export interface Dashboard {
   title: string;
   part: number;
   question: string;
+  /**
+   * True when the Tableau dashboard already shows `question` as its own title. The page then
+   * leaves out the question line under the tab title, so it is not said twice. Leave it off
+   * (the default) when the dashboard's title is different or you have not checked.
+   */
+  titleMatchesQuestion?: boolean;
   /** Tableau Public link. Empty until the dashboard is published. */
   url: string;
   /**
@@ -320,6 +326,7 @@ const config: SiteConfig = {
       title: 'Where the cases are',
       part: 1,
       question: 'Where are the cases, and are they rising?',
+      titleMatchesQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D2bAtlas',
       height: 800,
       description:
@@ -335,6 +342,7 @@ const config: SiteConfig = {
       title: 'Who stays on top',
       part: 1,
       question: 'Which countries stay on top?',
+      titleMatchesQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D2cAtlas',
       height: 600,
       description:
@@ -350,6 +358,7 @@ const config: SiteConfig = {
       title: 'Change by region',
       part: 1,
       question: 'Is dengue rising and malaria falling everywhere?',
+      titleMatchesQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D3aTrends',
       height: 600,
       description: "Each region's dengue and malaria rates since 2000, indexed so that 2000 = 100.",
@@ -364,6 +373,7 @@ const config: SiteConfig = {
       title: 'Drill down',
       part: 1,
       question: 'Where is each disease rising or falling?',
+      titleMatchesQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D3bTrends',
       height: 750,
       description:
@@ -380,6 +390,7 @@ const config: SiteConfig = {
       title: 'Hottest places',
       part: 2,
       question: "Is disease highest where it's hottest?",
+      titleMatchesQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D4a',
       height: 650,
       description:
@@ -399,6 +410,7 @@ const config: SiteConfig = {
       title: 'Best temperature',
       part: 2,
       question: 'Is there a best temperature for the disease?',
+      titleMatchesQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D4b',
       height: 650,
       description:
@@ -418,6 +430,7 @@ const config: SiteConfig = {
       title: 'Factor by factor',
       part: 2,
       question: 'How does each factor relate to dengue and malaria?',
+      titleMatchesQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D5a',
       height: 800,
       description:
@@ -437,6 +450,7 @@ const config: SiteConfig = {
       title: 'Richer, less disease?',
       part: 2,
       question: 'Does disease fall as countries get richer?',
+      titleMatchesQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D5b',
       height: 600,
       description:
@@ -455,6 +469,7 @@ const config: SiteConfig = {
       title: 'Scorecard',
       part: 2,
       question: 'Which factor matters most, for which disease?',
+      titleMatchesQuestion: true,
       url: 'https://public.tableau.com:9443/views/G1T8_D6-D8/d6aScorecard?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: 800,
       description: 'Correlation of ten climate and development factors with dengue and with malaria, with the number of countries behind each value.',
@@ -483,6 +498,7 @@ const config: SiteConfig = {
       title: 'Climate twins',
       part: 2,
       question: 'Does the same climate mean the same disease?',
+      titleMatchesQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D7Climatetwins',
       height: 800,
       description:

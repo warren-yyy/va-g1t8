@@ -158,6 +158,7 @@ Each view (`dashboards`):
 - `takeawayNote`: optional. Every number on the site must show its year, so if a takeaway has a number and no year, give the scope here, as D10 does.
 - `height`: the dashboard height in px. See [Set a view's height](#set-a-views-height).
 - `alt`: optional. What the view contains, for screen readers. It falls back to the question.
+- `titleMatchesQuestion`: optional. Set `true` when your Tableau dashboard shows the view's `question` as its own title, and the page then leaves out the question line under the tab title, so it is not said twice. Leave it off if the dashboard's title is different or you have not checked.
 - `whyItMatters`: optional. The "so what" of the view. Setting it switches the view to the labelled layout (below).
 
 `npm run check` lists which of these are still empty.

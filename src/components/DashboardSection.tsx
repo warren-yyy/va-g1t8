@@ -6,7 +6,7 @@ import DashboardEmbed from '@/components/DashboardEmbed';
 import Reveal from '@/components/Reveal';
 
 /**
- * The contents of one dashboard's tab panel: title, description, howTo, the
+ * The contents of one dashboard's tab panel: title and question, description, howTo, the
  * skip link, the light panel with the embed (or "coming soon"), then the takeaway. The
  * panel element itself, with the #d1-style id, belongs to DashboardTabs.
  *
@@ -14,14 +14,15 @@ import Reveal from '@/components/Reveal';
  * "How to use the dashboard" (howTo), then under the embed "Key insight" (the takeaway) and
  * "Why this matters". A view without it is shown as before.
  *
- * There is no question line under the title: each dashboard shows its question as its own
- * title, and a "coming soon" panel shows it too.
+ * The question line under the title is left out when `titleMatchesQuestion` is set, because
+ * the dashboard then shows the question as its own title.
  *
  * There is no "Open in Tableau Public" link under the embed: Tableau's own toolbar has one.
  * The embed's error and no-JavaScript messages carry a link, for when the toolbar is missing.
  */
 export default function DashboardSection({ dashboard }: { dashboard: Dashboard }) {
-  const { id, title, question, description, howTo, takeaway, takeawayNote, whyItMatters, alt } = dashboard;
+  const { id, title, question, titleMatchesQuestion, description, howTo, takeaway, takeawayNote, whyItMatters, alt } =
+    dashboard;
   const url = normalizeTableauUrl(dashboard.url);
   const anchor = id.toLowerCase();
   const labelled = Boolean(whyItMatters);
@@ -32,6 +33,7 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
         <h3 className="dash__title" id={`${anchor}-title`}>
           <span className="dash__id">{id}</span> {title}
         </h3>
+        {!titleMatchesQuestion && <p className="dash__question">{question}</p>}
       </div>
 
       {labelled ? (

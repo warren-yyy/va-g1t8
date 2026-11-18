@@ -466,6 +466,13 @@ html:not(.js) .tabs__panel[hidden] {
   vertical-align: 0.42em;
 }
 
+.dash__question {
+  margin-top: 0.4em;
+  color: var(--fg-soft);
+  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
+  line-height: 1.4;
+}
+
 .dash__description {
   max-width: 60rem;
   margin-top: 0.9em;
