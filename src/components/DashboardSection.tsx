@@ -30,11 +30,14 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
 
       {labelled ? (
         (description || howTo) && (
-          <p className="dash__description">
-            <strong>What this shows:</strong> {description && fill(description)}
-            {description && howTo && ' '}
-            {howTo && fill(howTo)}
-          </p>
+          <div className="dash__block">
+            <p className="dash__label">What this shows</p>
+            <p className="dash__description">
+              {description && fill(description)}
+              {description && howTo && ' '}
+              {howTo && fill(howTo)}
+            </p>
+          </div>
         )
       ) : (
         <>
@@ -78,13 +81,17 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
             {labelled ? (
               <>
                 {takeaway && (
-                  <Reveal as="p" className="dash__takeaway">
-                    <strong>Key insight:</strong> {fill(takeaway)}
-                    {takeawayNote && <span className="dash__scope">{fill(takeawayNote)}</span>}
+                  <Reveal className="dash__block dash__takeaway dash__takeaway--full">
+                    <p className="dash__label">Key insight</p>
+                    <p>
+                      {fill(takeaway)}
+                      {takeawayNote && <span className="dash__scope">{fill(takeawayNote)}</span>}
+                    </p>
                   </Reveal>
                 )}
-                <Reveal as="p" className="dash__description">
-                  <strong>Why it matters:</strong> {fill(whyItMatters ?? '')}
+                <Reveal className="dash__block">
+                  <p className="dash__label">Why it matters</p>
+                  <p className="dash__description">{fill(whyItMatters ?? '')}</p>
                 </Reveal>
               </>
             ) : (

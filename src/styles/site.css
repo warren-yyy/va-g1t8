@@ -669,6 +669,32 @@ html:not(.js) .embed__message {
   line-height: 1.25;
 }
 
+/* Labelled views (those with whyItMatters): each paragraph sits under its own label. */
+.dash__block {
+  margin-top: 1.25rem;
+}
+
+.dash__block + .dash__block {
+  margin-top: clamp(28px, 4vw, 44px);
+}
+
+.dash__label {
+  margin: 0 0 0.4rem;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.dash__label + .dash__description {
+  margin-top: 0;
+}
+
+.dash__takeaway--full {
+  max-width: none;
+}
+
 .dash__scope {
   display: block;
   margin-top: 0.5em;
