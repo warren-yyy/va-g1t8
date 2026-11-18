@@ -34,13 +34,13 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
         <>
           {description && (
             <div className="dash__block">
-              <p className="dash__label">What this dashboard shows</p>
+              <h4 className="dash__label">What this dashboard shows</h4>
               <p className="dash__description">{fillRich(description)}</p>
             </div>
           )}
           {howTo && (
             <div className="dash__block">
-              <p className="dash__label">How to use the dashboard</p>
+              <h4 className="dash__label">How to use the dashboard</h4>
               <p className="dash__description">{fillRich(howTo)}</p>
             </div>
           )}
@@ -88,7 +88,7 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
               <>
                 {takeaway && (
                   <Reveal className="dash__block">
-                    <p className="dash__label">Key insight</p>
+                    <h4 className="dash__label">Key insight</h4>
                     <p className="dash__takeaway dash__takeaway--full">
                       {fillRich(takeaway)}
                       {takeawayNote && <span className="dash__scope">{fill(takeawayNote)}</span>}
@@ -96,7 +96,7 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
                   </Reveal>
                 )}
                 <Reveal className="dash__block">
-                  <p className="dash__label">Why this matters</p>
+                  <h4 className="dash__label">Why this matters</h4>
                   <p className="dash__description">{fillRich(whyItMatters ?? '')}</p>
                 </Reveal>
               </>

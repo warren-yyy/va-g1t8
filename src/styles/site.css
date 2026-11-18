@@ -681,6 +681,7 @@ html:not(.js) .embed__message {
 
 .dash__label {
   margin: 0 0 0.5rem;
+  text-wrap: wrap;
   color: var(--fg);
   font-family: var(--sans);
   font-size: clamp(1.125rem, 1.6vw, 1.3125rem);
@@ -693,7 +694,7 @@ html:not(.js) .embed__message {
   max-width: none;
 }
 
-/* The key insight as a callout: it stands out through the panel, not a bigger font. */
+/* A link to another view, written [text](#d5a). */
 .dash__block a {
   color: inherit;
   text-decoration: underline;
@@ -706,6 +707,7 @@ html:not(.js) .embed__message {
   font-weight: 600;
 }
 
+/* The key insight as a callout: it stands out through the panel, not a bigger font. */
 .dash__takeaway--full {
   max-width: none;
   padding: clamp(16px, 2.2vw, 24px) clamp(18px, 2.6vw, 28px);

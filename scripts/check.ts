@@ -87,8 +87,11 @@ for (const d of config.dashboards) {
   }
 }
 
-// Links between views, written [text](#d5a) in a view's text, must point at a real view.
+// A view's text can hold [text](#d5a) links to other views, **bold** and *italic* (see
+// src/lib/rich.tsx). Links must point at a real view, and anything the renderer would
+// not turn into markup (a stray * or an unsupported link) would show up as raw characters.
 const viewLink = /\]\(#(d\d+[a-z]?)\)/gi;
+const markup = /\[([^\]]+)\]\(#d\d+[a-z]?\)|\*\*(.+?)\*\*|\*(.+?)\*/gi;
 for (const d of config.dashboards) {
   for (const text of [d.description, d.howTo, d.takeaway, d.whyItMatters]) {
     for (const match of (text ?? '').matchAll(viewLink)) {
@@ -96,6 +99,10 @@ for (const d of config.dashboards) {
       if (!config.dashboards.some((other) => other.id.toLowerCase() === target)) {
         problems.push(`${d.id}: link to #${target}, which is not a view.`);
       }
+    }
+    const left = (text ?? '').replace(markup, '');
+    if (/[*]|\]\(/.test(left)) {
+      problems.push(`${d.id}: a stray * or an unsupported link would show as raw text: "${left.slice(0, 60)}..."`);
     }
   }
 }

@@ -158,8 +158,13 @@ Each view (`dashboards`):
 - `takeawayNote`: optional. Every number on the site must show its year, so if a takeaway has a number and no year, give the scope here, as D10 does.
 - `height`: the dashboard height in px. See [Set a view's height](#set-a-views-height).
 - `alt`: optional. What the view contains, for screen readers. It falls back to the question.
+- `whyItMatters`: optional. The "so what" of the view. Setting it switches the view to the labelled layout (below).
 
 `npm run check` lists which of these are still empty.
+
+**Labelled layout.** A view with `whyItMatters` shows four headed sections instead of the plain description, how-to and takeaway: `description` under "What this dashboard shows", `howTo` under "How to use the dashboard", then below the embed `takeaway` under "Key insight" (in a callout box) and `whyItMatters` under "Why this matters". Write `description` for what is drawn and how to read it, `howTo` for what the viewer can click or pick, `takeaway` for the finding with its numbers, and `whyItMatters` for what it means for our question and what the next view tests. A view without `whyItMatters` looks as before, and `takeawayNote` still works in both layouts.
+
+**Formatting inside view text** (`description`, `howTo`, `takeaway`, `whyItMatters`; not `findings`): `**bold**` shows in light blue, so use it for one or two phrases per paragraph, such as the key finding and the "Our conclusion" sentence, and not in `description` or `howTo`. `*italic*` stresses a single word. `[link text](#d5a)` links to another view and opens its tab. `npm run check` fails on a link to a view that does not exist, and on a stray `*` that would show as a raw asterisk. A text with an apostrophe goes in `"double quotes"`.
 
 **Numbers.** Write every number in text as a `{token}`, such as `{sgDengue2019}`. Tokens come from `src/data/stats.json`, which `npm run data` computes and checks against the CSVs, and the build fails on an unknown one. To add a number, compute and `expect` it in `scripts/build-data.ts`, add it to `tokens`, and run `npm run data`.
 
