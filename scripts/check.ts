@@ -1,8 +1,8 @@
 /*
  * npm run check
- * Prints the status of every view's url, height, description, howTo and takeaway, and
- * of every part's findings and bridge. An empty value is only reported, and a view whose
- * height is not confirmed gets a warning. A malformed url or height fails, and so does
+ * Prints the status of every view's url, height, description, howTo, takeaway and
+ * whyItMatters, and of every part's findings and bridge. An empty value is only reported,
+ * and a view whose height is not confirmed gets a warning. A malformed url or height fails, and so does
  * anything else that would break the page (more than 8 tabs in one part, a duplicate id,
  * an extra page with no route).
  */
@@ -52,12 +52,13 @@ const rows = config.dashboards.map((d) => {
     description: status(d.description),
     howTo: status(d.howTo),
     takeaway: status(d.takeaway),
+    whyItMatters: status(d.whyItMatters),
     onSite: d.extra ? (normalized ? 'embed' : 'hidden') : normalized ? 'embed' : 'coming soon',
     normalized,
   };
 });
 
-const columns = ['id', 'title', 'part', 'type', 'owner', 'url', 'height', 'description', 'howTo', 'takeaway', 'onSite'] as const;
+const columns = ['id', 'title', 'part', 'type', 'owner', 'url', 'height', 'description', 'howTo', 'takeaway', 'whyItMatters', 'onSite'] as const;
 const widths = columns.map((column) => Math.max(column.length, ...rows.map((row) => row[column].length)));
 const printLine = (cells: readonly string[]) =>
   console.log(cells.map((cell, index) => cell.padEnd(widths[index] ?? 0)).join('  ').trimEnd());
@@ -91,11 +92,11 @@ for (const page of config.extraPages) {
   if (!fs.existsSync(route)) problems.push(`extraPages "${page.slug}" has no src/app/${page.slug}/page.tsx. See README.md.`);
 }
 
-const count = (key: 'url' | 'description' | 'howTo' | 'takeaway') =>
+const count = (key: 'url' | 'description' | 'howTo' | 'takeaway' | 'whyItMatters') =>
   rows.filter((row) => row[key] === 'empty').length;
 const unconfirmed = config.dashboards.filter((d) => d.height === null).length;
 console.log(
-  `\n${rows.length} views: url empty on ${count('url')}, height not confirmed on ${unconfirmed}, description empty on ${count('description')}, howTo empty on ${count('howTo')}, takeaway empty on ${count('takeaway')}.`,
+  `\n${rows.length} views: url empty on ${count('url')}, height not confirmed on ${unconfirmed}, description empty on ${count('description')}, howTo empty on ${count('howTo')}, takeaway empty on ${count('takeaway')}, whyItMatters empty on ${count('whyItMatters')}.`,
 );
 
 const slugWidth = Math.max(...config.parts.map((part) => part.slug.length));

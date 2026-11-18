@@ -36,6 +36,8 @@ export interface Dashboard {
   takeaway: string | null;
   /** Optional scope shown under the takeaway, so its numbers carry their years. */
   takeawayNote?: string;
+  /** "Why it matters", shown after the takeaway. null shows nothing. */
+  whyItMatters?: string | null;
   /** Falls back to the question when null. */
   alt: string | null;
   owner: string;
@@ -229,9 +231,9 @@ const config: SiteConfig = {
         'With the burden mapped, this section tests the candidate explanations. D4 looks at climate and D5 at development and infrastructure; D6 ranks every factor for each disease and shows how stable those links are over time. D7 compares countries with similar climates to separate climate from everything else.',
       findings: [
         'Heat is a precondition, not an explanation. Both diseases are almost absent in countries averaging below about 18-20 °C, yet among hot countries rates differ more than a thousandfold: in 2019 temperature explained only about a fifth of the variation in dengue rates, and rates kept rising past the lab-optimum range instead of peaking.',
-        'Malaria behaves like a disease of poverty. In 2019 its typical rate fell from about 25,000 per 100,000 in low-income countries to near zero in upper-middle and high-income ones, and its strongest links were basic sanitation (r = -0.86) and drinking water (-0.79). It was more strongly tied to wealth than dengue in all {yearsMalariaStronger} years from {firstYear} to {lastYear}.',
+        'Malaria behaves like a disease of poverty. In 2019 its typical rate fell from about 25,000 per 100,000 in low-income countries to near zero in upper-middle and high-income ones, and its strongest links were basic sanitation (r = -0.86), poverty (+0.81, though only 29 countries have poverty data) and drinking water (-0.79). It was more strongly tied to wealth than dengue in all {yearsMalariaStronger} years from {firstYear} to {lastYear}.',
         "Dengue does not follow wealth the same way. In 2019 it peaked in upper-middle-income countries, and water and sanitation barely mattered (r about -0.15). Its link with wealth is also unstable: near zero in the early 2000s, strongest in 2019 ({allDengueR2019}), and reversed by 2024 ({dengueR2024}) as more African countries began reporting. Contrary to our proposal, denser and more urban countries did not report more dengue.",
-        "Holding climate fixed shows the split directly. Singapore's climate twins (2010-2023 averages) range from 90 dengue cases per 100,000 a year in Thailand to 3,852 in Seychelles, yet only the two poorer twins have malaria. Rich tropical places such as Singapore, New Caledonia and French Polynesia escape malaria but not dengue, so for wealthy tropical countries development alone will not remove dengue risk.",
+        "Holding climate fixed shows the split directly. Singapore's climate twins (2010-2023 averages) range from 90 dengue cases per 100,000 a year in Thailand to 3,852 in Seychelles, yet only two of them, Cambodia and Thailand, have malaria. Rich tropical places such as Singapore, New Caledonia and French Polynesia escape malaria but not dengue, so for wealthy tropical countries development alone will not remove dengue risk.",
       ],
       bridge: 'A country can therefore be resilient to one disease and vulnerable to the other. The next section maps where that split happens.',
     },
@@ -382,9 +384,12 @@ const config: SiteConfig = {
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D4a',
       height: 650,
       description:
-        'A world map shaded by average temperature, with a dot for each country sized by its cases per 100,000 for the chosen disease and year.',
-      howTo: 'Choose a disease and year; hover over a country for its temperature and rate.',
-      takeaway: 'The highest dengue and malaria rates sit in the tropics, in the hottest countries.',
+        'A world map. Each country is shaded by its average temperature, darker pink being hotter, and carries a dot sized by its cases per 100,000 people for the chosen disease and year: red for dengue, blue for malaria.',
+      howTo: 'Choose a disease and year at the top, and hover over a country for its temperature, rainfall and rate.',
+      takeaway:
+        'The big dots sit almost entirely on the darkest-pink belt between the tropics. Dengue clusters in Central and South America, South and Southeast Asia and the Pacific islands, while malaria is concentrated in Sub-Saharan Africa, which had {malariaSSA2019} of estimated malaria cases in 2019. Cooler countries in Europe, North America and northern Asia have almost none. Much of hot Africa shows no dengue dot at all, but that is mostly missing reporting: no Sub-Saharan African country has a complete dengue record before 2023.',
+      whyItMatters:
+        'Heat marks where these diseases can spread, so the map is the starting point. But countries of the same shade carry very different burdens, which the next views explain.',
       alt: null,
       owner: 'Yubing',
       extra: false,
@@ -397,10 +402,12 @@ const config: SiteConfig = {
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D4b',
       height: 650,
       description:
-        "Typical cases per 100,000 in each 2 °C temperature band, beside every country's rate plotted against its average temperature, with the lab-optimum temperature range shaded.",
-      howTo: 'Choose a disease and year; hover over a bar or dot for the countries behind it.',
-      takeaway: 'Both diseases are almost absent in countries averaging below about 18-20 °C, but temperature explains only about a fifth of the differences between countries.',
-      takeawayNote: '2019, countries with complete data (dengue R² 0.22).',
+        'Left, the typical (median) cases per 100,000 people among countries in each 2 °C band of average temperature; pale bars rest on fewer than 5 countries, so read them with caution. Right, every country plotted against its average temperature on a log scale (1 = 10, 2 = 100, 3 = 1,000 cases), with a grey trend line and a green band marking where lab studies find the disease spreads fastest (26–29 °C for dengue, 24–26 °C for malaria; Mordecai et al., 2019).',
+      howTo: 'Switch disease and year, and hover over a bar or dot for details.',
+      takeaway:
+        'In 2019, dengue was almost absent in countries averaging below 18 °C, then the typical rate climbed from about 55 per 100,000 at 18–20 °C to about 190–200 at 24–28 °C. Malaria is near zero below 20 °C and reaches thousands per 100,000 in most bands above 22 °C. Lab studies predict a peak and then a fall, but country rates show no such fall: the typical dengue rate is highest in the hottest band, 28–30 °C (only 3 countries), and malaria peaks at 26–28 °C, above its lab optimum. And temperature explains only about a fifth of the differences in dengue between countries (R² = 0.22).',
+      whyItMatters:
+        'Temperature sets a threshold, not the level. Among hot countries, burden still varies more than a thousandfold, so something other than climate decides who actually gets sick.',
       alt: null,
       owner: 'Yubing',
       extra: false,
@@ -413,10 +420,13 @@ const config: SiteConfig = {
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D5a',
       height: 800,
       description:
-        'How the chosen factor relates to dengue and to malaria across countries, with the correlation (r) for each disease; a switch shows all factors at once.',
-      howTo: 'Pick a factor in Compare against and a year, or switch the view to see all factors at once.',
-      takeaway: 'Basic sanitation separates the two diseases most: r is -0.86 for malaria but only -0.15 for dengue.',
-      takeawayNote: '2019, cases per 100,000 on a log scale.',
+        'Pick a factor in Compare against: temperature, rainfall, GDP per person, HDI, urbanisation, population density, clean water, sanitation, health spending or poverty. The card gives its correlation (r) with each disease, from −1 to 1 (closer to −1 or 1 is a stronger link), and says what it means in words. Below, every country is plotted for dengue (top, red) and malaria (bottom, blue), with grey trend lines.',
+      howTo:
+        'Switch to All factors at once for a grid showing which factors rise together; click a dot to find that country in every chart.',
+      takeaway:
+        "In 2019, malaria was tied most closely to basic infrastructure and poverty: sanitation (r = {rSanMalaria2019}), poverty (+0.81, though only 29 countries have poverty data), clean water ({rWaterMalaria2019}), HDI (−0.78), GDP per person ({rGdpMalaria2019}) and health spending (−0.68). For dengue the same factors barely register (sanitation {rSanDengue2019}, clean water {rWaterDengue2019}); its strongest links were GDP per person ({rGdpDengue2019}) and temperature ({rTempDengue2019}). Population density showed no link with either disease, and more urban countries reported less dengue (−0.38), the opposite of what we expected. The grid shows GDP, HDI and urbanisation rising together, so their separate effects can't be pulled apart.",
+      whyItMatters:
+        "The levers that line up with less malaria, such as sanitation, clean water and health spending, do little for dengue. Dengue's mosquito breeds in small pools of standing water around homes, so improving infrastructure alone is unlikely to bring dengue down the way it brings down malaria.",
       alt: null,
       owner: 'Yubing',
       extra: false,
@@ -428,10 +438,13 @@ const config: SiteConfig = {
       question: 'Does disease fall as countries get richer?',
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D5b',
       height: 600,
-      description: 'Dengue and malaria rates in each World Bank income group for the chosen year, as box plots.',
-      howTo: 'Move the year slider; hover over a dot to see the country.',
-      takeaway: 'Malaria falls from about 25,000 cases per 100,000 in low-income countries to near zero in richer ones; dengue instead peaks in upper-middle-income countries.',
-      takeawayNote: '2019 medians per income group.',
+      description:
+        'Countries grouped into the four World Bank income groups, with dengue on top and malaria below. Each dot is a country; the grey box holds the middle half of countries and the line inside marks the typical one. The scale is logarithmic (1 = 10, 2 = 100, 3 = 1,000 cases per 100,000 people).',
+      howTo: 'Move the year slider, and hover over a dot for the country and its exact figure.',
+      takeaway:
+        'In 2019, the typical malaria rate fell from about 25,000 per 100,000 people in low-income countries to 790 in lower-middle-income ones and near zero above that. Dengue does not fall the same way: it peaked in upper-middle-income countries (256 per 100,000) and was still present in high-income ones (14), including tropical islands such as New Caledonia (1,381) and Antigua and Barbuda (1,339). Only one low-income country, Yemen, reported a complete year of dengue, so that column says more about reporting than about risk.',
+      whyItMatters:
+        "Getting richer goes with the end of malaria but not of dengue, which is heaviest in fast-growing middle-income countries and persists in wealthy tropical ones. That is exactly Singapore's situation.",
       alt: null,
       owner: 'Yubing',
       extra: false,
@@ -472,11 +485,12 @@ const config: SiteConfig = {
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D7Climatetwins',
       height: 800,
       description:
-        'Countries with a similar climate to the chosen one, compared on temperature, rainfall, dengue, malaria, GDP per person and clean water (2010–2023 averages).',
-      howTo:
-        'Pick a country and adjust the temperature and rainfall ranges, or click a country in the table to see its own twins.',
-      takeaway: "Singapore's climate twins have dengue rates from 90 to 3,852 per 100,000 a year, yet malaria appears only in the two poorer twins.",
-      takeawayNote: '2010-2023 averages; twins within ±1.5 °C and ±30% rainfall.',
+        'Pick a country in Compare with (Singapore by default). The table lists its climate twins: countries whose 2010–2023 average temperature and rainfall fall within the ranges set by the two sliders. Rows run from richest to poorest, with bars for temperature, rainfall, dengue, malaria, GDP per person and clean water, and a summary line above.',
+      howTo: 'Click any country in the table to see its own twins.',
+      takeaway:
+        "Singapore's five twins (Seychelles, Thailand, Sri Lanka, El Salvador and Cambodia) all average 26.5–27.7 °C and 1,570–1,900 mm of rain a year, yet their dengue rates range from 90 per 100,000 a year in Thailand to 3,852 in Seychelles, a fortyfold gap. Malaria appears in only two of them: Cambodia (969), the poorest at about $5,300 per person with 74% clean-water access, and Thailand (26). Singapore, the richest at about $115,000, has no malaria but more dengue than Thailand or Cambodia. Choose Seychelles instead and its 18 twins include Liberia and Guinea, where malaria is heavy.",
+      whyItMatters:
+        "Holding climate fixed is the closest this data gets to a fair test. The same climate does not mean the same fate: wealth and infrastructure separate malaria, while dengue's gaps need other explanations, such as how cities are built and how well cases are reported, which the Singapore section explores.",
       alt: null,
       owner: 'Yubing',
       extra: false,
