@@ -694,6 +694,9 @@ html:not(.js) .embed__message {
 
 .dash__takeaway--full {
   max-width: none;
+  color: var(--fg-soft);
+  font-family: var(--sans);
+  line-height: 1.4;
 }
 
 .dash__scope {

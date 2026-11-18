@@ -81,9 +81,9 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
             {labelled ? (
               <>
                 {takeaway && (
-                  <Reveal className="dash__block dash__takeaway dash__takeaway--full">
+                  <Reveal className="dash__block">
                     <p className="dash__label">Key insight</p>
-                    <p>
+                    <p className="dash__takeaway dash__takeaway--full">
                       {fill(takeaway)}
                       {takeawayNote && <span className="dash__scope">{fill(takeawayNote)}</span>}
                     </p>
