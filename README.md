@@ -24,7 +24,7 @@ Everything is on `/`, in this order. Each section's id is its link, and the navb
 
 The navbar collapses into a menu below 1200px wide, where its eight links no longer fit.
 
-Each part shows, in order: a kicker, its question as the title, `intro`, the view tabs, "What we found" (`findings`), and one sentence into the next part (`bridge`).
+Each part shows, in order: a kicker, its question as the title, `intro`, the view tabs, "Key takeaways" (`findings`), and one sentence into the next part (`bridge`).
 
 **Tabs.** A part's views are tabs ("D1 Two diseases", "D2a Highest rates"...). Only the selected tab's view loads, and only once it is within about 800px of the screen. A view that has loaded stays loaded when you switch tabs, so its filters are kept. Views differ in height, so switching tabs can change the length of the page below the tab bar; the tab bar itself stays where it is. A part with one view (Part 5 today) shows it without a tab bar. Arrow keys, Home and End move between tabs; Enter or Space selects.
 
@@ -147,7 +147,7 @@ Everything is in `src/site.config.ts`. While a field is `null`, it is left off t
 Each part (`parts`):
 
 - `intro`: why these views are grouped together, in two or three sentences.
-- `findings`: the paragraphs under "What we found", or `null`.
+- `findings`: the paragraphs under "Key takeaways", or `null`.
 - `bridge`: one sentence leading into the next part, or `null`.
 
 Each view (`dashboards`):
@@ -158,8 +158,14 @@ Each view (`dashboards`):
 - `takeawayNote`: optional. Every number on the site must show its year, so if a takeaway has a number and no year, give the scope here, as D10 does.
 - `height`: the dashboard height in px. See [Set a view's height](#set-a-views-height).
 - `alt`: optional. What the view contains, for screen readers. It falls back to the question.
+- `hideQuestion`: optional. Set `true` to leave out the question line under the tab title, when your Tableau dashboard already shows the view's `question` as its own title, so it is not said twice. Leave it off if the dashboard's title is different (D1 and D2a keep the line).
+- `whyItMatters`: optional. The "so what" of the view. Setting it switches the view to the labelled layout (below).
 
 `npm run check` lists which of these are still empty.
+
+**Labelled layout.** A view with `whyItMatters` shows four headed sections instead of the plain description, how-to and takeaway: `description` under "What this dashboard shows", `howTo` under "How to use the dashboard", then below the embed `takeaway` under "Key insight" (in a callout box) and `whyItMatters` under "Why this matters". Write `description` for what is drawn and how to read it, `howTo` for what the viewer can click or pick, `takeaway` for the finding with its numbers, and `whyItMatters` for what it means for our question and what the next view tests. A view without `whyItMatters` looks as before, and `takeawayNote` still works in both layouts.
+
+**Formatting inside view text** (`description`, `howTo`, `takeaway`, `whyItMatters`; not `findings`): `**bold**` shows in light blue, so use it for one or two phrases per paragraph, such as the key finding and the "Our conclusion" sentence, and not in `description` or `howTo`. `*italic*` stresses a single word. `[link text](#d5a)` links to another view and opens its tab. `npm run check` fails on a link to a view that does not exist, and on a stray `*` that would show as a raw asterisk. A text with an apostrophe goes in `"double quotes"`.
 
 **Numbers.** Write every number in text as a `{token}`, such as `{sgDengue2019}`. Tokens come from `src/data/stats.json`, which `npm run data` computes and checks against the CSVs, and the build fails on an unknown one. To add a number, compute and `expect` it in `scripts/build-data.ts`, add it to `tokens`, and run `npm run data`.
 

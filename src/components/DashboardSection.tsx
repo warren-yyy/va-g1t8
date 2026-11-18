@@ -1,5 +1,6 @@
 import type { Dashboard } from '@/site.config';
 import { fill } from '@/lib/fill';
+import { fillRich } from '@/lib/rich';
 import { normalizeTableauUrl } from '@/lib/tableau';
 import DashboardEmbed from '@/components/DashboardEmbed';
 import Reveal from '@/components/Reveal';
@@ -9,12 +10,19 @@ import Reveal from '@/components/Reveal';
  * skip link, the light panel with the embed (or "coming soon"), then the takeaway. The
  * panel element itself, with the #d1-style id, belongs to DashboardTabs.
  *
- * A view with `whyItMatters` is labelled: "What this shows" (description and howTo in one
- * paragraph), then under the embed "Key insight" (the takeaway) and "Why it matters".
- * A view without it is shown as before.
+ * A view with `whyItMatters` is labelled: "What this dashboard shows" (description) and
+ * "How to use the dashboard" (howTo), then under the embed "Key insight" (the takeaway) and
+ * "Why this matters". A view without it is shown as before.
+ *
+ * The question line under the title is left out when `hideQuestion` is set, because
+ * the dashboard then shows the question as its own title.
+ *
+ * There is no "Open in Tableau Public" link under the embed: Tableau's own toolbar has one.
+ * The embed's error and no-JavaScript messages carry a link, for when the toolbar is missing.
  */
 export default function DashboardSection({ dashboard }: { dashboard: Dashboard }) {
-  const { id, title, question, description, howTo, takeaway, takeawayNote, whyItMatters, alt } = dashboard;
+  const { id, title, question, hideQuestion, description, howTo, takeaway, takeawayNote, whyItMatters, alt } =
+    dashboard;
   const url = normalizeTableauUrl(dashboard.url);
   const anchor = id.toLowerCase();
   const labelled = Boolean(whyItMatters);
@@ -25,21 +33,28 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
         <h3 className="dash__title" id={`${anchor}-title`}>
           <span className="dash__id">{id}</span> {title}
         </h3>
-        <p className="dash__question">{question}</p>
+        {!hideQuestion && <p className="dash__question">{question}</p>}
       </div>
 
       {labelled ? (
-        (description || howTo) && (
-          <p className="dash__description">
-            <strong>What this shows:</strong> {description && fill(description)}
-            {description && howTo && ' '}
-            {howTo && fill(howTo)}
-          </p>
-        )
+        <>
+          {description && (
+            <div className="dash__block">
+              <h4 className="dash__label">What this dashboard shows</h4>
+              <p className="dash__description">{fillRich(description)}</p>
+            </div>
+          )}
+          {howTo && (
+            <div className="dash__block">
+              <h4 className="dash__label">How to use the dashboard</h4>
+              <p className="dash__description">{fillRich(howTo)}</p>
+            </div>
+          )}
+        </>
       ) : (
         <>
-          {description && <p className="dash__description">{fill(description)}</p>}
-          {howTo && <p className="dash__howto">{fill(howTo)}</p>}
+          {description && <p className="dash__description">{fillRich(description)}</p>}
+          {howTo && <p className="dash__howto">{fillRich(howTo)}</p>}
         </>
       )}
 
@@ -53,11 +68,6 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
               <DashboardEmbed url={url} id={id} title={title} height={dashboard.height} />
             </div>
             <div className="dash__after" id={`${anchor}-after`} tabIndex={-1}>
-              <p className="dash__open">
-                <a href={url} target="_blank" rel="noopener noreferrer">
-                  Open in Tableau Public<span className="sr-only"> (opens in a new tab)</span>
-                </a>
-              </p>
               <p className="dash__desktop-note">Best viewed on desktop.</p>
             </div>
           </>
@@ -78,19 +88,23 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
             {labelled ? (
               <>
                 {takeaway && (
-                  <Reveal as="p" className="dash__takeaway">
-                    <strong>Key insight:</strong> {fill(takeaway)}
-                    {takeawayNote && <span className="dash__scope">{fill(takeawayNote)}</span>}
+                  <Reveal className="dash__block">
+                    <h4 className="dash__label">Key insight</h4>
+                    <p className="dash__takeaway dash__takeaway--full">
+                      {fillRich(takeaway)}
+                      {takeawayNote && <span className="dash__scope">{fill(takeawayNote)}</span>}
+                    </p>
                   </Reveal>
                 )}
-                <Reveal as="p" className="dash__description">
-                  <strong>Why it matters:</strong> {fill(whyItMatters ?? '')}
+                <Reveal className="dash__block">
+                  <h4 className="dash__label">Why this matters</h4>
+                  <p className="dash__description">{fillRich(whyItMatters ?? '')}</p>
                 </Reveal>
               </>
             ) : (
               takeaway && (
                 <Reveal as="p" className="dash__takeaway">
-                  {fill(takeaway)}
+                  {fillRich(takeaway)}
                   {takeawayNote && <span className="dash__scope">{fill(takeawayNote)}</span>}
                 </Reveal>
               )

@@ -153,11 +153,23 @@ export default function DashboardEmbed({ url, id, title, height }: DashboardEmbe
                 Loading dashboard
               </p>
             ) : (
-              <p className="embed__message">This dashboard could not load. Try the Tableau Public link below.</p>
+              <p className="embed__message">
+                <span>
+                  This dashboard could not load.{' '}
+                  <a href={url} target="_blank" rel="noopener noreferrer">
+                    Open it in Tableau Public<span className="sr-only"> (opens in a new tab)</span>
+                  </a>
+                  .
+                </span>
+              </p>
             )}
             <noscript>
               <p className="embed__noscript">
-                This dashboard needs JavaScript. You can still open it in Tableau Public with the link below.
+                This dashboard needs JavaScript.{' '}
+                <a href={url} target="_blank" rel="noopener noreferrer">
+                  Open it in Tableau Public
+                </a>{' '}
+                to see it.
               </p>
             </noscript>
           </div>
