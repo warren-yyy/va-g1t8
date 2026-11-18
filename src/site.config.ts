@@ -7,7 +7,7 @@
  *
  * Rendering rules
  * - Empty url on a core view: a "Dashboard coming soon" panel, no Tableau script.
- * - Empty url on an extra view (D7, D12a, D12b): hidden completely.
+ * - Empty url on an extra view: hidden completely. No view is an extra at the moment.
  * - null description, howTo or takeaway: that line is left out, with no placeholder.
  * - null alt: the question is used as the alt text.
  *
@@ -105,7 +105,14 @@ export interface MethodNote {
 }
 
 export interface DataMethods {
+  /** The section heading and its navbar label. The section's id stays #data-methods. */
+  title: string;
+  /** One sentence, always visible, saying what the section holds. */
   intro: string;
+  /** One line of caveats, always visible. */
+  keyLimits: string;
+  /** The summary of the one collapsible block, which holds everything below the team. */
+  detailsSummary: string;
   datasets: DatasetRow[];
   cleaning: string[];
   methods: MethodNote[];
@@ -113,6 +120,26 @@ export interface DataMethods {
   closestYearNote: string;
   limitations: string[];
   sources: SourceLink[];
+}
+
+export interface KeyFinding {
+  /** The part this finding sums up. Its item links to that part's section. */
+  part: number;
+  /** {tokens} come from src/data/stats.json. */
+  text: string;
+}
+
+/** The Conclusion section, text only, between Part 5 and Data, methods & limitations. */
+export interface Conclusion {
+  title: string;
+  /** The answer to the main question. Shows a "Draft" tag until D13 has a url. */
+  answer: string;
+  /** One per part, in part order. */
+  keyFindings: KeyFinding[];
+  /** Paragraphs under "What this means". null shows nothing, not even the heading. */
+  implications: string[] | null;
+  /** The closing line, which ends in a link to Data, methods & limitations. */
+  closingLead: string;
 }
 
 export interface SiteConfig {
@@ -123,7 +150,6 @@ export interface SiteConfig {
     mainQuestion: string;
     scope: string;
   };
-  answerSentence: string;
   navigation: NavItem[];
   extraPages: ExtraPage[];
   parts: Part[];
@@ -131,11 +157,23 @@ export interface SiteConfig {
   team: string[];
   problem: ProblemSection;
   statTiles: StatTile[];
+  conclusion: Conclusion;
   dataMethods: DataMethods;
 }
 
+// Each of these appears in two places, so it is written once.
+
+// DRAFT until D13 is built. It opens the Conclusion, with a "Draft" tag while D13's url is empty.
 const answerSentence =
   'Heat shapes where both diseases can spread; wealth tracks who stays sick, strongly for malaria and barely for dengue.';
+
+// D8b's takeaway, which is also the Conclusion's key finding for Part 3.
+const d8bTakeaway =
+  'In 2019, 96% of low-income countries had high malaria with no dengue reporting, while 45% of high-income countries were dengue only.';
+
+// In Part 4's findings and in Part 5's.
+const sgMalariaStatus =
+  "Our data counts {sgMalaria2019} malaria cases for Singapore in 2019, because WHO doesn't list it as endemic. WHO certified it malaria-free in 1982.";
 
 const config: SiteConfig = {
   site: {
@@ -146,10 +184,6 @@ const config: SiteConfig = {
     scope: 'Dengue and malaria, global 2000-2024, then Singapore as a case study.',
   },
 
-  // DRAFT until D13 is built. It is the first of the Conclusion's findings, and shows a
-  // "Draft" tag for as long as D13's url is empty.
-  answerSentence,
-
   // Anchors to the sections of the one page. Items in extraPages are added to the end
   // of this list automatically.
   navigation: [
@@ -158,8 +192,9 @@ const config: SiteConfig = {
     { label: '2 Drivers', href: '/#drivers' },
     { label: '3 Dengue vs Malaria', href: '/#dengue-vs-malaria' },
     { label: '4 Singapore', href: '/#singapore' },
-    { label: '5 Conclusion', href: '/#conclusion' },
-    { label: 'Data & Methods', href: '/#data-methods' },
+    { label: '5 Global meets Singapore', href: '/#global-meets-singapore' },
+    { label: 'Conclusion', href: '/#conclusion' },
+    { label: 'Data, methods & limitations', href: '/#data-methods' },
   ],
 
   // Empty for now. The user guide is a block at the end of #problem (problem.guide), not a
@@ -222,23 +257,23 @@ const config: SiteConfig = {
         'Singapore is hot, wet, dense and rich. It has been certified malaria-free since 1982, yet still has recurring dengue outbreaks. D9 measures those waves, D10 tests whether weather leads them, and D11 and D12 zoom in on where outbreaks hit and whether housing explains them.',
       findings: [
         'Singapore reported {sgDengue2019} dengue cases per 100k in 2019, about {ratio2019} times the median for high-income countries ({hiMedian2019}, across {hiN2019} reporting countries).',
-        "Our data counts {sgMalaria2019} malaria cases for Singapore in 2019, because WHO doesn't list it as endemic. WHO certified it malaria-free in 1982.",
+        sgMalariaStatus,
         "In monthly data for 2012-2024 ({sgLagMonths} months), temperature leads Singapore's dengue by about 1-2 months, but the link is weak (r about {sgTempLagR}), as is every other weather link.",
       ],
-      bridge: "The last section sets Singapore's results against the global ones.",
+      bridge: "The next section sets Singapore's results against the global ones.",
     },
     {
       number: 5,
-      slug: 'conclusion',
-      title: 'Conclusion',
+      slug: 'global-meets-singapore',
+      title: 'Global meets Singapore',
       question: 'Global meets Singapore',
-      role: 'Conclusion',
+      role: 'Brings it together',
       intro:
         'D13 puts the global findings and the Singapore findings side by side, factor by factor, to answer the main question.',
-      // The answer sentence shows a "Draft" tag until D13 has a url.
+      // The answer sentence is in the Conclusion, just after this section.
       findings: [
-        answerSentence,
         'Comparing the same countries each year, income tracks malaria in all {yearsMalariaStronger} years from 2000 to 2024 (median r = {medianRMalaria}) but barely tracks dengue ({medianRDengue}).',
+        sgMalariaStatus,
       ],
       bridge: null,
     },
@@ -444,7 +479,7 @@ const config: SiteConfig = {
       takeawayNote: '2010-2023 averages; twins within ±1.5 °C and ±30% rainfall.',
       alt: null,
       owner: 'Yubing',
-      extra: true,
+      extra: false,
     },
     {
       id: 'D8a',
@@ -470,8 +505,7 @@ const config: SiteConfig = {
       height: null,
       description: 'How those groups split by income level, and the typical dengue and malaria rate in each region.',
       howTo: null,
-      takeaway:
-        'In 2019, 96% of low-income countries had high malaria with no dengue reporting, while 45% of high-income countries were dengue only.',
+      takeaway: d8bTakeaway,
       alt: null,
       owner: 'Shredha',
       extra: false,
@@ -576,7 +610,7 @@ const config: SiteConfig = {
       takeaway: null,
       alt: null,
       owner: 'Yurae',
-      extra: true,
+      extra: false,
     },
     // Will show the current NEA clusters. Once it has a url, the site's own cluster map is hidden.
     {
@@ -591,7 +625,7 @@ const config: SiteConfig = {
       takeaway: null,
       alt: null,
       owner: 'Yurae',
-      extra: true,
+      extra: false,
     },
     {
       id: 'D13',
@@ -602,7 +636,7 @@ const config: SiteConfig = {
       height: null,
       description: null,
       howTo: null,
-      // Was the answer sentence, which now leads the Conclusion's findings just below.
+      // Was the answer sentence, which now opens the Conclusion.
       takeaway: null,
       alt: null,
       owner: 'Shredha',
@@ -655,10 +689,45 @@ const config: SiteConfig = {
     },
   ],
 
-  // The Data & Methods section, the last on the page.
+  // Text only, after Part 5. The key findings are drafts for the team to edit; each item
+  // links to its part. Every number is a {token} from stats.json, and each one with a number
+  // carries its year or years.
+  conclusion: {
+    title: 'Conclusion',
+    answer: answerSentence,
+    keyFindings: [
+      {
+        part: 1,
+        text: 'Reported dengue rose from {denguePanel2000} to {denguePanel2024} cases per 100k between 2000 and 2024 among consistent reporters, while estimated malaria in endemic countries fell {malariaDrop2019} by 2019 before rising again.',
+      },
+      {
+        part: 2,
+        text: 'In 2019, hotter countries reported more of both diseases (r = {rTempDengue2019} for dengue, {rTempMalaria2019} for malaria), but basic sanitation, clean water and income tracked far less malaria (r = {rSanMalaria2019}, {rWaterMalaria2019}, {rGdpMalaria2019}) and only a little less dengue ({rSanDengue2019}, {rWaterDengue2019}, {rGdpDengue2019}).',
+      },
+      { part: 3, text: d8bTakeaway },
+      {
+        part: 4,
+        text: 'Singapore reported {sgDengue2019} dengue cases per 100k in 2019, about {ratio2019} times the high-income median, and its weather links are weak: in monthly data for 2012-2024, temperature leads dengue by about 1-2 months (r about {sgTempLagR}).',
+      },
+      {
+        part: 5,
+        text: 'Comparing the same countries each year, income tracks malaria in all {yearsMalariaStronger} years from 2000 to 2024 (median r = {medianRMalaria}) but barely tracks dengue ({medianRDengue}), which is how a rich country can be malaria-free yet carry heavy dengue.',
+      },
+    ],
+    // For the team to write. While null, the "What this means" heading is left out too.
+    implications: null,
+    closingLead: 'Every figure has limits; see',
+  },
+
+  // The last section on the page. Its heading, intro, key limits and team are always
+  // visible; everything else sits in one collapsible block, which opens by itself when a
+  // link points at the section or anything inside it.
   dataMethods: {
-    intro:
-      'Where every number on this site comes from, how it was computed, and what it cannot tell you. A script in the repository recomputes the headline numbers from the cleaned CSVs and stops if any of them change.',
+    title: 'Data, methods & limitations',
+    intro: 'Where every number on this site comes from, how it was computed, and what it cannot tell you.',
+    keyLimits:
+      "Key limits: dengue figures are reported cases and malaria figures are WHO estimates, so they aren't directly comparable; correlations show association, not cause; some regions report little or no dengue data.",
+    detailsSummary: 'Full data, methods and limitations',
 
     datasets: [
       {
@@ -775,6 +844,14 @@ const config: SiteConfig = {
         ],
       },
       {
+        title: 'What tracks each disease, 2019: temperature, sanitation, water and income',
+        body: [
+          "r is the Pearson correlation between each factor and log10(1 + rate per 100k), as D6a's scorecard computes it, with log10 for gdp_pc_ppp. Dengue uses the 2019 rows with dengue_complete = 1, and malaria the endemic countries, each only where both the factor and the rate have a value: {driverDengueNMin2019}-{driverDengueNMax2019} countries for dengue and {driverMalariaNMin2019}-{driverMalariaNMax2019} for malaria.",
+          'Dengue: temp_c {rTempDengue2019}, sanitation_basic_pct {rSanDengue2019}, water_basic_pct {rWaterDengue2019}, gdp_pc_ppp {rGdpDengue2019}. Malaria, in the same order: {rTempMalaria2019}, {rSanMalaria2019}, {rWaterMalaria2019}, {rGdpMalaria2019}.',
+          "Malaria's income r here ({rGdpMalaria2019}) differs from the all-countries {allMalariaR2019} under Income and disease, which also counts the countries given zero cases as not endemic.",
+        ],
+      },
+      {
         title: 'The data, in four numbers',
         body: [
           'Years: the distinct years in the country-year table, {firstYear}-{lastYear} ({yearsCovered}). Malaria-endemic countries: as above, {malariaEndemicN}. Complete dengue reporting: rows with dengue_complete = 1 in 2019 ({dengueComplete2019}).',
@@ -797,7 +874,7 @@ const config: SiteConfig = {
         title: 'Income and disease, 2000-2024: {medianRMalaria} vs {medianRDengue}',
         body: [
           'r is the Pearson correlation between log10(gdp_pc_ppp) and ln(1 + rate per 100k), using countries with both rates and GDP in that year. The same countries are compared for both diseases, between {nMin} and {nMax} of them a year.',
-          "The Conclusion's finding uses the median of the {yearsCovered} yearly values: {medianRMalaria} for malaria and {medianRDengue} for dengue. Malaria's link is stronger, by absolute r, in all {yearsMalariaStronger} years. Every yearly value is in the table below.",
+          "The finding in Global meets Singapore and the Conclusion uses the median of the {yearsCovered} yearly values: {medianRMalaria} for malaria and {medianRDengue} for dengue. Malaria's link is stronger, by absolute r, in all {yearsMalariaStronger} years. Every yearly value is in the table below.",
         ],
       },
       {
