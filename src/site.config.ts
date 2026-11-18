@@ -672,7 +672,7 @@ const config: SiteConfig = {
     guide: [
       'Use the navbar to jump to any section.',
       "Each section's tabs switch between its dashboard views.",
-      'The dashboards are interactive: use their controls, click marks to filter or highlight, and hover over anything for details. Each one has an "Open in Tableau Public" link underneath.',
+      'The dashboards are interactive: use their controls, click marks to filter or highlight, and hover over anything for details. Each one has a "View on Tableau Public" link in its toolbar, at the bottom left.',
       'Best viewed on a desktop screen.',
     ],
   },

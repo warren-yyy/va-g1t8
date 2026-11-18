@@ -6,14 +6,19 @@ import DashboardEmbed from '@/components/DashboardEmbed';
 import Reveal from '@/components/Reveal';
 
 /**
- * The contents of one dashboard's tab panel: title and question, description, howTo, the
+ * The contents of one dashboard's tab panel: title, description, howTo, the
  * skip link, the light panel with the embed (or "coming soon"), then the takeaway. The
  * panel element itself, with the #d1-style id, belongs to DashboardTabs.
  *
  * A view with `whyItMatters` is labelled: "What this dashboard shows" (description) and
  * "How to use the dashboard" (howTo), then under the embed "Key insight" (the takeaway) and
- * "Why this matters".
- * A view without it is shown as before.
+ * "Why this matters". A view without it is shown as before.
+ *
+ * There is no question line under the title: each dashboard shows its question as its own
+ * title, and a "coming soon" panel shows it too.
+ *
+ * There is no "Open in Tableau Public" link under the embed: Tableau's own toolbar has one.
+ * The embed's error and no-JavaScript messages carry a link, for when the toolbar is missing.
  */
 export default function DashboardSection({ dashboard }: { dashboard: Dashboard }) {
   const { id, title, question, description, howTo, takeaway, takeawayNote, whyItMatters, alt } = dashboard;
@@ -27,7 +32,6 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
         <h3 className="dash__title" id={`${anchor}-title`}>
           <span className="dash__id">{id}</span> {title}
         </h3>
-        <p className="dash__question">{question}</p>
       </div>
 
       {labelled ? (
@@ -62,11 +66,6 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
               <DashboardEmbed url={url} id={id} title={title} height={dashboard.height} />
             </div>
             <div className="dash__after" id={`${anchor}-after`} tabIndex={-1}>
-              <p className="dash__open">
-                <a href={url} target="_blank" rel="noopener noreferrer">
-                  Open in Tableau Public<span className="sr-only"> (opens in a new tab)</span>
-                </a>
-              </p>
               <p className="dash__desktop-note">Best viewed on desktop.</p>
             </div>
           </>

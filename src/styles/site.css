@@ -466,13 +466,6 @@ html:not(.js) .tabs__panel[hidden] {
   vertical-align: 0.42em;
 }
 
-.dash__question {
-  margin-top: 0.4em;
-  color: var(--fg-soft);
-  font-size: clamp(1.0625rem, 1.6vw, 1.25rem);
-  line-height: 1.4;
-}
-
 .dash__description {
   max-width: 60rem;
   margin-top: 0.9em;
@@ -609,6 +602,12 @@ html:not(.js) .tabs__panel[hidden] {
   font-size: 0.9375rem;
 }
 
+.embed__message a,
+.embed__noscript a {
+  color: var(--ink);
+  text-decoration: underline;
+}
+
 html:not(.js) .embed__message {
   display: none;
 }
@@ -641,10 +640,6 @@ html:not(.js) .embed__message {
   margin-top: 0.75rem;
   color: var(--muted);
   font-size: 0.9375rem;
-}
-
-.dash__open a {
-  color: var(--fg);
 }
 
 .dash__desktop-note {
