@@ -390,7 +390,7 @@ const config: SiteConfig = {
       takeaway:
         "Both diseases live in the hot belt around the equator: almost every large dot sits on a dark-pink country, while the cooler north is nearly empty. But they don't live in the same hot places. Malaria is overwhelmingly an African disease (nearly all estimated cases in 2019 were in Sub-Saharan Africa), while dengue is spread across Latin America, South and Southeast Asia and the Pacific. Much of Africa shows no dengue dot, which mostly means it isn't reported, not that it's absent.",
       whyItMatters:
-        "This is the first clue to our main question: heat decides where a country can be vulnerable at all. But equally hot countries end up very differently, so heat can't be the whole answer. The next views test what else separates them.",
+        "This is the first clue to our main question: heat decides where a country can be vulnerable at all. But equally hot countries end up very differently, so heat can't be the whole answer. The next views test what else separates them ([Is there a best temperature for the disease?](#d4b)).",
       alt: null,
       owner: 'Yubing',
       extra: false,
@@ -403,12 +403,13 @@ const config: SiteConfig = {
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D4b',
       height: 650,
       description:
-        'Left, the typical (median) cases per 100,000 people among countries in each 2 °C band of average temperature; pale bars rest on fewer than 5 countries, so read them with caution. Right, every country plotted against its average temperature on a log scale (1 = 10, 2 = 100, 3 = 1,000 cases), with a grey trend line and a green band marking where lab studies find the disease spreads fastest (26–29 °C for dengue, 24–26 °C for malaria; Mordecai et al., 2019).',
-      howTo: 'Switch disease and year, and hover over a bar or dot for details.',
+        "Two views of the same question: does disease rise with temperature? On the left, countries are grouped into 2 °C temperature bands, and each bar shows the typical number of cases per 100,000 people in that band. Pale bars are based on fewer than 5 countries, so they're less reliable. On the right, every country is a dot, placed by its average temperature and its cases. The side scale jumps in tenfold steps (1, 10, 100, 1,000) so small and large figures fit on one chart. The grey line shows the overall trend, and the green band marks the temperatures where lab studies find the disease spreads fastest.",
+      howTo:
+        'Switch between dengue and malaria and move the year. Hover over a bar to see how many countries it covers, or over a dot to see the country.',
       takeaway:
-        'In 2019, dengue was almost absent in countries averaging below 18 °C, then the typical rate climbed from about 55 per 100,000 at 18–20 °C to about 190–200 at 24–28 °C. Malaria is near zero below 20 °C and reaches thousands per 100,000 in most bands above 22 °C. Lab studies predict a peak and then a fall, but country rates show no such fall: the typical dengue rate is highest in the hottest band, 28–30 °C (only 3 countries), and malaria peaks at 26–28 °C, above its lab optimum. And temperature explains only about a fifth of the differences in dengue between countries (R² = 0.22).',
+        "Dengue and malaria are rare in cooler countries: below an average of about 18–20 °C there are almost no cases. Above that, cases rise as countries get hotter. But there's no “best” temperature where cases peak and then fall, as lab studies predict; the hottest countries have as much disease as any. And at the same temperature, countries still differ hugely: some hot countries report a handful of cases, others thousands.",
       whyItMatters:
-        'Temperature sets a threshold, not the level. Among hot countries, burden still varies more than a thousandfold, so something other than climate decides who actually gets sick.',
+        'Heat decides whether a country can have these diseases at all, but not how many cases it ends up with. To explain why one hot country suffers far more than another, we have to look beyond climate, at how developed it is ([How does each factor relate to dengue and malaria?](#d5a)).',
       alt: null,
       owner: 'Yubing',
       extra: false,
