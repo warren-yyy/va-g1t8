@@ -232,7 +232,7 @@ const config: SiteConfig = {
       findings: [
         'Heat decides where these diseases can exist, but not how bad they get. Almost no cooler country has either disease, yet hot countries range from a handful of cases to thousands.',
         'Malaria follows poverty. Out of the ten factors we tested, poor sanitation, unsafe water and low development track malaria most closely, and that has held in every year from 2000 to 2023. As countries gain clean water, toilets and higher incomes, malaria becomes very rare, even in places with the same climate as heavily affected ones.',
-        "Dengue doesn't. Clean water and sanitation barely matter for it in almost any year, no single factor explains much of it, and its link with wealth keeps shifting over time. Rich countries with good services, such as Singapore, still have plenty of it.",
+        "Dengue doesn't. Clean water and sanitation barely matter for it in almost any year, no single factor explains much of it, and its link with wealth keeps shifting over time. Even rich countries with good water and sanitation, such as Singapore, still have a lot of dengue.",
       ],
       bridge: 'A country can therefore be resilient to one disease and vulnerable to the other. The next section maps where that split happens.',
     },
