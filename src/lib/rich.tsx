@@ -1,26 +1,35 @@
 import type { ReactNode } from 'react';
 import { fill } from '@/lib/fill';
 
-/** [link text](#d5a): a link to another view. The anchor is the view's id in lower case. */
-export const VIEW_LINK = /\[([^\]]+)\]\(#(d\d+[a-z]?)\)/gi;
+// One pass over the text: a view link, **bold** or *italic*, whichever comes first.
+// They do not nest, so keep a link's text and a bold phrase separate.
+const MARKUP = /\[([^\]]+)\]\(#(d\d+[a-z]?)\)|\*\*(.+?)\*\*|\*(.+?)\*/g;
 
 /**
- * fill() plus view links. Text like "see [Is there a best temperature?](#d4b)" becomes a
- * link that opens the D4b tab, the same as typing /#d4b in the address bar.
+ * fill() plus light formatting for a view's text:
+ *   [link text](#d5a)  a link that opens that view's tab, like typing /#d5a
+ *   **bold**           for the phrase a skimming reader should catch
+ *   *italic*           for a stressed word
  */
 export function fillRich(text: string): ReactNode {
   const filled = fill(text);
   const parts: ReactNode[] = [];
   let last = 0;
-  for (const match of filled.matchAll(VIEW_LINK)) {
-    const [whole, label, anchor] = match;
+  for (const match of filled.matchAll(MARKUP)) {
+    const [whole, linkText, anchor, bold, italic] = match;
     const start = match.index ?? 0;
     if (start > last) parts.push(filled.slice(last, start));
-    parts.push(
-      <a key={start} href={`#${anchor.toLowerCase()}`}>
-        {label}
-      </a>,
-    );
+    if (anchor !== undefined) {
+      parts.push(
+        <a key={start} href={`#${anchor.toLowerCase()}`}>
+          {linkText}
+        </a>,
+      );
+    } else if (bold !== undefined) {
+      parts.push(<strong key={start}>{bold}</strong>);
+    } else {
+      parts.push(<em key={start}>{italic}</em>);
+    }
     last = start + whole.length;
   }
   if (parts.length === 0) return filled;

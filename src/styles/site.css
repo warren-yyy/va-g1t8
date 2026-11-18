@@ -699,6 +699,12 @@ html:not(.js) .embed__message {
   text-underline-offset: 0.2em;
 }
 
+/* **bold** in a view's text: the phrase a skimming reader should catch. */
+.dash__block strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+
 .dash__takeaway--full {
   max-width: none;
   padding: clamp(16px, 2.2vw, 24px) clamp(18px, 2.6vw, 28px);
