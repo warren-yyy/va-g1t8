@@ -9,8 +9,9 @@ import Reveal from '@/components/Reveal';
  * skip link, the light panel with the embed (or "coming soon"), then the takeaway. The
  * panel element itself, with the #d1-style id, belongs to DashboardTabs.
  *
- * A view with `whyItMatters` is labelled: "What this shows" (description) and "How to use the
- * dashboard" (howTo), then under the embed "Key insight" (the takeaway) and "Why it matters".
+ * A view with `whyItMatters` is labelled: "What this dashboard shows" (description) and
+ * "How to use the dashboard" (howTo), then under the embed "Key insight" (the takeaway) and
+ * "Why this matters".
  * A view without it is shown as before.
  */
 export default function DashboardSection({ dashboard }: { dashboard: Dashboard }) {
@@ -32,7 +33,7 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
         <>
           {description && (
             <div className="dash__block">
-              <p className="dash__label">What this shows</p>
+              <p className="dash__label">What this dashboard shows</p>
               <p className="dash__description">{fill(description)}</p>
             </div>
           )}
@@ -94,7 +95,7 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
                   </Reveal>
                 )}
                 <Reveal className="dash__block">
-                  <p className="dash__label">Why it matters</p>
+                  <p className="dash__label">Why this matters</p>
                   <p className="dash__description">{fill(whyItMatters ?? '')}</p>
                 </Reveal>
               </>
