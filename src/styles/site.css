@@ -689,6 +689,7 @@ html:not(.js) .embed__message {
 
 .dash__label + .dash__description {
   margin-top: 0;
+  max-width: none;
 }
 
 .dash__takeaway--full {
