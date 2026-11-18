@@ -727,7 +727,7 @@ html:not(.js) .embed__message {
   line-height: 1.5;
 }
 
-/* "What we found" closes each part, then one bridging sentence into the next. */
+/* "Key takeaways" closes each part, then one bridging sentence into the next. */
 .findings {
   max-width: 50rem;
   margin-top: clamp(72px, 10vw, 144px);

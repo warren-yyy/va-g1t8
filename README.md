@@ -24,7 +24,7 @@ Everything is on `/`, in this order. Each section's id is its link, and the navb
 
 The navbar collapses into a menu below 1200px wide, where its eight links no longer fit.
 
-Each part shows, in order: a kicker, its question as the title, `intro`, the view tabs, "What we found" (`findings`), and one sentence into the next part (`bridge`).
+Each part shows, in order: a kicker, its question as the title, `intro`, the view tabs, "Key takeaways" (`findings`), and one sentence into the next part (`bridge`).
 
 **Tabs.** A part's views are tabs ("D1 Two diseases", "D2a Highest rates"...). Only the selected tab's view loads, and only once it is within about 800px of the screen. A view that has loaded stays loaded when you switch tabs, so its filters are kept. Views differ in height, so switching tabs can change the length of the page below the tab bar; the tab bar itself stays where it is. A part with one view (Part 5 today) shows it without a tab bar. Arrow keys, Home and End move between tabs; Enter or Space selects.
 
@@ -147,7 +147,7 @@ Everything is in `src/site.config.ts`. While a field is `null`, it is left off t
 Each part (`parts`):
 
 - `intro`: why these views are grouped together, in two or three sentences.
-- `findings`: the paragraphs under "What we found", or `null`.
+- `findings`: the paragraphs under "Key takeaways", or `null`.
 - `bridge`: one sentence leading into the next part, or `null`.
 
 Each view (`dashboards`):

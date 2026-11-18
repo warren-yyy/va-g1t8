@@ -45,7 +45,7 @@ export default function PartSection({ partNumber }: { partNumber: number }) {
       {part.findings && part.findings.length > 0 && (
         <div className="findings" aria-labelledby={findingsId}>
           <h3 className="findings__title" id={findingsId}>
-            What we found
+            Key takeaways
           </h3>
           {part.findings.map((finding) => (
             <Reveal as="p" key={finding} className="findings__item">

@@ -52,7 +52,7 @@ export interface Part {
   role: string;
   /** Why these dashboards are grouped together. */
   intro: string;
-  /** Paragraphs under "What we found". null shows nothing. {tokens} come from stats.json. */
+  /** Paragraphs under "Key takeaways". null shows nothing. {tokens} come from stats.json. */
   findings: string[] | null;
   /** One sentence leading into the next section. null shows nothing. */
   bridge: string | null;
