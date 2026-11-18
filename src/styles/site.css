@@ -669,6 +669,42 @@ html:not(.js) .embed__message {
   line-height: 1.25;
 }
 
+/* Labelled views (those with whyItMatters): each paragraph sits under its own label. */
+.dash__block {
+  margin-top: 1.25rem;
+}
+
+.dash__block + .dash__block {
+  margin-top: clamp(28px, 4vw, 44px);
+}
+
+.dash__label {
+  margin: 0 0 0.5rem;
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: clamp(1.125rem, 1.6vw, 1.3125rem);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.dash__label + .dash__description {
+  margin-top: 0;
+  max-width: none;
+}
+
+/* The key insight as a callout: it stands out through the panel, not a bigger font. */
+.dash__takeaway--full {
+  max-width: none;
+  padding: clamp(16px, 2.2vw, 24px) clamp(18px, 2.6vw, 28px);
+  border-left: 3px solid var(--fg-soft);
+  border-radius: 0 6px 6px 0;
+  background: var(--bg-raised);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: clamp(1.0625rem, 1.4vw, 1.1875rem);
+  line-height: 1.6;
+}
+
 .dash__scope {
   display: block;
   margin-top: 0.5em;

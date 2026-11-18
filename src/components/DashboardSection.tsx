@@ -9,8 +9,9 @@ import Reveal from '@/components/Reveal';
  * skip link, the light panel with the embed (or "coming soon"), then the takeaway. The
  * panel element itself, with the #d1-style id, belongs to DashboardTabs.
  *
- * A view with `whyItMatters` is labelled: "What this shows" (description and howTo in one
- * paragraph), then under the embed "Key insight" (the takeaway) and "Why it matters".
+ * A view with `whyItMatters` is labelled: "What this dashboard shows" (description) and
+ * "How to use the dashboard" (howTo), then under the embed "Key insight" (the takeaway) and
+ * "Why this matters".
  * A view without it is shown as before.
  */
 export default function DashboardSection({ dashboard }: { dashboard: Dashboard }) {
@@ -29,13 +30,20 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
       </div>
 
       {labelled ? (
-        (description || howTo) && (
-          <p className="dash__description">
-            <strong>What this shows:</strong> {description && fill(description)}
-            {description && howTo && ' '}
-            {howTo && fill(howTo)}
-          </p>
-        )
+        <>
+          {description && (
+            <div className="dash__block">
+              <p className="dash__label">What this dashboard shows</p>
+              <p className="dash__description">{fill(description)}</p>
+            </div>
+          )}
+          {howTo && (
+            <div className="dash__block">
+              <p className="dash__label">How to use the dashboard</p>
+              <p className="dash__description">{fill(howTo)}</p>
+            </div>
+          )}
+        </>
       ) : (
         <>
           {description && <p className="dash__description">{fill(description)}</p>}
@@ -78,13 +86,17 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
             {labelled ? (
               <>
                 {takeaway && (
-                  <Reveal as="p" className="dash__takeaway">
-                    <strong>Key insight:</strong> {fill(takeaway)}
-                    {takeawayNote && <span className="dash__scope">{fill(takeawayNote)}</span>}
+                  <Reveal className="dash__block">
+                    <p className="dash__label">Key insight</p>
+                    <p className="dash__takeaway dash__takeaway--full">
+                      {fill(takeaway)}
+                      {takeawayNote && <span className="dash__scope">{fill(takeawayNote)}</span>}
+                    </p>
                   </Reveal>
                 )}
-                <Reveal as="p" className="dash__description">
-                  <strong>Why it matters:</strong> {fill(whyItMatters ?? '')}
+                <Reveal className="dash__block">
+                  <p className="dash__label">Why this matters</p>
+                  <p className="dash__description">{fill(whyItMatters ?? '')}</p>
                 </Reveal>
               </>
             ) : (
