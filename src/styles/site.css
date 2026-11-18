@@ -9,6 +9,7 @@
   --fg: #f1efe9;
   --fg-soft: #d3d1ca;
   --muted: #a8a69f;
+  --highlight: #f2d48a;
   --line: rgba(241, 239, 233, 0.16);
 
   /* Dashboards hang on the dark wall like prints. */
@@ -699,9 +700,9 @@ html:not(.js) .embed__message {
   text-underline-offset: 0.2em;
 }
 
-/* **bold** in a view's text: the phrase a skimming reader should catch. */
+/* **bold** in a view's text: the one phrase per paragraph a skimming reader should catch. */
 .dash__block strong {
-  color: var(--fg);
+  color: var(--highlight);
   font-weight: 600;
 }
 
