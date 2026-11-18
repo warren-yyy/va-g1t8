@@ -693,6 +693,12 @@ html:not(.js) .embed__message {
 }
 
 /* The key insight as a callout: it stands out through the panel, not a bigger font. */
+.dash__block a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
 .dash__takeaway--full {
   max-width: none;
   padding: clamp(16px, 2.2vw, 24px) clamp(18px, 2.6vw, 28px);

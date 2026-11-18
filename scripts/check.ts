@@ -87,6 +87,19 @@ for (const d of config.dashboards) {
   }
 }
 
+// Links between views, written [text](#d5a) in a view's text, must point at a real view.
+const viewLink = /\]\(#(d\d+[a-z]?)\)/gi;
+for (const d of config.dashboards) {
+  for (const text of [d.description, d.howTo, d.takeaway, d.whyItMatters]) {
+    for (const match of (text ?? '').matchAll(viewLink)) {
+      const target = (match[1] ?? '').toLowerCase();
+      if (!config.dashboards.some((other) => other.id.toLowerCase() === target)) {
+        problems.push(`${d.id}: link to #${target}, which is not a view.`);
+      }
+    }
+  }
+}
+
 for (const page of config.extraPages) {
   const route = path.resolve('src', 'app', page.slug, 'page.tsx');
   if (!fs.existsSync(route)) problems.push(`extraPages "${page.slug}" has no src/app/${page.slug}/page.tsx. See README.md.`);

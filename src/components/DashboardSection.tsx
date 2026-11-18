@@ -1,5 +1,6 @@
 import type { Dashboard } from '@/site.config';
 import { fill } from '@/lib/fill';
+import { fillRich } from '@/lib/rich';
 import { normalizeTableauUrl } from '@/lib/tableau';
 import DashboardEmbed from '@/components/DashboardEmbed';
 import Reveal from '@/components/Reveal';
@@ -34,20 +35,20 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
           {description && (
             <div className="dash__block">
               <p className="dash__label">What this dashboard shows</p>
-              <p className="dash__description">{fill(description)}</p>
+              <p className="dash__description">{fillRich(description)}</p>
             </div>
           )}
           {howTo && (
             <div className="dash__block">
               <p className="dash__label">How to use the dashboard</p>
-              <p className="dash__description">{fill(howTo)}</p>
+              <p className="dash__description">{fillRich(howTo)}</p>
             </div>
           )}
         </>
       ) : (
         <>
-          {description && <p className="dash__description">{fill(description)}</p>}
-          {howTo && <p className="dash__howto">{fill(howTo)}</p>}
+          {description && <p className="dash__description">{fillRich(description)}</p>}
+          {howTo && <p className="dash__howto">{fillRich(howTo)}</p>}
         </>
       )}
 
@@ -89,20 +90,20 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
                   <Reveal className="dash__block">
                     <p className="dash__label">Key insight</p>
                     <p className="dash__takeaway dash__takeaway--full">
-                      {fill(takeaway)}
+                      {fillRich(takeaway)}
                       {takeawayNote && <span className="dash__scope">{fill(takeawayNote)}</span>}
                     </p>
                   </Reveal>
                 )}
                 <Reveal className="dash__block">
                   <p className="dash__label">Why this matters</p>
-                  <p className="dash__description">{fill(whyItMatters ?? '')}</p>
+                  <p className="dash__description">{fillRich(whyItMatters ?? '')}</p>
                 </Reveal>
               </>
             ) : (
               takeaway && (
                 <Reveal as="p" className="dash__takeaway">
-                  {fill(takeaway)}
+                  {fillRich(takeaway)}
                   {takeawayNote && <span className="dash__scope">{fill(takeawayNote)}</span>}
                 </Reveal>
               )
