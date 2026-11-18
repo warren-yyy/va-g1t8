@@ -384,12 +384,13 @@ const config: SiteConfig = {
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D4a',
       height: 650,
       description:
-        'A world map. Each country is shaded by its average temperature, darker pink being hotter, and carries a dot sized by its cases per 100,000 people for the chosen disease and year: red for dengue, blue for malaria.',
-      howTo: 'Choose a disease and year at the top, and hover over a country for its temperature, rainfall and rate.',
+        "A world map showing where each disease is, set against how hot each country is. Darker pink means a hotter country. Each dot is a country's cases per 100,000 people: the bigger the dot, the more cases (dots appear from 1 case per 100,000).",
+      howTo:
+        'Pick Dengue or Malaria and a year. Hover over any country, including those without a dot, for its exact figures.',
       takeaway:
-        'The big dots sit almost entirely on the darkest-pink belt between the tropics. Dengue clusters in Central and South America, South and Southeast Asia and the Pacific islands, while malaria is concentrated in Sub-Saharan Africa, which had {malariaSSA2019} of estimated malaria cases in 2019. Cooler countries in Europe, North America and northern Asia have almost none. Much of hot Africa shows no dengue dot at all, but that is mostly missing reporting: no Sub-Saharan African country has a complete dengue record before 2023.',
+        "Both diseases live in the hot belt around the equator: almost every large dot sits on a dark-pink country, while the cooler north is nearly empty. But they don't live in the same hot places. Malaria is overwhelmingly an African disease (nearly all estimated cases in 2019 were in Sub-Saharan Africa), while dengue is spread across Latin America, South and Southeast Asia and the Pacific. Much of Africa shows no dengue dot, which mostly means it isn't reported, not that it's absent.",
       whyItMatters:
-        'Heat marks where these diseases can spread, so the map is the starting point. But countries of the same shade carry very different burdens, which the next views explain.',
+        "This is the first clue to our main question: heat decides where a country can be vulnerable at all. But equally hot countries end up very differently, so heat can't be the whole answer. The next views test what else separates them.",
       alt: null,
       owner: 'Yubing',
       extra: false,
