@@ -8,11 +8,16 @@ import Reveal from '@/components/Reveal';
  * The contents of one dashboard's tab panel: title and question, description, howTo, the
  * skip link, the light panel with the embed (or "coming soon"), then the takeaway. The
  * panel element itself, with the #d1-style id, belongs to DashboardTabs.
+ *
+ * A view with `whyItMatters` is labelled: "What this shows" (description and howTo in one
+ * paragraph), then under the embed "Key insight" (the takeaway) and "Why it matters".
+ * A view without it is shown as before.
  */
 export default function DashboardSection({ dashboard }: { dashboard: Dashboard }) {
-  const { id, title, question, description, howTo, takeaway, takeawayNote, alt } = dashboard;
+  const { id, title, question, description, howTo, takeaway, takeawayNote, whyItMatters, alt } = dashboard;
   const url = normalizeTableauUrl(dashboard.url);
   const anchor = id.toLowerCase();
+  const labelled = Boolean(whyItMatters);
 
   return (
     <div className="dash">
@@ -23,8 +28,20 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
         <p className="dash__question">{question}</p>
       </div>
 
-      {description && <p className="dash__description">{fill(description)}</p>}
-      {howTo && <p className="dash__howto">{fill(howTo)}</p>}
+      {labelled ? (
+        (description || howTo) && (
+          <p className="dash__description">
+            <strong>What this shows:</strong> {description && fill(description)}
+            {description && howTo && ' '}
+            {howTo && fill(howTo)}
+          </p>
+        )
+      ) : (
+        <>
+          {description && <p className="dash__description">{fill(description)}</p>}
+          {howTo && <p className="dash__howto">{fill(howTo)}</p>}
+        </>
+      )}
 
       <figure className="dash__figure" aria-labelledby={`${anchor}-title`}>
         {url ? (
@@ -55,14 +72,28 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
         )}
 
         {/* The alt text describes the embed, so it only applies once there is one. */}
-        {(url || takeaway) && (
+        {(url || takeaway || whyItMatters) && (
           <figcaption>
             {url && <p className="sr-only">Dashboard contents: {alt ?? question}</p>}
-            {takeaway && (
-              <Reveal as="p" className="dash__takeaway">
-                {fill(takeaway)}
-                {takeawayNote && <span className="dash__scope">{fill(takeawayNote)}</span>}
-              </Reveal>
+            {labelled ? (
+              <>
+                {takeaway && (
+                  <Reveal as="p" className="dash__description">
+                    <strong>Key insight:</strong> {fill(takeaway)}
+                    {takeawayNote && <span className="dash__scope">{fill(takeawayNote)}</span>}
+                  </Reveal>
+                )}
+                <Reveal as="p" className="dash__description">
+                  <strong>Why it matters:</strong> {fill(whyItMatters ?? '')}
+                </Reveal>
+              </>
+            ) : (
+              takeaway && (
+                <Reveal as="p" className="dash__takeaway">
+                  {fill(takeaway)}
+                  {takeawayNote && <span className="dash__scope">{fill(takeawayNote)}</span>}
+                </Reveal>
+              )
             )}
           </figcaption>
         )}

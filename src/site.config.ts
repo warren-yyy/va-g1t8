@@ -36,6 +36,8 @@ export interface Dashboard {
   takeaway: string | null;
   /** Optional scope shown under the takeaway, so its numbers carry their years. */
   takeawayNote?: string;
+  /** "Why it matters", shown after the takeaway. null shows nothing. */
+  whyItMatters?: string | null;
   /** Falls back to the question when null. */
   alt: string | null;
   owner: string;
