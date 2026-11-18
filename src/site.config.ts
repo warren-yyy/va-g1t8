@@ -231,7 +231,7 @@ const config: SiteConfig = {
         'With the burden mapped, this section tests the candidate explanations. D4 looks at climate and D5 at development and infrastructure; D6 ranks every factor for each disease and shows how stable those links are over time. D7 compares countries with similar climates to separate climate from everything else.',
       findings: [
         'Heat decides where these diseases can exist, but not how bad they get. Almost no cooler country has either disease, yet hot countries range from a handful of cases to thousands.',
-        'Malaria follows poverty. Out of the ten factors we tested, poor sanitation, unsafe water and low development track malaria most closely, and that has held in every year from 2000 to 2023. As countries gain clean water, toilets and higher incomes, malaria all but disappears, even in places with the same climate as heavily affected ones.',
+        'Malaria follows poverty. Out of the ten factors we tested, poor sanitation, unsafe water and low development track malaria most closely, and that has held in every year from 2000 to 2023. As countries gain clean water, toilets and higher incomes, malaria becomes very rare, even in places with the same climate as heavily affected ones.',
         "Dengue doesn't. Clean water and sanitation barely matter for it in almost any year, no single factor explains much of it, and its link with wealth keeps shifting over time. Rich countries with good services, such as Singapore, still have plenty of it.",
       ],
       bridge: 'A country can therefore be resilient to one disease and vulnerable to the other. The next section maps where that split happens.',
