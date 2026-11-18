@@ -98,13 +98,25 @@ console.log(
   `\n${rows.length} views: url empty on ${count('url')}, height not confirmed on ${unconfirmed}, description empty on ${count('description')}, howTo empty on ${count('howTo')}, takeaway empty on ${count('takeaway')}.`,
 );
 
-console.log('\npart  slug               intro  findings  bridge');
+const slugWidth = Math.max(...config.parts.map((part) => part.slug.length));
+console.log(`\npart  ${'slug'.padEnd(slugWidth)}  intro  findings  bridge`);
 for (const part of config.parts) {
   const findings = part.findings && part.findings.length > 0 ? `${part.findings.length} set` : 'empty';
   console.log(
-    `${String(part.number).padEnd(4)}  ${part.slug.padEnd(17)}  ${status(part.intro).padEnd(5)}  ${findings.padEnd(8)}  ${status(part.bridge)}`,
+    `${String(part.number).padEnd(4)}  ${part.slug.padEnd(slugWidth)}  ${status(part.intro).padEnd(5)}  ${findings.padEnd(8)}  ${status(part.bridge)}`,
   );
 }
+
+const { conclusion } = config;
+for (const finding of conclusion.keyFindings) {
+  if (!config.parts.some((part) => part.number === finding.part)) {
+    problems.push(`A Conclusion key finding points at part ${finding.part}, which does not exist.`);
+  }
+}
+const implications = conclusion.implications?.length ? `${conclusion.implications.length} set` : 'empty';
+console.log(
+  `\nConclusion: answer ${status(conclusion.answer)}, key findings ${conclusion.keyFindings.length} set, implications ("What this means") ${implications}.`,
+);
 
 if (warnings.length) {
   console.warn(`\nWarning: ${warnings.length} view(s) have no confirmed height.`);

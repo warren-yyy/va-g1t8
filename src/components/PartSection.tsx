@@ -1,10 +1,9 @@
-import config from '@/site.config';
 import ClusterMap from '@/components/ClusterMap';
 import DashboardSection from '@/components/DashboardSection';
 import DashboardTabs from '@/components/DashboardTabs';
 import HeadlineReveal from '@/components/HeadlineReveal';
 import Reveal from '@/components/Reveal';
-import { answerIsDraft, getPart, showClusterMap, visibleDashboards } from '@/lib/dashboards';
+import { getPart, showClusterMap, visibleDashboards } from '@/lib/dashboards';
 import { fill } from '@/lib/fill';
 
 /**
@@ -51,9 +50,6 @@ export default function PartSection({ partNumber }: { partNumber: number }) {
           {part.findings.map((finding) => (
             <Reveal as="p" key={finding} className="findings__item">
               {fill(finding)}
-              {finding === config.answerSentence && answerIsDraft() && (
-                <span className="draft-tag">Draft until D13 is published</span>
-              )}
             </Reveal>
           ))}
         </div>
