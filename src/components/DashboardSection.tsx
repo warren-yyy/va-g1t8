@@ -14,14 +14,14 @@ import Reveal from '@/components/Reveal';
  * "How to use the dashboard" (howTo), then under the embed "Key insight" (the takeaway) and
  * "Why this matters". A view without it is shown as before.
  *
- * The question line under the title is left out when `titleMatchesQuestion` is set, because
+ * The question line under the title is left out when `hideQuestion` is set, because
  * the dashboard then shows the question as its own title.
  *
  * There is no "Open in Tableau Public" link under the embed: Tableau's own toolbar has one.
  * The embed's error and no-JavaScript messages carry a link, for when the toolbar is missing.
  */
 export default function DashboardSection({ dashboard }: { dashboard: Dashboard }) {
-  const { id, title, question, titleMatchesQuestion, description, howTo, takeaway, takeawayNote, whyItMatters, alt } =
+  const { id, title, question, hideQuestion, description, howTo, takeaway, takeawayNote, whyItMatters, alt } =
     dashboard;
   const url = normalizeTableauUrl(dashboard.url);
   const anchor = id.toLowerCase();
@@ -33,7 +33,7 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
         <h3 className="dash__title" id={`${anchor}-title`}>
           <span className="dash__id">{id}</span> {title}
         </h3>
-        {!titleMatchesQuestion && <p className="dash__question">{question}</p>}
+        {!hideQuestion && <p className="dash__question">{question}</p>}
       </div>
 
       {labelled ? (

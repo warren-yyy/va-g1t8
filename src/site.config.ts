@@ -24,11 +24,11 @@ export interface Dashboard {
   part: number;
   question: string;
   /**
-   * True when the Tableau dashboard already shows `question` as its own title. The page then
-   * leaves out the question line under the tab title, so it is not said twice. Leave it off
-   * (the default) when the dashboard's title is different or you have not checked.
+   * True leaves out the question line under the tab title. Use it when the Tableau dashboard
+   * already shows `question` as its own title, so it is not said twice. Leave it off (the
+   * default) when the dashboard's title is different, as with D1 and D2a.
    */
-  titleMatchesQuestion?: boolean;
+  hideQuestion?: boolean;
   /** Tableau Public link. Empty until the dashboard is published. */
   url: string;
   /**
@@ -326,7 +326,7 @@ const config: SiteConfig = {
       title: 'Where the cases are',
       part: 1,
       question: 'Where are the cases, and are they rising?',
-      titleMatchesQuestion: true,
+      hideQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D2bAtlas',
       height: 800,
       description:
@@ -342,7 +342,7 @@ const config: SiteConfig = {
       title: 'Who stays on top',
       part: 1,
       question: 'Which countries stay on top?',
-      titleMatchesQuestion: true,
+      hideQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D2cAtlas',
       height: 600,
       description:
@@ -358,7 +358,7 @@ const config: SiteConfig = {
       title: 'Change by region',
       part: 1,
       question: 'Is dengue rising and malaria falling everywhere?',
-      titleMatchesQuestion: true,
+      hideQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D3aTrends',
       height: 600,
       description: "Each region's dengue and malaria rates since 2000, indexed so that 2000 = 100.",
@@ -373,7 +373,7 @@ const config: SiteConfig = {
       title: 'Drill down',
       part: 1,
       question: 'Where is each disease rising or falling?',
-      titleMatchesQuestion: true,
+      hideQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D3bTrends',
       height: 750,
       description:
@@ -390,7 +390,7 @@ const config: SiteConfig = {
       title: 'Hottest places',
       part: 2,
       question: "Is disease highest where it's hottest?",
-      titleMatchesQuestion: true,
+      hideQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D4a',
       height: 650,
       description:
@@ -410,7 +410,7 @@ const config: SiteConfig = {
       title: 'Best temperature',
       part: 2,
       question: 'Is there a best temperature for the disease?',
-      titleMatchesQuestion: true,
+      hideQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D4b',
       height: 650,
       description:
@@ -430,7 +430,7 @@ const config: SiteConfig = {
       title: 'Factor by factor',
       part: 2,
       question: 'How does each factor relate to dengue and malaria?',
-      titleMatchesQuestion: true,
+      hideQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D5a',
       height: 800,
       description:
@@ -450,7 +450,7 @@ const config: SiteConfig = {
       title: 'Richer, less disease?',
       part: 2,
       question: 'Does disease fall as countries get richer?',
-      titleMatchesQuestion: true,
+      hideQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D5b',
       height: 600,
       description:
@@ -469,7 +469,7 @@ const config: SiteConfig = {
       title: 'Scorecard',
       part: 2,
       question: 'Which factor matters most, for which disease?',
-      titleMatchesQuestion: true,
+      hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/G1T8_D6-D8/d6aScorecard?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: 800,
       description: 'Correlation of ten climate and development factors with dengue and with malaria, with the number of countries behind each value.',
@@ -484,6 +484,7 @@ const config: SiteConfig = {
       title: 'How stable',
       part: 2,
       question: 'How stable is each correlation over time?',
+      hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/G1T8_D6-D8/d6cStability?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: 800,
       description: 'Each factor’s correlation with the chosen disease in every year from 2000 to 2023.',
@@ -498,7 +499,7 @@ const config: SiteConfig = {
       title: 'Climate twins',
       part: 2,
       question: 'Does the same climate mean the same disease?',
-      titleMatchesQuestion: true,
+      hideQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D4-D7/D7Climatetwins',
       height: 800,
       description:
@@ -518,6 +519,7 @@ const config: SiteConfig = {
       title: 'Which disease where',
       part: 3,
       question: 'Which countries carry which disease?',
+      hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/G1T8_D6-D8/D8aWhichcountries?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: 800,
       description:
@@ -533,6 +535,7 @@ const config: SiteConfig = {
       title: 'By income and region',
       part: 3,
       question: 'How does it vary by income and region?',
+      hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/G1T8_D6-D8/D8bIncomeandRegion?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: 800,
       description: 'How those groups split by income level, and the typical dengue and malaria rate in each region.',
@@ -548,6 +551,7 @@ const config: SiteConfig = {
       title: 'What separates them',
       part: 3,
       question: 'Which factors separate dengue from malaria?',
+      hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/G1T8_D6-D8/d6bDumbbell?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: 800,
       description: "Each factor's correlation with dengue and with malaria side by side, sorted by the gap between them.",
@@ -562,6 +566,7 @@ const config: SiteConfig = {
       title: 'Weekly waves',
       part: 4,
       question: "How big and regular are Singapore's dengue waves?",
+      hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/HowbigandregularareSingaporesdenguewaves/HowbigandregularareSingaporesdenguewaves?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: null,
       description: null,
@@ -576,6 +581,7 @@ const config: SiteConfig = {
       title: 'Peaks and worst years',
       part: 4,
       question: 'When does dengue peak, and which years were worst?',
+      hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/Whendoesdenguepeakandwhichyearswereworst/Whendoesdenguepeakandwhichyearswereworst?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: null,
       description: null,
@@ -590,6 +596,7 @@ const config: SiteConfig = {
       title: 'Weather lag',
       part: 4,
       question: 'Does local weather lead dengue, and by how many months?',
+      hideQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D10WeatherLag',
       height: 800,
       description:
@@ -607,6 +614,7 @@ const config: SiteConfig = {
       title: 'Week by week',
       part: 4,
       question: 'Where did the 2020 outbreak hit, week by week?',
+      hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/Wheredidthe2020outbreakhitweekbyweek/Wheredidthe2020outbreakhitweekbyweek?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: null,
       description: null,
@@ -621,6 +629,7 @@ const config: SiteConfig = {
       title: 'Hardest-hit subzones',
       part: 4,
       question: 'Which subzones were hit hardest in 2020?',
+      hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/Whichsubzoneswerehithardestin2020/Whichsubzoneswerehithardestin2020?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: null,
       description: null,
@@ -635,6 +644,7 @@ const config: SiteConfig = {
       title: 'Housing',
       part: 4,
       question: 'Does housing explain which subzones were hit?',
+      hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/Doeshousingexplainwhichsubzoneswerehit/Doeshousingexplainwhichsubzoneswerehit?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: null,
       description: null,
@@ -650,6 +660,7 @@ const config: SiteConfig = {
       title: 'Do hotspots repeat?',
       part: 4,
       question: 'Are the same places hit again?',
+      hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/Arethesameplaceshitagain/Arethesameplaceshitagain?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: null,
       description: null,
@@ -664,6 +675,7 @@ const config: SiteConfig = {
       title: 'Global meets Singapore',
       part: 5,
       question: 'Do the global risk factors hold inside Singapore?',
+      hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/G1T8_D6-D8/D13GlobalmeetsSingapore?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: 800,
       description: 'Income against dengue and malaria in 2019 with Singapore highlighted, beside a factor-by-factor check of whether each global finding holds inside Singapore.',
