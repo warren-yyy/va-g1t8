@@ -21,8 +21,14 @@ async function fetchJson<T>(url: string, signal: AbortSignal): Promise<T> {
 }
 
 const ZERO_LABELS: Record<Disease, string> = {
-  dengue: 'Zero reported',
-  malaria: 'Zero, or not endemic per WHO',
+  dengue: 'No cases reported',
+  malaria: 'No cases (zero, or not endemic per WHO)',
+};
+
+// What the colours show, in the same words as the hover tooltip.
+const LEGEND_TITLES: Record<Disease, string> = {
+  dengue: 'Reported dengue cases per 100,000 people',
+  malaria: 'Estimated malaria cases per 100,000 people (WHO)',
 };
 
 const noDataSwatch: CSSProperties = {
@@ -133,7 +139,7 @@ export default function Globe({ meta, summaries }: GlobeProps) {
             ))}
           </div>
 
-          <p className="globe-label">{current.label}, log scale</p>
+          <p className="globe-label">{LEGEND_TITLES[disease]}</p>
 
           <div className="legend-scale" aria-hidden="true">
             <div className="legend-bar" style={{ background: `linear-gradient(to right, ${low}, ${high})` }} />
@@ -162,7 +168,10 @@ export default function Globe({ meta, summaries }: GlobeProps) {
           </ul>
 
           <p className="globe-years">
-            Latest year per country, {current.minYear}-{current.maxYear}; paler = older
+            <span>
+              Each country shows its latest year, {current.minYear}-{current.maxYear}. Paler colours are older data.
+            </span>
+            <span>Log scale: each tick is 10 times the one before.</span>
           </p>
 
           {!reducedMotion && (

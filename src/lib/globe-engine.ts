@@ -415,11 +415,19 @@ export function createGlobeEngine(options: GlobeEngineOptions): GlobeEngine {
     return index === null ? undefined : (shapes[index] ?? undefined);
   }
 
+  // Three short lines: the country, the rate in words, then the year that rate is from.
   function tooltipText(shape: Shape): string {
     const country = shape.iso3 ? data.countries[shape.iso3] : undefined;
     const name = country?.name ?? shape.name;
     const entry = country?.[disease];
-    return entry ? `${name}: ${formatRate(entry.rate)} per 100k (${entry.year})` : `${name}: no data`;
+    if (!entry) return `${name}\nNo data`;
+    const kind = disease === 'dengue' ? 'reported dengue' : 'estimated malaria';
+    const year = `Latest year: ${entry.year}`;
+    if (entry.rate === 0) {
+      const none = disease === 'dengue' ? 'No dengue cases reported' : 'No malaria cases (zero, or not endemic per WHO)';
+      return `${name}\n${none}\n${year}`;
+    }
+    return `${name}\n${formatRate(entry.rate)} ${kind} cases per 100,000 people\n${year}`;
   }
 
   function showTooltip(shape: Shape, x: number, y: number) {

@@ -2,7 +2,6 @@ import config from '@/site.config';
 import HeadlineReveal from '@/components/HeadlineReveal';
 import Reveal from '@/components/Reveal';
 import { answerIsDraft, getPart } from '@/lib/dashboards';
-import { fill } from '@/lib/fill';
 import { fillRich } from '@/lib/rich';
 
 /**
@@ -19,8 +18,9 @@ export default function ConclusionSection() {
         <HeadlineReveal as="h2" id="conclusion-title" className="part__title" text={conclusion.title} onScroll />
       </header>
 
+      <p className="part__kicker conclusion__kicker">The answer</p>
       <Reveal as="p" className="conclusion__answer">
-        {fill(conclusion.answer)}
+        {fillRich(conclusion.answer)}
         {answerIsDraft() && <span className="draft-tag">Draft until D13 is published</span>}
       </Reveal>
 
@@ -33,10 +33,15 @@ export default function ConclusionSection() {
             const part = getPart(finding.part);
             return (
               <Reveal as="li" key={finding.part} className="conclusion__finding">
-                <a className="conclusion__part" href={`#${part.slug}`}>
-                  <span className="nav-number">{part.number}</span> {part.title}
-                </a>
-                <p>{fillRich(finding.text)}</p>
+                <span className="conclusion__num" aria-hidden="true">
+                  {part.number}
+                </span>
+                <div className="conclusion__body">
+                  <a className="conclusion__part" href={`#${part.slug}`}>
+                    Part {part.number} &middot; {part.title}
+                  </a>
+                  <p>{fillRich(finding.text)}</p>
+                </div>
               </Reveal>
             );
           })}
@@ -50,7 +55,7 @@ export default function ConclusionSection() {
           </h3>
           {conclusion.implications.map((paragraph) => (
             <Reveal as="p" key={paragraph} className="findings__item">
-              {fill(paragraph)}
+              {fillRich(paragraph)}
             </Reveal>
           ))}
         </div>

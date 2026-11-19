@@ -795,12 +795,25 @@ html:not(.js) .embed__message {
   line-height: 1.25;
 }
 
-/* Conclusion: the answer, then one key finding per part, each led by a link to its part. */
+/* Conclusion: the answer as one big statement, then one numbered row per part, then
+   "What this means" in a raised panel. Blue (==...==) marks the phrase to catch. */
+.conclusion__kicker {
+  margin-top: clamp(8px, 2vw, 24px);
+}
+
 .conclusion__answer {
-  max-width: 50rem;
+  max-width: 62rem;
+  margin-top: 0.5rem;
+  padding-left: clamp(16px, 2.4vw, 32px);
+  border-left: 3px solid var(--highlight);
   font-family: var(--serif);
-  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
-  line-height: 1.15;
+  font-size: clamp(1.875rem, 4.4vw, 3.5rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+
+.conclusion__answer .hl {
+  font-weight: 400;
 }
 
 .conclusion__answer .draft-tag {
@@ -808,7 +821,7 @@ html:not(.js) .embed__message {
 }
 
 .conclusion__block {
-  max-width: 50rem;
+  max-width: 62rem;
   margin-top: clamp(56px, 8vw, 104px);
   padding-top: clamp(20px, 3vw, 32px);
   border-top: 1px solid var(--line);
@@ -820,15 +833,37 @@ html:not(.js) .embed__message {
   list-style: none;
 }
 
-.conclusion__finding + .conclusion__finding {
-  margin-top: 1.5rem;
+.conclusion__finding {
+  display: grid;
+  grid-template-columns: clamp(2.5rem, 6vw, 4.5rem) minmax(0, 1fr);
+  gap: clamp(8px, 2vw, 24px);
+  padding-block: clamp(18px, 2.4vw, 28px);
+  border-top: 1px solid var(--line);
+}
+
+.conclusion__finding:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.conclusion__num {
+  color: var(--highlight);
+  font-family: var(--serif);
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  line-height: 1;
 }
 
 .conclusion__part {
   display: inline-block;
   padding-block: 0.15rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.conclusion__part:hover {
   color: var(--fg);
-  font-size: 0.9375rem;
 }
 
 .conclusion__finding p {
@@ -838,8 +873,21 @@ html:not(.js) .embed__message {
   line-height: 1.55;
 }
 
+/* "What this means": the practical takeaways, in a panel so they read as the payoff. */
+.conclusion__block[aria-labelledby='implications-title'] {
+  padding: clamp(24px, 4vw, 48px);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.conclusion__block[aria-labelledby='implications-title'] .findings__item strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+
 .conclusion__closing {
-  max-width: 50rem;
+  max-width: 62rem;
   margin-top: clamp(40px, 6vw, 72px);
   color: var(--muted);
 }
@@ -888,12 +936,15 @@ html:not(.js) .embed__message {
   text-wrap: balance;
 }
 
+/* Wider than .hero__text so the line fits on one row on a wide screen. It is centred on the
+   text column and never wider than the viewport minus the gutters. */
 .hero__scope {
-  max-width: 40rem;
-  margin: 0.75em auto 0;
+  width: min(72rem, calc(100vw - 2 * var(--gutter)));
+  margin: 0.75em 0 0 50%;
+  transform: translateX(-50%);
   color: var(--muted);
-  font-size: clamp(0.9375rem, 1.3vw, 1.0625rem);
-  text-wrap: balance;
+  font-size: clamp(0.8125rem, 1.1vw, 0.9375rem);
+  letter-spacing: 0.01em;
 }
 
 .draft-tag {
@@ -981,7 +1032,8 @@ html:not(.js) .embed__message {
   color: var(--bg);
   font-size: 0.875rem;
   font-weight: 500;
-  white-space: nowrap;
+  line-height: 1.4;
+  white-space: pre;
   border-radius: 2px;
   pointer-events: none;
 }
@@ -1133,8 +1185,20 @@ html:not(.js) .globe-only {
 }
 
 .globe-years {
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
   color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+/* Two short notes that run the full width of the legend; `pretty` only avoids a lone last word. */
+.globe-years span {
+  display: block;
+  text-wrap: pretty;
+}
+
+.globe-years span + span {
+  margin-top: 0.35rem;
 }
 
 /* On a phone the column sits under the globe: the toggle and pause share a row. */
@@ -1310,18 +1374,150 @@ html:not(.js) .globe-only {
   font-size: 0.9375rem;
 }
 
-/* How to use this site: plain text at the end of #problem. */
-.guide__list {
-  max-width: 50rem;
-  margin: 0;
-  padding-left: 1.25rem;
-  color: var(--fg-soft);
-  font-size: 1.0625rem;
-  line-height: 1.55;
+/* How to use this site: a round button fixed bottom-right that opens a small card. */
+.howto {
+  position: fixed;
+  right: clamp(16px, 2.4vw, 32px);
+  bottom: clamp(16px, 2.4vw, 32px);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
 }
 
-.guide__list li + li {
-  margin-top: 0.4rem;
+.howto__button {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: var(--fg);
+  color: var(--bg);
+  font-family: var(--serif);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+}
+
+.howto__button[aria-expanded='true'] {
+  background: var(--bg-raised);
+  color: var(--fg);
+}
+
+.howto__button {
+  position: relative;
+}
+
+/* A label that slides out to the left on hover or keyboard focus, so the button is not a mystery.
+   It stays hidden while the card is open, since the card's own title says the same. */
+.howto__tip {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 12px);
+  padding: 0.4em 0.8em;
+  background: var(--fg);
+  color: var(--bg);
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.howto__button:hover .howto__tip,
+.howto__button:focus-visible .howto__tip {
+  opacity: 1;
+}
+
+.howto__button[aria-expanded='true'] .howto__tip {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .howto__tip {
+    transition: opacity 0.15s ease-out;
+  }
+}
+
+.howto__button:hover {
+  background: var(--highlight);
+  color: var(--bg);
+}
+
+.howto__card {
+  width: min(22rem, calc(100vw - 2 * clamp(16px, 2.4vw, 32px)));
+  max-height: min(70vh, 32rem);
+  padding: 1.25rem 1.25rem 1rem;
+  overflow-y: auto;
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+}
+
+.howto__card[hidden] {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .howto__card:not([hidden]) {
+    animation: howto-in 0.25s ease-out;
+  }
+}
+
+@keyframes howto-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+.howto__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.howto__title {
+  margin: 0;
+  font-size: 1.5rem;
+  line-height: 1.15;
+}
+
+.howto__close {
+  flex: none;
+  margin: -0.25rem -0.25rem 0 0;
+  padding: 0.1rem 0.5rem;
+  border: 0;
+  background: none;
+  color: var(--muted);
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.howto__close:hover {
+  color: var(--fg);
+}
+
+.howto__list {
+  margin: 0.75rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--fg-soft);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.howto__list li + li {
+  margin-top: 0.5rem;
 }
 
 /* ==========================================================================
