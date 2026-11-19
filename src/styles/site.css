@@ -485,6 +485,31 @@ html:not(.js) .tabs__panel[hidden] {
   font-size: 1rem;
 }
 
+/* A description with a "- " list: its paragraphs and lists, in the description's own type. */
+.dash__list {
+  max-width: 60rem;
+  margin: 0.6em 0 0;
+  padding-left: 1.25em;
+  color: var(--fg-soft);
+  font-size: 1rem;
+}
+
+.dash__list li + li {
+  margin-top: 0.3em;
+}
+
+.dash__list + .dash__description {
+  margin-top: 0.75em;
+}
+
+.dash__label + .dash__blocks > :first-child {
+  margin-top: 0;
+}
+
+.dash__label + .dash__blocks > * {
+  max-width: none;
+}
+
 .dash__howto {
   max-width: 60rem;
   margin-top: 0.6em;

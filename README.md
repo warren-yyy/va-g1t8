@@ -153,7 +153,7 @@ Each part (`parts`):
 
 Each view (`dashboards`):
 
-- `description`: what is on the view, in a sentence or two. Describe what it shows, not what it finds.
+- `description`: what is on the view, in a sentence or two. Describe what it shows, not what it finds. A blank line starts a new paragraph, and a block of lines that each start with `- ` shows as a bulleted list, as in D3b.
 - `howTo`: one line on how to use its controls. The seeded ones are drafts taken from the workbook, for owners to confirm.
 - `takeaway`: the finding, in a sentence.
 - `takeawayNote`: optional. Every number on the site must show its year, so if a takeaway has a number and no year, give the scope here, as D10 does.
