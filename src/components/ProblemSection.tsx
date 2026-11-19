@@ -10,7 +10,7 @@ const ACCENTS: Record<string, string> = { Dengue: '#E15759', Malaria: '#4E79A7' 
 
 /**
  * #problem, straight under the hero: what the project asks, a card for each disease,
- * four numbers about the data, then how to use the site.
+ * and four numbers about the data. How to use the site is the floating button (HowToButton).
  */
 export default function ProblemSection() {
   const { problem, statTiles } = config;
@@ -64,17 +64,6 @@ export default function ProblemSection() {
           </Reveal>
         ))}
       </ul>
-
-      <div className="guide">
-        <h3 className="problem__subtitle" id="problem-guide-title">
-          {problem.guideTitle}
-        </h3>
-        <ul className="guide__list">
-          {problem.guide.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      </div>
     </section>
   );
 }

@@ -92,7 +92,7 @@ export interface ProblemSection {
   /** Draft for the team to edit. */
   intro: string;
   dataTitle: string;
-  /** The user guide the course requires, at the end of #problem. Plain visible text. */
+  /** The user guide the course requires. Shown by the floating "?" button at the bottom-right of every screen. */
   guideTitle: string;
   guide: string[];
 }
@@ -207,7 +207,7 @@ const config: SiteConfig = {
     { label: 'Data, methods & limitations', href: '/#data-methods' },
   ],
 
-  // Empty for now. The user guide is a block at the end of #problem (problem.guide), not a
+  // Empty for now. The user guide is the floating "?" button (problem.guide), not a
   // page. README.md has the steps for adding a page.
   extraPages: [],
 

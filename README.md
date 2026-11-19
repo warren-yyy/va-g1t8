@@ -216,7 +216,7 @@ It cannot run in the browser: the file it needs is on S3 with no CORS header. To
 
 ## Add an extra page
 
-The user guide is not a page: it is the "How to use this site" block at the end of `#problem`, written in `problem.guide` in `src/site.config.ts`. Add a page only for something else the course requires, such as a poster or report.
+The user guide is not a page: it is the floating "?" button at the bottom-right (`HowToButton`), written in `problem.guide` in `src/site.config.ts`. Add a page only for something else the course requires, such as a poster or report.
 
 1. Add it to `extraPages` in `src/site.config.ts`: `{ slug: 'user-guide', label: 'User guide' }`. The navbar picks it up automatically, after the section links.
 2. Create `src/app/user-guide/page.tsx`:
