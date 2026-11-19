@@ -216,7 +216,7 @@ const config: SiteConfig = {
       number: 1,
       slug: 'burden',
       title: 'Burden',
-      question: 'Where is the burden?',
+      question: 'Where do dengue and malaria hit hardest?',
       role: 'Sets the scene',
       intro:
         'Before asking why some countries are more vulnerable, we need to know where the burden is and how it has changed. D1 introduces both diseases and their trend since 2000; D2 maps where rates are highest, where the cases are and which countries stay on top; D3 checks whether those trends hold in every region and country.',
@@ -231,7 +231,7 @@ const config: SiteConfig = {
       number: 2,
       slug: 'drivers',
       title: 'Drivers',
-      question: 'What drives it?',
+      question: 'What makes a country more prone to each disease?',
       role: 'Objective 1',
       intro:
         'With the burden mapped, this section tests the possible explanations. D6 first ranks every factor for each disease and shows how stable those links are over time; D4 then looks at climate and D5 at development and infrastructure. D7 compares countries with similar climates to separate climate from everything else.',
