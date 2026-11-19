@@ -162,10 +162,11 @@ export default function Globe({ meta, summaries }: GlobeProps) {
           </ul>
 
           <p className="globe-years">
-            Latest year per country, {current.minYear}-{current.maxYear}; paler = older
+            <span>
+              Latest year per country, {current.minYear}-{current.maxYear}; paler = older.
+            </span>
+            <span>On a log scale, each step along the bar is 10 times the one before.</span>
           </p>
-
-          <p className="globe-years">Log scale: each step along the bar is 10 times the one before.</p>
 
           {!reducedMotion && (
             <button className="globe-pause" type="button" aria-pressed={paused} onClick={togglePaused}>

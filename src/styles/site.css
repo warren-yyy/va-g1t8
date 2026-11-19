@@ -869,8 +869,8 @@ html:not(.js) .embed__message {
   margin: 0.75em 0 0 50%;
   transform: translateX(-50%);
   color: var(--muted);
-  font-size: clamp(0.9375rem, 1.3vw, 1.0625rem);
-  text-wrap: balance;
+  font-size: clamp(0.8125rem, 1.1vw, 0.9375rem);
+  letter-spacing: 0.01em;
 }
 
 .draft-tag {
@@ -1111,8 +1111,20 @@ html:not(.js) .globe-only {
 }
 
 .globe-years {
-  margin-top: 0.5rem;
+  margin-top: 0.75rem;
   color: var(--muted);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+/* Two short notes, each on its own balanced line so no single word is left alone. */
+.globe-years span {
+  display: block;
+  text-wrap: balance;
+}
+
+.globe-years span + span {
+  margin-top: 0.35rem;
 }
 
 /* On a phone the column sits under the globe: the toggle and pause share a row. */
