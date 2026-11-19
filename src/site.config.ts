@@ -175,7 +175,7 @@ export interface SiteConfig {
 
 // DRAFT until D13 is built. It opens the Conclusion, with a "Draft" tag while D13's url is empty.
 const answerSentence =
-  'Heat shapes where both diseases can spread; wealth tracks who stays sick, strongly for malaria and barely for dengue.';
+  "Countries escape malaria as they develop, above all as they gain clean water and sanitation. But nothing in a country's development statistics explains dengue, so dengue has to be fought directly, by controlling the mosquito.";
 
 // D8b's takeaway, which is also the Conclusion's key finding for Part 3.
 const d8bTakeaway =
@@ -820,23 +820,24 @@ const config: SiteConfig = {
       },
       {
         part: 2,
-        text: 'Heat decides where both diseases can exist. Beyond that, malaria follows poverty and poor basic services, while dengue barely does: rich countries with clean water and sanitation, like Singapore, still carry plenty of it.',
+        text: "Heat decides where both diseases can exist, but not how much. Malaria is tied most closely to clean water and sanitation, in every year from 2000 to 2023. Dengue isn't explained by any factor we tested: not wealth, basic services, crowding or rainfall. Crowded and urban countries even have less dengue, the opposite of what we expected.",
       },
       { part: 3, text: d8bTakeaway },
       {
         part: 4,
-        text: 'Singapore reported {sgDengue2019} dengue cases per 100k in 2019, about {ratio2019} times the high-income median, and its weather links are weak: in monthly data for 2012-2024, temperature leads dengue by about 1-2 months (r about {sgTempLagR}).',
+        text: 'In 2019, Singapore had about {ratio2019} times as much dengue as the typical high-income country, and its local weather barely explains when outbreaks come.',
       },
       {
         part: 5,
-        text: 'Comparing the same countries each year, income tracks malaria in all {yearsMalariaStronger} years from 2000 to 2024 (median r = {medianRMalaria}) but barely tracks dengue ({medianRDengue}), which is how a rich country can be malaria-free yet carry heavy dengue.',
+        text: 'Singapore fits the global pattern: like other rich countries, it has escaped malaria but not dengue. Across countries, income tracks malaria in every one of the {yearsMalariaStronger} years from 2000 to 2024 but barely tracks dengue.',
       },
     ],
     // Practical takeaways, shown under "What this means". While null, the heading is left out too.
     implications: [
-      "Fighting malaria and fighting dengue need different tools. For malaria, the things that come with development (clean water, sanitation, better health care) go with the disease almost disappearing. For dengue, those same improvements don't seem to be enough: dengue's mosquito breeds in small pools of water around homes, so even rich, well-serviced places like Singapore still need targeted mosquito control.",
+      "Fighting malaria and fighting dengue need different tools. Malaria fades as countries gain clean water and sanitation. Dengue doesn't, because its mosquito breeds in small pools of water around homes, so it has to be fought directly. Singapore shows this can work: the National Environment Agency reports up to 88% fewer dengue cases in areas where it released Wolbachia mosquitoes, which stop the dengue mosquito from breeding (NEA, 2021).",
+      'Even success has a cost. A 2006 study found that decades of strong mosquito control had left few people in Singapore immune to dengue: only 6.7% of primary school children had been infected, against 71% in a province of Thailand (Ooi et al., 2006). With so little immunity, dengue can spread even when mosquitoes are scarce, which helps explain why Singapore still has outbreaks.',
       "Getting richer won't make a hot country safe from dengue. As poorer tropical countries develop, our data suggests malaria will fade but dengue may stay. And because heat decides where these diseases can exist, a warming climate could bring dengue to places that are too cool for it today. Europe is already reporting more: France went from 9 to 85 cases per 100,000 people between 2019 and 2024.",
-      "Countries should be judged on each disease separately. A country can be resilient to one and vulnerable to the other, so a single risk score for mosquito-borne disease hides the problem.",
+      'Countries should be judged on each disease separately. A country can be resilient to one and vulnerable to the other, so a single risk score for mosquito-borne disease hides the problem.',
     ],
     closingLead: 'Every figure has limits; see',
   },
@@ -1031,6 +1032,7 @@ const config: SiteConfig = {
       '{dengueComplete2019} countries and territories have complete dengue reporting in 2019, but {dengueNoPop2019} lack population, leaving {dengueUsable2019} usable rates.',
       "The globe's dengue colours mix years from {globeDengueMinYear} to {globeDengueMaxYear}.",
       'Correlations show association, not cause.',
+      'Our data has no measure of mosquito control or population immunity, the two explanations outside research gives for dengue, so we could not test them. A next step would be to compare Wolbachia release areas with similar areas over time.',
       'Singapore weather links use monthly data for 2012-2024 ({sgLagMonths} months), and all are weak.',
       'Humidity is in the data for Singapore only, from the Changi station (2000-2024). Country-level humidity was never added to the global table, so global comparisons cover temperature and rainfall.',
       'The country-year table behind every headline number is annual and ends in 2024. The monthly global file also ends in 2024. The Global Dengue Observatory file runs to 2026 but feeds no number on this site.',
@@ -1058,6 +1060,8 @@ const config: SiteConfig = {
       { label: 'OneMap', href: 'https://www.onemap.gov.sg/' },
       { label: 'Wikipedia: dengue fever', href: 'https://en.wikipedia.org/wiki/Dengue_fever' },
       { label: 'Wikipedia: malaria', href: 'https://en.wikipedia.org/wiki/Malaria' },
+      { label: 'NEA: Project Wolbachia results (2021)', href: 'https://www.nea.gov.sg/media/news/news/index/project-wolbachia-singapore-suppresses-aedes-aegypti-mosquito-population-and-reduces-dengue-cases-at-release-sites' },
+      { label: 'Ooi et al. (2006), Dengue prevention and 35 years of vector control in Singapore', href: 'https://wwwnc.cdc.gov/eid/article/12/6/05-1210' },
     ],
   },
 };
