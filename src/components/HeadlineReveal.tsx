@@ -37,7 +37,7 @@ export default function HeadlineReveal({ as: Tag = 'h1', id, className, text, on
       );
     }, element);
     return () => context.revert();
-  }, [onScroll]);
+  }, [onScroll, text]);
 
   return (
     <Tag ref={ref} id={id} className={className}>
