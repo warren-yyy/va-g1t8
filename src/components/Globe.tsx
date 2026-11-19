@@ -169,9 +169,9 @@ export default function Globe({ meta, summaries }: GlobeProps) {
 
           <p className="globe-years">
             <span>
-              Each country shows its latest year, {current.minYear}-{current.maxYear}; paler = older data.
+              Each country shows its latest year, {current.minYear}-{current.maxYear}. Paler colours are older data.
             </span>
-            <span>Log scale: each tick on the bar is 10 times the one before.</span>
+            <span>Log scale: each tick is 10 times the one before.</span>
           </p>
 
           {!reducedMotion && (

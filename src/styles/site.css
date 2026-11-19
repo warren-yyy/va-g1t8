@@ -1118,10 +1118,10 @@ html:not(.js) .globe-only {
   line-height: 1.5;
 }
 
-/* Two short notes, each on its own balanced line so no single word is left alone. */
+/* Two short notes that run the full width of the legend; `pretty` only avoids a lone last word. */
 .globe-years span {
   display: block;
-  text-wrap: balance;
+  text-wrap: pretty;
 }
 
 .globe-years span + span {
