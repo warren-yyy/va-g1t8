@@ -132,11 +132,12 @@ D6b sits in Part 3 on purpose: it answers that section's question. D7 stays a si
 
 ### Set a view's height
 
-Every view is 1200 px wide; only the height differs.
+Views should be 1200 px wide; only the height differs.
 
 1. In Tableau, open the dashboard and look at the **Size** panel on the **Dashboard** pane. Size should be **Fixed size**, 1200 wide.
-2. Copy the height into the view's `height`, as a number of px: `height: 650`.
-3. Run `npm run check`. The height column shows the dashboard height and the iframe height (27 more, for Tableau's toolbar).
+2. Copy the height into the view's `height`, as a number of px: `height: 650`. Set it to the dashboard's real height: a larger number leaves empty space under the view.
+3. If the dashboard is not 1200 wide, also set `width` (D11a and D11b are `width: 1000`). The site scales it up to fill the same 1200 px as the others; resizing it to 1200 in Tableau is sharper, and then `width` can be removed.
+4. Run `npm run check`. The height column shows the dashboard height and the iframe height (27 more, for Tableau's toolbar).
 
 While `height` is `null`, the site assumes 800 and `npm run check` warns "height not confirmed". If it is too small, the toolbar is clipped and the dashboard scrolls inside its frame. The site scales a view down on smaller screens and never scales it up.
 
@@ -250,7 +251,7 @@ To test the exact output first: `npm run build`, then `npm run preview`.
 
 ## How a few things work
 
-- **The iframe is 27px taller than the view.** Tableau draws a 27px toolbar under the dashboard, inside the same iframe. With an iframe only as tall as the dashboard, the toolbar is clipped and the inner page scrolls. `vizSize(height)` in `src/lib/tableau.ts` is the one place this is worked out: 1200 wide, `height` + 27 tall, 800 + 27 while `height` is `null`.
+- **The iframe is 27px taller than the view.** Tableau draws a 27px toolbar under the dashboard, inside the same iframe. With an iframe only as tall as the dashboard, the toolbar is clipped and the inner page scrolls. `vizSize(height, width)` in `src/lib/tableau.ts` is the one place this is worked out: `width` wide (1200 by default), `height` + 27 tall, 800 + 27 while `height` is `null`.
 - **Disease cards.** The Dengue and Malaria cards in `#problem` show the pathogen, vector and Wikipedia link from `disease_info.csv`, which `npm run data` copies into `src/data/diseases.json`. Only those three fields are used.
 - **Native scrolling only.** Lenis was removed: the page has Tableau iframes throughout, and Lenis cannot see wheel events over an iframe. Nav clicks glide with CSS `scroll-behavior: smooth` (instant under reduced motion), and `scroll-padding-top` keeps section titles clear of the header. `InitialScroll` turns smooth scrolling on only after the first jump to a hash, because Chrome otherwise animates that jump too and stops partway.
 - **A tab hidden mid-load restarts its viz.** Tableau never finishes loading a viz whose panel is hidden while it loads, so `DashboardEmbed` discards an unfinished viz when its panel hides and starts a fresh one when the panel is visible again. A viz that has finished loading is kept.

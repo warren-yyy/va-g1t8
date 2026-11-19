@@ -41,6 +41,11 @@ const rows = config.dashboards.map((d) => {
   } else {
     heightStatus = `${d.height} (iframe ${vizSize(d.height).height})`;
   }
+  if (d.width !== undefined && (!Number.isInteger(d.width) || d.width <= 0)) {
+    problems.push(`${d.id}: width must be a positive whole number of px, or left out.`);
+  } else if (d.width !== undefined) {
+    heightStatus += `, ${d.width} wide`;
+  }
   return {
     id: d.id,
     title: d.title,

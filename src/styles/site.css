@@ -569,7 +569,8 @@ html:not(.js) .tabs__panel[hidden] {
 .embed__frame {
   position: relative;
   width: 100%;
-  max-width: calc(var(--viz-w) * 1px);
+  /* 1200px for every view: a narrower one is scaled up to fill it (see DashboardEmbed). */
+  max-width: calc(var(--viz-max-w, var(--viz-w)) * 1px);
   margin-inline: auto;
   aspect-ratio: var(--viz-w) / var(--viz-h);
   overflow: hidden;
