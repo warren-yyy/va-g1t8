@@ -20,6 +20,38 @@ import Reveal from '@/components/Reveal';
  * There is no "Open in Tableau Public" link under the embed: Tableau's own toolbar has one.
  * The embed's error and no-JavaScript messages carry a link, for when the toolbar is missing.
  */
+
+const isListBlock = (block: string) => block.split('\n').every((line) => line.startsWith('- '));
+
+/**
+ * A view's description. Blank lines split it into blocks, and a block whose every line starts
+ * with "- " is a bulleted list. A description with no list renders as one paragraph, as before.
+ */
+function Description({ text }: { text: string }) {
+  const blocks = text
+    .split(/\n\s*\n/)
+    .map((block) => block.trim())
+    .filter(Boolean);
+  if (!blocks.some(isListBlock)) return <p className="dash__description">{fillRich(text)}</p>;
+  return (
+    <div className="dash__blocks">
+      {blocks.map((block, index) =>
+        isListBlock(block) ? (
+          <ul key={index} className="dash__list">
+            {block.split('\n').map((line, item) => (
+              <li key={item}>{fillRich(line.slice(2))}</li>
+            ))}
+          </ul>
+        ) : (
+          <p key={index} className="dash__description">
+            {fillRich(block)}
+          </p>
+        ),
+      )}
+    </div>
+  );
+}
+
 export default function DashboardSection({ dashboard }: { dashboard: Dashboard }) {
   const { id, title, question, hideQuestion, description, howTo, takeaway, takeawayNote, whyItMatters, alt } =
     dashboard;
@@ -41,7 +73,7 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
           {description && (
             <div className="dash__block">
               <h4 className="dash__label">What this dashboard shows</h4>
-              <p className="dash__description">{fillRich(description)}</p>
+              <Description text={description} />
             </div>
           )}
           {howTo && (
@@ -53,7 +85,7 @@ export default function DashboardSection({ dashboard }: { dashboard: Dashboard }
         </>
       ) : (
         <>
-          {description && <p className="dash__description">{fillRich(description)}</p>}
+          {description && <Description text={description} />}
           {howTo && <p className="dash__howto">{fillRich(howTo)}</p>}
         </>
       )}

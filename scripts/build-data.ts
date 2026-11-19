@@ -294,6 +294,297 @@ expect('Burden: malaria share in Sub-Saharan Africa, 2019, %', malariaSSA2019, 9
 expect('Burden: dengue share in Latin America & Caribbean, 2019, %', dengueLAC2019, 63.3, 1);
 expect('Burden: dengue share in East Asia & Pacific, 2019, %', dengueEAP2019, 26.5, 1);
 
+// ------------------------------------------------------ Part 1 labelled sections
+//
+// The claims in Part 1's view text (D1-D3b) and findings. Same rules as above: dengue uses
+// complete rows (and the 70-country panel where it says so), malaria the 110 endemic
+// countries, rates per 100,000.
+
+const dengueMultiple2019 = denguePanel2019 / denguePanel2000;
+expect('Findings: panel dengue rate, 2019 / 2000', dengueMultiple2019, 7.6, 1);
+expect('Findings: panel dengue rate is highest in 2024', YEARS.every((year) => denguePanelRate(year) <= denguePanel2024), true);
+
+const MIN_RANKED_POPULATION = 1e6;
+const countryByIso = (iso3: string, year: number) => inYear(year).find((row) => row.iso3 === iso3);
+const isoOf = (name: string) => countryYear.find((row) => row.country === name)!.iso3;
+const nameOf = (iso3: string) => countryYear.find((row) => row.iso3 === iso3)!.country;
+const increasing = (values: number[]) => values.every((value, i) => i === 0 || value > values[i - 1]!);
+const hasDengueRate = (row: CountryYear) => row.complete === 1 && row.dengue !== null;
+const hasDengueCases = (row: CountryYear) => row.complete === 1 && row.dengueCases !== null;
+const caseRows = (year: number) => inYear(year).filter(hasDengueCases);
+
+// D1
+expect('D1: panel dengue rate, 2023 / 2000', denguePanelRate(2023) / denguePanel2000, 9.9, 1);
+expect(
+  'D1: panel dengue rate rises peak to peak, 2010 < 2013 < 2016 < 2019 < 2023',
+  increasing([2010, 2013, 2016, 2019, 2023].map(denguePanelRate)),
+  true,
+);
+const malariaCountries = (year: number) => inYear(year).filter((row) => (row.malariaCases ?? 0) > 0).length;
+expect('D1: countries with malaria cases, 2000', malariaCountries(2000), 105);
+expect('D1: countries with malaria cases, 2019', malariaCountries(2019), 83);
+const malariaTotal = (year: number) => sumOf(inYear(year), (row) => row.malariaCases);
+expect('D1: total malaria cases, 2019 / 2000', malariaTotal(2019) / malariaTotal(2000), 1.0, 2);
+expect(
+  'D1: endemic malaria rate rises every year, 2019-2024',
+  increasing([2019, 2020, 2021, 2022, 2023, 2024].map(malariaEndemicRate)),
+  true,
+);
+
+// D2a
+function top(rows: CountryYear[], key: RateKey, n: number): CountryYear[] {
+  return rows
+    .filter((row) => row[key] !== null && (row.population ?? 0) >= MIN_RANKED_POPULATION)
+    .sort((a, b) => b[key]! - a[key]!)
+    .slice(0, n);
+}
+const topDengue2019 = top(y2019.filter(hasDengueRate), 'dengue', 12);
+const topMalaria2019 = top(y2019, 'malaria', 12);
+expect(
+  'D2a: top 12 dengue rates, 2019',
+  topDengue2019.map((row) => row.country).join(', '),
+  'Nicaragua, Honduras, Brazil, Lao PDR, El Salvador, Sri Lanka, Cambodia, Philippines, Malaysia, Viet Nam, Guatemala, Singapore',
+);
+expect('D2a: top 12 malaria rates are all Sub-Saharan, 2019', topMalaria2019.every((row) => row.region === 'Sub-Saharan Africa'), true);
+expect('D2a: top 3 malaria rates are each 38,000+, 2019', topMalaria2019.slice(0, 3).every((row) => row.malaria! >= 38000), true);
+expect(
+  'D2a: no country in both top-12 lists, 2019',
+  topDengue2019.every((row) => !topMalaria2019.some((other) => other.iso3 === row.iso3)),
+  true,
+);
+expect(
+  'D2a: Sub-Saharan countries with complete dengue, every year before 2023',
+  countryYear.filter((row) => row.region === 'Sub-Saharan Africa' && row.complete === 1 && row.year < 2023).length,
+  0,
+);
+
+// D2b
+function dengueChanges(year: number) {
+  const before = new Map(caseRows(year - 1).filter((row) => row.dengueCases! > 0).map((row) => [row.iso3, row.dengueCases!]));
+  return caseRows(year)
+    .filter((row) => before.has(row.iso3))
+    .map((row) => ({ before: before.get(row.iso3)!, after: row.dengueCases! }));
+}
+function malariaChanges(year: number) {
+  const positive = (rows: CountryYear[]) => rows.filter((row) => (row.malariaCases ?? 0) > 0);
+  const before = new Map(positive(inYear(year - 1)).map((row) => [row.iso3, row.malariaCases!]));
+  return positive(inYear(year))
+    .filter((row) => before.has(row.iso3))
+    .map((row) => ({ before: before.get(row.iso3)!, after: row.malariaCases! }));
+}
+const changes2019 = dengueChanges(2019);
+expect('D2b: dengue countries compared, 2019 vs 2018', changes2019.length, 68);
+expect('D2b: of those, dengue rose', changes2019.filter((c) => c.after > c.before).length, 58);
+expect('D2b: of those, dengue at least doubled', changes2019.filter((c) => c.after >= 2 * c.before).length, 38);
+const medianAbsChange = (list: { before: number; after: number }[]) =>
+  median(list.map((c) => Math.abs((100 * (c.after - c.before)) / c.before)));
+const changeYears = YEARS.filter((year) => year >= 2001 && year <= 2023);
+const dengueMedianChange = changeYears.map((year) => medianAbsChange(dengueChanges(year)));
+const malariaMedianChange = changeYears.map((year) => medianAbsChange(malariaChanges(year)));
+console.log(
+  `D2b median absolute year-on-year change, 2001-2023: dengue ${Math.min(...dengueMedianChange).toFixed(1)}-${Math.max(...dengueMedianChange).toFixed(1)}%, malaria ${Math.min(...malariaMedianChange).toFixed(1)}-${Math.max(...malariaMedianChange).toFixed(1)}%`,
+);
+expect('D2b: median absolute dengue change is 50%+ in every year, 2001-2023', dengueMedianChange.every((v) => v >= 50), true);
+expect('D2b: median absolute malaria change is under 20% in every year, 2001-2023', malariaMedianChange.every((v) => v < 20), true);
+
+const REGIONS = [...new Set(countryYear.map((row) => row.region))].filter(Boolean).sort();
+const topDengueRegion = (year: number) => {
+  const rows = caseRows(year);
+  return [...REGIONS].sort(
+    (a, b) => regionShare(rows, (row) => row.dengueCases, b) - regionShare(rows, (row) => row.dengueCases, a),
+  )[0]!;
+};
+expect(
+  'D2b: years 2000-2023 when Latin America & Caribbean does not have the largest dengue share',
+  PANEL_YEARS.filter((year) => topDengueRegion(year) !== 'Latin America & Caribbean').join(', '),
+  '2004',
+);
+const malariaShare = (year: number, region: string) => regionShare(endemicIn(year), (row) => row.malariaCases, region);
+expect('D2b: malaria share in Sub-Saharan Africa, 2000, %', malariaShare(2000, 'Sub-Saharan Africa'), 86.5, 1);
+expect('D2b: malaria share in Sub-Saharan Africa, 2019, %', malariaShare(2019, 'Sub-Saharan Africa'), 96.3, 1);
+expect('D2b: malaria share in South Asia, 2000, %', malariaShare(2000, 'South Asia'), 9.2, 1);
+expect('D2b: malaria share in South Asia, 2019, %', malariaShare(2019, 'South Asia'), 1.6, 1);
+const regionMalariaCases = (year: number, region: string) =>
+  sumOf(endemicIn(year).filter((row) => row.region === region), (row) => row.malariaCases);
+expect(
+  'D2b: Sub-Saharan malaria cases are higher in 2024 than in 2000',
+  regionMalariaCases(2024, 'Sub-Saharan Africa') > regionMalariaCases(2000, 'Sub-Saharan Africa'),
+  true,
+);
+
+// Regional rates: summed cases over summed population. Dengue over the panel, malaria over endemic rows.
+function regionDengueRate(year: number, region: string): number {
+  const rows = inYear(year).filter(
+    (row) => row.region === region && denguePanel.has(row.iso3) && hasDengueCases(row) && row.population !== null,
+  );
+  return rows.length ? per100k(sumOf(rows, (row) => row.dengueCases), sumOf(rows, (row) => row.population)) : NaN;
+}
+function regionMalariaRate(year: number, region: string): number {
+  const rows = endemicIn(year).filter((row) => row.region === region && row.population !== null);
+  return rows.length ? per100k(sumOf(rows, (row) => row.malariaCases), sumOf(rows, (row) => row.population)) : NaN;
+}
+const dengueIndex = (year: number, region: string) => (100 * regionDengueRate(year, region)) / regionDengueRate(2000, region);
+const malariaIndex = (year: number, region: string) => (100 * regionMalariaRate(year, region)) / regionMalariaRate(2000, region);
+
+expect(
+  'D2b: Sub-Saharan endemic malaria rate is lower in 2024 than in 2000',
+  regionMalariaRate(2024, 'Sub-Saharan Africa') < regionMalariaRate(2000, 'Sub-Saharan Africa'),
+  true,
+);
+
+// D2c
+function rankLines(key: RateKey) {
+  const lineYears = YEARS.filter((year) => year >= 2010 && year <= 2023);
+  const usable = (row: CountryYear) =>
+    lineYears.includes(row.year) &&
+    row[key] !== null &&
+    (row.population ?? 0) >= MIN_RANKED_POPULATION &&
+    (key === 'malaria' || row.complete === 1);
+  const byCountry = new Map<string, number[]>();
+  for (const row of countryYear.filter(usable)) byCountry.set(row.iso3, [...(byCountry.get(row.iso3) ?? []), row[key]!]);
+  const top10 = [...byCountry]
+    .map(([iso3, rates]) => ({ iso3, mean: rates.reduce((sum, v) => sum + v, 0) / rates.length }))
+    .sort((a, b) => b.mean - a.mean)
+    .slice(0, 10)
+    .map((entry) => entry.iso3);
+  const rank = new Map<number, Map<string, number>>();
+  for (const year of lineYears) {
+    const ranked = inYear(year)
+      .filter((row) => top10.includes(row.iso3) && usable(row))
+      .sort((a, b) => b[key]! - a[key]!);
+    rank.set(year, new Map(ranked.map((row, index) => [row.iso3, index + 1])));
+  }
+  return { top10, rank, lineYears };
+}
+const dengueLines = rankLines('dengue');
+const malariaLines = rankLines('malaria');
+const regionOf = (iso3: string) => countryYear.find((row) => row.iso3 === iso3)!.region;
+expect(
+  'D2c: dengue top 10 in Latin America & Caribbean',
+  dengueLines.top10.filter((iso3) => regionOf(iso3) === 'Latin America & Caribbean').length,
+  7,
+);
+expect(
+  'D2c: dengue top 10 outside Latin America & Caribbean',
+  dengueLines.top10
+    .filter((iso3) => regionOf(iso3) !== 'Latin America & Caribbean')
+    .map(nameOf)
+    .sort()
+    .join(', '),
+  'Malaysia, Singapore, Sri Lanka',
+);
+expect('D2c: Paraguay dengue rank, 2020', dengueLines.rank.get(2020)!.get(isoOf('Paraguay')) ?? 0, 1);
+expect('D2c: Paraguay dengue rank, 2022', dengueLines.rank.get(2022)!.get(isoOf('Paraguay')) ?? 0, 10);
+expect(
+  'D2c: years 2016-2023 when Nicaragua ranks first for dengue',
+  dengueLines.lineYears
+    .filter((year) => year >= 2016 && dengueLines.rank.get(year)!.get(isoOf('Nicaragua')) === 1)
+    .join(', '),
+  '2016, 2017, 2018, 2019, 2021, 2022, 2023',
+);
+expect('D2c: malaria top 10 are all Sub-Saharan', malariaLines.top10.every((iso3) => regionOf(iso3) === 'Sub-Saharan Africa'), true);
+expect(
+  'D2c: countries ever ranked first for malaria',
+  [
+    ...new Set(
+      malariaLines.lineYears.map((year) => [...malariaLines.rank.get(year)!].find(([, rank]) => rank === 1)![0]),
+    ),
+  ]
+    .map(nameOf)
+    .sort()
+    .join(', '),
+  'Benin, Burkina Faso',
+);
+
+// D3a
+const DENGUE_RISING = [
+  'East Asia & Pacific',
+  'Latin America & Caribbean',
+  'Middle East, North Africa, Afghanistan & Pakistan',
+  'South Asia',
+];
+for (const region of DENGUE_RISING) {
+  expect(`D3a: dengue index above 100 in 2023, ${region}`, dengueIndex(2023, region) > 100, true);
+}
+expect(
+  'D3a: Europe & Central Asia malaria rate is 0 in every year from 2015',
+  YEARS.filter((year) => year >= 2015).every((year) => regionMalariaRate(year, 'Europe & Central Asia') === 0),
+  true,
+);
+expect('D3a: South Asia malaria index under 10 in 2023', malariaIndex(2023, 'South Asia') < 10, true);
+expect('D3a: Sub-Saharan malaria index, 2023', malariaIndex(2023, 'Sub-Saharan Africa'), 68.3, 1);
+expect(
+  'D3a: Sub-Saharan malaria index in 2023 above East Asia & Pacific, Latin America & Caribbean and South Asia',
+  ['East Asia & Pacific', 'Latin America & Caribbean', 'South Asia'].every(
+    (region) => malariaIndex(2023, 'Sub-Saharan Africa') > malariaIndex(2023, region),
+  ),
+  true,
+);
+expect(
+  'D3a: Sub-Saharan malaria index moves under 5 points, 2015-2023',
+  Math.abs(malariaIndex(2023, 'Sub-Saharan Africa') - malariaIndex(2015, 'Sub-Saharan Africa')) < 5,
+  true,
+);
+expect(
+  'D3a: Middle East, North Africa, Afghanistan & Pakistan malaria index above 100 in 2023',
+  malariaIndex(2023, 'Middle East, North Africa, Afghanistan & Pakistan') > 100,
+  true,
+);
+expect(
+  'D3a: Pakistan malaria cases in 2022 more than twice 2021',
+  countryByIso('PAK', 2022)!.malariaCases! > 2 * countryByIso('PAK', 2021)!.malariaCases!,
+  true,
+);
+
+// D3b
+for (const region of DENGUE_RISING) {
+  const change = (year: number) => regionDengueRate(year, region) - regionDengueRate(year - 1, region);
+  expect(`D3b: dengue rate rose in 2019 and fell in 2020, ${region}`, change(2019) > 0 && change(2020) < 0, true);
+}
+const malariaRegionChanges = REGIONS.flatMap((region) =>
+  changeYears.map((year) => regionMalariaRate(year, region) - regionMalariaRate(year - 1, region)),
+).filter((change) => !Number.isNaN(change));
+const fallingShare = malariaRegionChanges.filter((change) => change < 0).length / malariaRegionChanges.length;
+console.log(`D3b: ${malariaRegionChanges.filter((change) => change < 0).length} of ${malariaRegionChanges.length} regional malaria year-on-year changes are falls`);
+expect('D3b: more than half of regional malaria year-on-year changes are falls, 2001-2023', fallingShare > 0.5, true);
+
+const eap = (year: number) => inYear(year).filter((row) => row.region === 'East Asia & Pacific');
+const eapMalaria2010 = new Map(eap(2010).map((row) => [row.iso3, row.malaria ?? 0]));
+const eapMalaria2024 = new Map(eap(2024).map((row) => [row.iso3, row.malaria ?? 0]));
+const eapMalariaCountries = [...new Set([...eapMalaria2010.keys(), ...eapMalaria2024.keys()])].filter(
+  (iso3) => (eapMalaria2010.get(iso3) ?? 0) > 0 || (eapMalaria2024.get(iso3) ?? 0) > 0,
+);
+expect('D3b: East Asia & Pacific countries with malaria in 2010 or 2024', eapMalariaCountries.length, 15);
+expect(
+  'D3b: of those, malaria fell 2010-2024',
+  eapMalariaCountries.filter((iso3) => (eapMalaria2024.get(iso3) ?? 0) < (eapMalaria2010.get(iso3) ?? 0)).length,
+  13,
+);
+expect(
+  'D3b: Cambodia, Lao PDR and Viet Nam malaria under 10 per 100k, 2024',
+  ['Cambodia', 'Lao PDR', 'Viet Nam'].every((name) => (eapMalaria2024.get(isoOf(name)) ?? Infinity) < 10),
+  true,
+);
+const completeDengue = (name: string, year: number) => {
+  const row = countryByIso(isoOf(name), year);
+  return row && hasDengueRate(row) ? row.dengue! : NaN;
+};
+expect(
+  'D3b: dengue higher in 2024 than 2010 for Malaysia, Singapore and Thailand',
+  ['Malaysia', 'Singapore', 'Thailand'].every((name) => completeDengue(name, 2024) > completeDengue(name, 2010)),
+  true,
+);
+expect(
+  'D3b: dengue lower in 2024 than 2010 for Lao PDR and Viet Nam',
+  ['Lao PDR', 'Viet Nam'].every((name) => completeDengue(name, 2024) < completeDengue(name, 2010)),
+  true,
+);
+const sgDengueRows = countryYear.filter((row) => row.iso3 === 'SGP' && row.dengue !== null);
+expect('D3b: Singapore highest dengue year', [...sgDengueRows].sort((a, b) => b.dengue! - a.dengue!)[0]!.year, 2020);
+const sgAverage = (years: number[]) => years.reduce((sum, year) => sum + completeDengue('Singapore', year), 0) / years.length;
+expect('D3b: Singapore dengue average 2022-2024 above 2000-2002', sgAverage([2022, 2023, 2024]) > sgAverage([2000, 2001, 2002]), true);
+expect('D3b: China has no complete dengue row in 2022', countryByIso('CHN', 2022)?.complete !== 1, true);
+
 // --------------------------------------------------------- correlation with income
 
 // r between log10(gdp_pc_ppp) and ln(1 + rate per 100k).
@@ -953,6 +1244,7 @@ const stats = {
     denguePanel2000: wholeNumber(denguePanel2000),
     denguePanel2019: wholeNumber(denguePanel2019),
     denguePanel2024: wholeNumber(denguePanel2024),
+    dengueMultiple2019: String(round(dengueMultiple2019, 0)),
     malariaEndemicN: String(endemicCountries.size),
     malariaRate2000: wholeNumber(malariaRate2000),
     malariaRate2019: wholeNumber(malariaRate2019),
