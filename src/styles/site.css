@@ -862,9 +862,12 @@ html:not(.js) .embed__message {
   text-wrap: balance;
 }
 
+/* Wider than .hero__text so the line fits on one row on a wide screen. It is centred on the
+   text column and never wider than the viewport minus the gutters. */
 .hero__scope {
-  max-width: 40rem;
-  margin: 0.75em auto 0;
+  width: min(72rem, calc(100vw - 2 * var(--gutter)));
+  margin: 0.75em 0 0 50%;
+  transform: translateX(-50%);
   color: var(--muted);
   font-size: clamp(0.9375rem, 1.3vw, 1.0625rem);
   text-wrap: balance;
