@@ -13,18 +13,15 @@ import type { Feature, FeatureCollection, MultiPolygon, Polygon } from 'geojson'
 import type { GeometryCollection, Topology } from 'topojson-specification';
 import { formatRate } from '@/lib/format';
 import {
-  NO_DATA_FILL,
-  NO_DATA_HATCH,
-  OCEAN,
-  RAMPS,
+  GLOBE_PALETTES,
   STALE_MIX,
-  STALE_TINT,
-  ZERO_COLOUR,
   logPosition,
   mixColours,
   type Disease,
   type GlobeData,
+  type GlobePalette,
 } from '@/lib/globe-scale';
+import type { Theme } from '@/lib/theme';
 
 interface ShapeProperties {
   name: string;
@@ -54,6 +51,8 @@ interface Batch {
 
 export interface GlobeEngine {
   setDisease(disease: Disease): void;
+  /** Redraws at once in the theme's palette. */
+  setTheme(theme: Theme): void;
   setPaused(paused: boolean): void;
   destroy(): void;
 }
@@ -68,6 +67,7 @@ export interface GlobeEngineOptions {
   /** Fetches full 50m. Called once, the first time the globe comes to rest. */
   loadFullTopology: () => Promise<WorldTopology>;
   disease: Disease;
+  theme: Theme;
   paused: boolean;
 }
 
@@ -158,6 +158,7 @@ export function createGlobeEngine(options: GlobeEngineOptions): GlobeEngine {
 
   const rotation: [number, number, number] = [...START_ROTATION];
   let disease = options.disease;
+  let palette: GlobePalette = GLOBE_PALETTES[options.theme];
   let size = 0;
   let dpr = 1;
   let frame = 0;
@@ -179,14 +180,14 @@ export function createGlobeEngine(options: GlobeEngineOptions): GlobeEngine {
 
   // ---------------------------------------------------------------- colours
 
-  const hatch = (() => {
+  function makeHatch(): HTMLCanvasElement {
     const tile = document.createElement('canvas');
     tile.width = 6;
     tile.height = 6;
     const tileContext = context2d(tile);
-    tileContext.fillStyle = NO_DATA_FILL;
+    tileContext.fillStyle = palette.noDataFill;
     tileContext.fillRect(0, 0, 6, 6);
-    tileContext.strokeStyle = NO_DATA_HATCH;
+    tileContext.strokeStyle = palette.noDataHatch;
     tileContext.lineWidth = 1;
     tileContext.beginPath();
     tileContext.moveTo(-1, 7);
@@ -197,12 +198,12 @@ export function createGlobeEngine(options: GlobeEngineOptions): GlobeEngine {
     tileContext.lineTo(7, 5);
     tileContext.stroke();
     return tile;
-  })();
+  }
 
-  function buildBatches(forDisease: Disease): Batch[] {
+  function buildBatches(forDisease: Disease, hatch: HTMLCanvasElement): Batch[] {
     const meta = data.meta[forDisease];
-    const [low, high] = RAMPS[forDisease];
-    const pattern = context.createPattern(hatch, 'repeat') ?? NO_DATA_FILL;
+    const [low, high] = palette.ramps[forDisease];
+    const pattern = context.createPattern(hatch, 'repeat') ?? palette.noDataFill;
     const groups = new Map<string, Batch>();
     const add = (key: string, fill: string | CanvasPattern, stale: boolean, shape: Shape) => {
       const group = groups.get(key);
@@ -219,15 +220,20 @@ export function createGlobeEngine(options: GlobeEngineOptions): GlobeEngine {
       const stale = entry.year < data.dataEndYear;
       const colour =
         entry.rate === 0
-          ? ZERO_COLOUR
+          ? palette.zero
           : mixColours(low, high, Math.round(logPosition(entry.rate, meta) * COLOUR_STEPS) / COLOUR_STEPS);
-      const fill = stale ? mixColours(colour, STALE_TINT, STALE_MIX) : colour;
+      const fill = stale ? mixColours(colour, palette.staleTint, STALE_MIX) : colour;
       add(`${fill}|${stale}`, fill, stale, shape);
     }
     return [...groups.values()];
   }
 
-  const batches: Record<Disease, Batch[]> = { dengue: buildBatches('dengue'), malaria: buildBatches('malaria') };
+  function buildAllBatches(): Record<Disease, Batch[]> {
+    const hatch = makeHatch();
+    return { dengue: buildBatches('dengue', hatch), malaria: buildBatches('malaria', hatch) };
+  }
+
+  let batches = buildAllBatches();
 
   // ---------------------------------------------------------------- drawing
 
@@ -247,12 +253,12 @@ export function createGlobeEngine(options: GlobeEngineOptions): GlobeEngine {
 
     target.beginPath();
     target.arc(middle, middle, radius, 0, Math.PI * 2);
-    target.fillStyle = OCEAN;
+    target.fillStyle = palette.ocean;
     target.fill();
 
     target.beginPath();
     path(graticule);
-    target.strokeStyle = 'rgba(241, 239, 233, 0.05)';
+    target.strokeStyle = palette.graticule;
     target.lineWidth = 0.5;
     target.stroke();
 
@@ -263,13 +269,13 @@ export function createGlobeEngine(options: GlobeEngineOptions): GlobeEngine {
       for (const shape of batch.shapes) if (faces(shape, centre)) path(geometry(shape));
       target.fillStyle = batch.fill;
       target.fill();
-      target.strokeStyle = 'rgba(11, 12, 14, 0.7)';
+      target.strokeStyle = palette.border;
       target.lineWidth = 0.5;
       target.stroke();
     }
 
     // Older than the data's last year: paler, with an outline.
-    target.strokeStyle = 'rgba(241, 239, 233, 0.85)';
+    target.strokeStyle = palette.staleOutline;
     target.lineWidth = 0.8;
     for (const batch of batches[disease]) {
       if (!batch.stale) continue;
@@ -280,7 +286,7 @@ export function createGlobeEngine(options: GlobeEngineOptions): GlobeEngine {
 
     target.beginPath();
     target.arc(middle, middle, radius, 0, Math.PI * 2);
-    target.strokeStyle = 'rgba(241, 239, 233, 0.22)';
+    target.strokeStyle = palette.rim;
     target.lineWidth = 1;
     target.stroke();
 
@@ -299,13 +305,13 @@ export function createGlobeEngine(options: GlobeEngineOptions): GlobeEngine {
 
     target.beginPath();
     target.arc(x, y, 7, 0, Math.PI * 2);
-    target.strokeStyle = '#ffffff';
+    target.strokeStyle = palette.marker;
     target.lineWidth = 1.25;
     target.stroke();
     if (front) {
       target.beginPath();
       target.arc(x, y, 2.5, 0, Math.PI * 2);
-      target.fillStyle = '#ffffff';
+      target.fillStyle = palette.marker;
       target.fill();
     }
 
@@ -320,9 +326,9 @@ export function createGlobeEngine(options: GlobeEngineOptions): GlobeEngine {
     const textX = x + (flip ? -12 : 12);
     target.lineWidth = 3;
     target.lineJoin = 'round';
-    target.strokeStyle = 'rgba(11, 12, 14, 0.85)';
+    target.strokeStyle = palette.labelHalo;
     target.strokeText('Singapore', textX, y);
-    target.fillStyle = '#ffffff';
+    target.fillStyle = palette.marker;
     target.fillText('Singapore', textX, y);
     target.restore();
   }
@@ -349,7 +355,7 @@ export function createGlobeEngine(options: GlobeEngineOptions): GlobeEngine {
       context.setTransform(dpr, 0, 0, dpr, 0, 0);
       context.beginPath();
       path(hovered.full ?? hovered.lite);
-      context.strokeStyle = '#ffffff';
+      context.strokeStyle = palette.marker;
       context.lineWidth = 1.25;
       context.lineJoin = 'round';
       context.stroke();
@@ -657,6 +663,14 @@ export function createGlobeEngine(options: GlobeEngineOptions): GlobeEngine {
       if (frame) drawMoving();
       else if (!dragging) drawAtRest();
       if (hovered && !tooltip.hidden) tooltip.textContent = tooltipText(hovered);
+    },
+    setTheme(next) {
+      if (palette === GLOBE_PALETTES[next]) return;
+      palette = GLOBE_PALETTES[next];
+      batches = buildAllBatches();
+      restValid = false;
+      if (frame) drawMoving();
+      else if (!dragging) drawAtRest();
     },
     setPaused(next) {
       userPaused = next;

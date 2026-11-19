@@ -23,6 +23,16 @@
   --dengue-text: #f08d8e;
   --malaria-text: #92b6dd;
 
+  /* Surfaces that sit over the page: the blurred header, panels and popups. */
+  --header-bg: rgba(11, 12, 14, 0.74);
+  --panel-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08),
+    0 40px 90px -36px rgba(0, 0, 0, 0.9);
+  --button-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  --popup-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  /* The spinner's track, drawn on --paper. */
+  --ink-faint: rgba(23, 24, 26, 0.2);
+
   /* --font-* are set on <html> by next/font in src/app/layout.tsx. */
   --serif: var(--font-serif), Georgia, 'Times New Roman', serif;
   --sans: var(--font-sans), system-ui, -apple-system, 'Segoe UI', Roboto, Arial, sans-serif;
@@ -33,6 +43,33 @@
   --panel-pad: clamp(8px, 2vw, 32px);
   /* Wide enough that a 1200px dashboard fits at full size inside its panel. */
   --page-max: calc(1200px + 2 * 32px + 2 * 40px);
+}
+
+/* Light mode: set by the theme button (ThemeToggle) and by the head script in
+   src/app/layout.tsx before first paint. Dark is the default. Every text colour here is
+   at least 4.5:1 on both --bg and --bg-raised. The globe's colours are in src/lib/globe-scale.ts. */
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #faf9f6;
+  --bg-raised: #efede8;
+  --fg: #17181a;
+  --fg-soft: #3d3d3a;
+  --muted: #5f5e59;
+  --highlight: #1b6491;
+  --line: rgba(23, 24, 26, 0.14);
+
+  --dengue-text: #b42f2f;
+  --malaria-text: #2f5d8c;
+
+  --header-bg: rgba(250, 249, 246, 0.8);
+  /* The page is as light as the panels, so a hairline and a soft shadow set them apart.
+     The hairline is a shadow, not a border, so the panel keeps its size. */
+  --panel-shadow:
+    0 0 0 1px rgba(23, 24, 26, 0.12),
+    0 24px 48px -28px rgba(23, 24, 26, 0.22);
+  --button-shadow: 0 4px 14px rgba(23, 24, 26, 0.16);
+  --popup-shadow: 0 10px 30px rgba(23, 24, 26, 0.12);
 }
 
 /* ==========================================================================
@@ -185,7 +222,7 @@ main:focus,
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: rgba(11, 12, 14, 0.74);
+  background: var(--header-bg);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
   backdrop-filter: blur(18px) saturate(140%);
 }
@@ -233,6 +270,65 @@ main:focus,
 
 .site-nav a[aria-current='true'] {
   text-decoration: underline;
+}
+
+/* The theme button: last in the navbar on desktop, last in the menu below 1200px. It shows
+   what it switches to: a sun in dark mode, a moon in light mode. The icon and the menu label
+   follow data-theme in CSS, so they are right before React hydrates. */
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0;
+  background: none;
+  border: 0;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.theme-toggle:hover {
+  color: var(--fg);
+}
+
+.theme-toggle svg {
+  flex: none;
+  width: 18px;
+  height: 18px;
+}
+
+.theme-toggle--bar {
+  justify-content: center;
+  min-width: 24px;
+  height: 100%;
+  padding-block: 0.4em;
+}
+
+.theme-toggle--menu {
+  padding-block: 0.4rem;
+  font-family: var(--serif);
+  font-size: clamp(2rem, 8vw, 3rem);
+  line-height: 1.15;
+}
+
+.theme-toggle--menu svg {
+  width: 0.55em;
+  height: 0.55em;
+}
+
+.theme-show-light,
+:root[data-theme='light'] .theme-show-dark {
+  display: none;
+}
+
+:root[data-theme='light'] .theme-show-light {
+  display: inline;
+}
+
+/* It needs JavaScript to switch, so without it there is no button. */
+html:not(.js) .theme-item {
+  display: none;
 }
 
 .menu-toggle {
@@ -549,9 +645,7 @@ html:not(.js) .tabs__panel[hidden] {
   color: var(--ink);
   color-scheme: light;
   border-radius: 2px;
-  box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.08),
-    0 40px 90px -36px rgba(0, 0, 0, 0.9);
+  box-shadow: var(--panel-shadow);
 }
 
 .panel--empty {
@@ -658,7 +752,7 @@ html:not(.js) .embed__message {
   flex: none;
   width: 1em;
   height: 1em;
-  border: 2px solid rgba(23, 24, 26, 0.2);
+  border: 2px solid var(--ink-faint);
   border-top-color: var(--ink);
   border-radius: 50%;
   animation: spin 0.9s linear infinite;
@@ -1399,7 +1493,7 @@ html:not(.js) .globe-only {
   font-size: 1.5rem;
   line-height: 1;
   cursor: pointer;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.45);
+  box-shadow: var(--button-shadow);
 }
 
 .howto__button[aria-expanded='true'] {
@@ -1459,7 +1553,7 @@ html:not(.js) .globe-only {
   background: var(--bg-raised);
   border: 1px solid var(--line);
   border-radius: 6px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.55);
+  box-shadow: var(--popup-shadow);
 }
 
 .howto__card[hidden] {
@@ -1915,7 +2009,7 @@ html:not(.js) .globe-only {
 
   .spinner {
     animation: none;
-    border-top-color: rgba(23, 24, 26, 0.2);
+    border-top-color: var(--ink-faint);
   }
 
   .scroll-cue__line span {

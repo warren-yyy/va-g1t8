@@ -8,6 +8,7 @@ import InitialScroll from '@/components/InitialScroll';
 import MotionStart from '@/components/MotionStart';
 import Nav from '@/components/Nav';
 import ProgressBar from '@/components/ProgressBar';
+import { THEME_COLOURS, THEME_HEAD_SCRIPT } from '@/lib/theme';
 import '@/styles/site.css';
 
 const serif = Instrument_Serif({ subsets: ['latin'], weight: '400', variable: '--font-serif', display: 'swap' });
@@ -20,15 +21,18 @@ export const metadata: Metadata = {
   icons: { icon: '/favicon.svg' },
 };
 
+// The dark defaults. The head script and ThemeToggle rewrite both for light mode.
 export const viewport: Viewport = {
-  themeColor: '#0b0c0e',
+  themeColor: THEME_COLOURS.dark,
   colorScheme: 'dark',
 };
 
 // Runs before first paint. Only html.js may hide reveal targets, and the timer shows
-// everything if motion has not started within 2.5s.
+// everything if motion has not started within 2.5s. Then the saved theme is applied, so a
+// light-mode visitor never sees a dark frame (see src/lib/theme.ts).
 const HEAD_SCRIPT =
-  "document.documentElement.classList.add('js');window.__motionFailsafe=setTimeout(function(){document.documentElement.classList.add('motion-off')},2500);";
+  "document.documentElement.classList.add('js');window.__motionFailsafe=setTimeout(function(){document.documentElement.classList.add('motion-off')},2500);" +
+  THEME_HEAD_SCRIPT;
 
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   const navItems = [
@@ -40,7 +44,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
     <html
       lang="en"
       className={`${serif.variable} ${sans.variable} ${mono.variable}`}
-      // The head script adds classes to <html> before React hydrates.
+      // The head script adds classes and data-theme to <html> before React hydrates.
       suppressHydrationWarning
     >
       <head>

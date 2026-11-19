@@ -1,13 +1,11 @@
 'use client';
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { useReducedMotion } from '@/lib/hooks';
+import { useReducedMotion, useTheme } from '@/lib/hooks';
 import { createGlobeEngine, type GlobeEngine, type WorldTopology } from '@/lib/globe-engine';
+import { readTheme } from '@/lib/theme';
 import {
-  NO_DATA_FILL,
-  NO_DATA_HATCH,
-  RAMPS,
-  ZERO_COLOUR,
+  GLOBE_PALETTES,
   legendTicks,
   type Disease,
   type DiseaseMeta,
@@ -31,9 +29,6 @@ const LEGEND_TITLES: Record<Disease, string> = {
   malaria: 'Estimated malaria cases per 100,000 people (WHO)',
 };
 
-const noDataSwatch: CSSProperties = {
-  background: `repeating-linear-gradient(135deg, ${NO_DATA_HATCH} 0 1px, ${NO_DATA_FILL} 1px 4px)`,
-};
 
 interface GlobeProps {
   meta: Record<Disease, DiseaseMeta>;
@@ -53,6 +48,8 @@ export default function Globe({ meta, summaries }: GlobeProps) {
   const [paused, setPaused] = useState(false);
   const [failed, setFailed] = useState(false);
   const reducedMotion = useReducedMotion();
+  const theme = useTheme();
+  const palette = GLOBE_PALETTES[theme];
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -77,6 +74,8 @@ export default function Globe({ meta, summaries }: GlobeProps) {
           liteTopology,
           loadFullTopology: () => fetchJson<WorldTopology>('/data/countries-50m.json', controller.signal),
           disease: choiceRef.current.disease,
+          // Read from <html> rather than state, in case the theme changed while the data loaded.
+          theme: readTheme(),
           paused: choiceRef.current.paused,
         });
         engineRef.current = engine;
@@ -94,6 +93,11 @@ export default function Globe({ meta, summaries }: GlobeProps) {
     };
   }, []);
 
+  // The legend re-renders from the same palette; the canvas redraws here.
+  useEffect(() => {
+    engineRef.current?.setTheme(theme);
+  }, [theme]);
+
   const chooseDisease = (next: Disease) => {
     choiceRef.current.disease = next;
     setDisease(next);
@@ -108,7 +112,10 @@ export default function Globe({ meta, summaries }: GlobeProps) {
   };
 
   const current = meta[disease];
-  const [low, high] = RAMPS[disease];
+  const [low, high] = palette.ramps[disease];
+  const noDataSwatch: CSSProperties = {
+    background: `repeating-linear-gradient(135deg, ${palette.noDataHatch} 0 1px, ${palette.noDataFill} 1px 4px)`,
+  };
 
   return (
     <div className="hero__globe">
@@ -162,7 +169,7 @@ export default function Globe({ meta, summaries }: GlobeProps) {
               No data
             </li>
             <li>
-              <span className="swatch" style={{ background: ZERO_COLOUR }} aria-hidden="true" />
+              <span className="swatch" style={{ background: palette.zero }} aria-hidden="true" />
               {ZERO_LABELS[disease]}
             </li>
           </ul>

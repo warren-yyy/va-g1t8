@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from 'r
 import { flushSync } from 'react-dom';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import ThemeToggle from '@/components/ThemeToggle';
 import type { NavItem } from '@/site.config';
 
 // The eight section links need about 1150px; below 1200px they collapse into the menu.
@@ -131,6 +132,9 @@ export default function Nav({ brand, items }: { brand: string; items: NavItem[] 
           </li>
         );
       })}
+      <li className="theme-item">
+        <ThemeToggle inMenu={inMenu} />
+      </li>
     </ul>
   );
 
