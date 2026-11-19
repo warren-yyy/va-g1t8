@@ -254,7 +254,7 @@ const config: SiteConfig = {
       intro:
         "The same factor may not work the same way for both diseases. D8 groups countries by whether they carry dengue, malaria, both or neither, and D6b shows which factors separate the two diseases most.",
       findings: [
-        'Many countries carry one disease but not the other. In 2019, Singapore had {sgDengue2019} dengue cases per 100k and no malaria, while countries such as Brazil, Nicaragua and Lao PDR carried both.',
+        'Many countries carry one disease but not the other. In 2019, Singapore had {sgDengue2019} dengue cases per 100,000 people and no malaria, while countries such as Brazil, Nicaragua and Lao PDR carried both.',
         'Malaria fades as countries get richer, but dengue does not: in 2019, 96% of low-income countries had high malaria, while 45% of high-income countries had high dengue but low malaria.',
         'Clean water and sanitation separate the two diseases most: where sanitation and water are poor, malaria is far more common but dengue barely changes, while temperature tracks both about equally.',
       ],
@@ -269,11 +269,11 @@ const config: SiteConfig = {
       intro:
         'Singapore is hot, wet, dense and rich. It has been certified malaria-free since 1982, yet still has recurring dengue outbreaks. D9 measures those waves, D10 tests whether weather leads them, and D11 and D12 zoom in on where the 2020 outbreak hit, whether housing explains it, and whether the same places are hit again.',
       findings: [
-        'Singapore reported {sgDengue2019} dengue cases per 100k in 2019, about {ratio2019} times the median for high-income countries ({hiMedian2019}, across {hiN2019} reporting countries).',
+        'In 2019, Singapore had {sgDengue2019} dengue cases per 100,000 people, about {ratio2019} times the typical high-income country.',
         sgMalariaStatus,
-        'Dengue comes in irregular waves: the largest from 2012 to 2024 were in 2020, peaking at 1,792 cases in one week, and 2022.',
-        "In monthly data for 2012-2024 ({sgLagMonths} months), temperature leads Singapore's dengue by about 1-2 months, but the link is weak (r about {sgTempLagR}), as is every other weather link.",
-        'The 2020 outbreak was worst in the Central region, led by Woodleigh (about 32 cluster cases per 1,000 residents), and housing type does not explain which subzones were hit.',
+        'Dengue comes in irregular waves, mostly peaking in the middle of the year. The biggest, in 2020, reached 1,792 cases in a single week.',
+        'Weather gives only a weak hint: warmer months are followed by slightly more dengue one to two months later, but the two worst years, 2020 and 2022, were no hotter than usual.',
+        'The 2020 outbreak hit hardest in a few mostly central subzones, led by Woodleigh. No type of housing explains which subzones were hit, and most of the 2020 hotspots are clear today.',
       ],
       bridge: "The next section sets Singapore's results against the global ones.",
     },
@@ -288,10 +288,10 @@ const config: SiteConfig = {
       // The answer sentence is in the Conclusion, just after this section.
       findings: [
         'Comparing the same countries each year, income closely tracks malaria in all {yearsMalariaStronger} years from 2000 to 2024 but barely tracks dengue.',
-        'Singapore fits the malaria pattern but breaks the dengue one: certified malaria-free since 1982, yet in 2019 its dengue rate was about {ratio2019} times the high-income median ({hiMedian2019} per 100k).',
+        'Singapore fits the malaria pattern but breaks the dengue one: certified malaria-free since 1982, yet in 2019 its dengue rate was about {ratio2019} times the high-income median ({hiMedian2019} per 100,000 people).',
         'Water and sanitation tell the same story: Singapore has universal access to both and no malaria, yet still has dengue, just as across countries they matter for malaria but barely for dengue.',
         'Inside Singapore, heat still matters but weakly: warmer months are followed by more dengue 1-2 months later (monthly data, 2012-2024). Rainfall, which goes with more dengue across countries, does not in Singapore.',
-        'Crowding points the same way at both scales: more urban countries report less dengue, and in 2020 denser Singapore subzones had lower dengue cluster rates.',
+        'Crowding points the same way at both scales: more urban countries report less dengue, and in 2020 denser Singapore subzones had lower dengue cluster rates. Urban countries are also richer, though, so this is the same direction, not proof of the same cause.',
       ],
       bridge: null,
     },
@@ -498,7 +498,7 @@ const config: SiteConfig = {
       howTo:
         'Switch between dengue and malaria and move the year. Hover over a bar to see how many countries it covers, or over a dot to see the country.',
       takeaway:
-        "Dengue and malaria are **rare in cooler countries**: in every year we checked from 2005 to 2024, countries averaging below about 18 °C had almost no cases, while warmer countries had far more. The few exceptions are countries whose national average hides warmer regions, such as mountainous Bhutan and Nepal, or Argentina with its hot north. Beyond that, the two diseases behave differently. Dengue is usually highest in countries averaging about 22–26 °C, close to what lab studies predict; the very hottest band holds only a handful of countries, so its bar jumps around from year to year. Malaria is heaviest in the hottest countries, even hotter than lab studies would predict. Both diseases need the same warmth, so temperature alone can't explain why some hot countries have malaria and others have dengue. And at the same temperature, countries still differ hugely: some report a handful of cases, others thousands. **Our conclusion: climate decides whether a country can have these diseases, but not how much it suffers or which disease it suffers from.**",
+        "Dengue and malaria are **rare in cooler countries**: in every year we checked from 2005 to 2024, countries averaging below about 18 °C had almost no cases, while warmer countries had far more. The few exceptions are countries whose national average hides warmer regions, such as mountainous Bhutan and Nepal, or Argentina with its hot north. Beyond that, the two diseases behave differently. Dengue is usually highest in countries averaging about 22–26 °C, close to what lab studies predict; the very hottest band holds only a handful of countries, so its bar jumps around from year to year. Malaria is heaviest in the very hottest countries, above the temperature where lab studies say it should start to fall. Both diseases need the same warmth, so temperature alone can't explain why some hot countries have malaria and others have dengue. And at the same temperature, countries still differ hugely: some report a handful of cases, others thousands. **Our conclusion: climate decides whether a country can have these diseases, but not how much it suffers or which disease it suffers from.**",
       whyItMatters:
         "Climate decides where these diseases can exist, but **it doesn't explain the differences our main question is about**. To find out why one hot country suffers far more than another, and why the two diseases split, we turn to how developed each country is ([How does each factor relate to dengue and malaria?](#d5a)).",
       alt: null,
@@ -577,7 +577,7 @@ const config: SiteConfig = {
       howTo:
         'Move the year and change the thresholds to see countries switch profile. Click the dots to select countries, compare their lines below, and click empty space to clear.',
       takeaway:
-        "**Significant numbers of countries carry one disease but not the other.** Singapore is a clear example: in 2019 it had heavy dengue and no malaria, while countries such as Brazil, Nicaragua and Lao PDR carried both. The profiles show what separates the groups: countries with high malaria tend to have low income, low health spending and poor sanitation, while dengue-high, malaria-low countries such as Singapore sit near the top on all three. Both groups are hot. **Our conclusion: a country can be resilient to malaria and vulnerable to dengue at the same time, and infrastructure is what tells the two apart.**",
+        "**Many countries carry one disease but not the other.** Singapore is a clear example: in 2019 it had heavy dengue and no malaria, while countries such as Brazil, Nicaragua and Lao PDR carried both. The profiles show what separates the groups: countries with high malaria tend to have low income, low health spending and poor sanitation, while dengue-high, malaria-low countries such as Singapore sit near the top on all three. Both groups are hot. **Our conclusion: a country can be resilient to malaria and vulnerable to dengue at the same time, and infrastructure is what tells the two apart.**",
       whyItMatters:
         "This is the split behind our main question, shown country by country. ==A country that has left malaria behind can still be vulnerable to dengue==, because the things that go with less malaria (income, health spending and sanitation) don't appear to protect against dengue. ==Heat is shared by both groups, so it can't be what separates them.== Next, we step back to see how the four profiles spread across income levels and regions ([How does it vary by income and region?](#d8b)).",
       alt: null,
@@ -794,7 +794,7 @@ const config: SiteConfig = {
       takeaway:
         "**Some global patterns hold inside Singapore, and some break.** Heat holds, weakly: warmer months are followed by more dengue a month or two later, matching how hotter countries report more dengue. Rainfall doesn't: wet months are followed by slightly fewer cases, the opposite of the global pattern. Crowding points the same way as it does globally: denser subzones had lower dengue cluster rates in 2020, just as more urban countries report less dengue, although urban countries are also richer, so this is the same direction rather than proof of the same cause. Water and sanitation fit the global pattern too: Singapore has universal access to both and no malaria, yet still has dengue, just as across countries they matter for malaria but barely for dengue. Income is where Singapore stands out. It fits the malaria pattern, with no malaria at all, but breaks the dengue one: it is one of the richest countries, yet in 2019 its dengue rate was many times the typical high-income country's. Across the years, income tracked malaria in every year but barely tracked dengue. **Our conclusion: wealth explains resilience to malaria but not to dengue, while heat sets the stage for both.**",
       whyItMatters:
-        "This answers our main question. Countries are vulnerable for different reasons depending on the disease: ==malaria follows poverty and poor basic services, while dengue follows heat and persists even in rich, well-serviced cities like Singapore==. Tackling one disease therefore does not solve the other.",
+        "This brings the global and Singapore results together. Countries are vulnerable for different reasons depending on the disease: ==malaria follows poverty and poor basic services, while dengue needs heat but isn't explained by wealth or basic services, so it persists even in rich, well-serviced cities like Singapore==. Tackling one disease therefore does not solve the other.",
       alt: null,
       owner: 'Shredha',
       extra: false,
