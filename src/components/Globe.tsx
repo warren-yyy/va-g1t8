@@ -165,6 +165,8 @@ export default function Globe({ meta, summaries }: GlobeProps) {
             Latest year per country, {current.minYear}-{current.maxYear}; paler = older
           </p>
 
+          <p className="globe-years">Log scale: each step along the bar is 10 times the one before.</p>
+
           {!reducedMotion && (
             <button className="globe-pause" type="button" aria-pressed={paused} onClick={togglePaused}>
               {paused ? 'Resume rotation' : 'Pause rotation'}

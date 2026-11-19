@@ -958,7 +958,8 @@ html:not(.js) .embed__message {
   color: var(--bg);
   font-size: 0.875rem;
   font-weight: 500;
-  white-space: nowrap;
+  line-height: 1.4;
+  white-space: pre;
   border-radius: 2px;
   pointer-events: none;
 }
