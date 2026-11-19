@@ -32,10 +32,12 @@ export interface Dashboard {
   /** Tableau Public link. Empty until the dashboard is published. */
   url: string;
   /**
-   * The Tableau dashboard's own height in px, from its Size panel. The width is always
-   * 1200. null until confirmed: the embed then assumes 800 and `npm run check` warns.
+   * The Tableau dashboard's own height in px, from its Size panel. null until confirmed:
+   * the embed then assumes 800 and `npm run check` warns.
    */
   height: number | null;
+  /** The dashboard's width in px from its Size panel, only when it is not 1200. */
+  width?: number;
   /** What is on the dashboard, in a sentence or two. null shows nothing. */
   description: string | null;
   howTo: string | null;
@@ -264,11 +266,13 @@ const config: SiteConfig = {
       question: 'Why is Singapore still vulnerable to dengue?',
       role: 'Objective 3',
       intro:
-        'Singapore is hot, wet, dense and rich. It has been certified malaria-free since 1982, yet still has recurring dengue outbreaks. D9 measures those waves, D10 tests whether weather leads them, and D11 and D12 zoom in on where outbreaks hit and whether housing explains them.',
+        'Singapore is hot, wet, dense and rich. It has been certified malaria-free since 1982, yet still has recurring dengue outbreaks. D9 measures those waves, D10 tests whether weather leads them, and D11 and D12 zoom in on where the 2020 outbreak hit, whether housing explains it, and whether the same places are hit again.',
       findings: [
         'Singapore reported {sgDengue2019} dengue cases per 100k in 2019, about {ratio2019} times the median for high-income countries ({hiMedian2019}, across {hiN2019} reporting countries).',
         sgMalariaStatus,
+        'Dengue comes in irregular waves: the largest from 2012 to 2024 were in 2020, peaking at 1,792 cases in one week, and 2022.',
         "In monthly data for 2012-2024 ({sgLagMonths} months), temperature leads Singapore's dengue by about 1-2 months, but the link is weak (r about {sgTempLagR}), as is every other weather link.",
+        'The 2020 outbreak was worst in the Central region, led by Woodleigh (about 32 cluster cases per 1,000 residents), and housing type does not explain which subzones were hit.',
       ],
       bridge: "The next section sets Singapore's results against the global ones.",
     },
@@ -294,7 +298,8 @@ const config: SiteConfig = {
 
   // One entry per Tableau view, in page order. `title` is the short tab label.
   // `height` is the Tableau dashboard's own height in px, from its Size panel; the width
-  // is always 1200. While it is null the embed assumes 800 and `npm run check` warns.
+  // is 1200 unless `width` says otherwise. While height is null the embed assumes 800 and
+  // `npm run check` warns.
   // Seeded description and howTo text are drafts for owners to confirm.
   dashboards: [
     {
@@ -594,10 +599,16 @@ const config: SiteConfig = {
       question: "How big and regular are Singapore's dengue waves?",
       hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/HowbigandregularareSingaporesdenguewaves/HowbigandregularareSingaporesdenguewaves?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
-      height: null,
-      description: null,
-      howTo: null,
-      takeaway: null,
+      height: 600,
+      description:
+        "Every week of dengue in Singapore from 2012 to 2024. The orange line is the number of cases reported each week, and the blue line is a moving average that smooths out week-to-week noise so the waves stand out. The grey line marks the average week across the whole period, so anything above it is a busier-than-usual week.",
+      howTo:
+        "Change *Average over (weeks)* to smooth the blue line more or less. Hover over either line for the exact count in any week.",
+      takeaway:
+        "**Singapore's dengue comes in waves, but not on a regular cycle.** Waves came in 2013, 2014, 2016, 2019, 2020, 2022 and 2024, with gaps of one to three years between them, and 2017-2018 stayed well below the average almost all the time. The waves are also very different in size. **The 2020 wave was the largest, peaking at 1,792 cases in a single week, and 2022 came close**: both were roughly twice the height of any wave before 2019. **Our conclusion: dengue keeps coming back in Singapore, and some waves are far bigger than others.**",
+      takeawayNote: "Singapore, weekly cases, 2012-2024. 2012-2022 from the MOH weekly bulletin (dengue fever and DHF), 2023-2024 from OpenDengue.",
+      whyItMatters:
+        "Singapore has the clean water, sanitation and income that go with ==almost no malaria==, yet it still has large dengue outbreaks, which matches the global finding that development barely touches dengue. Because the waves are irregular, the next view asks when in the year they peak and which years were worst ([When does dengue peak, and which years were worst?](#d9b)).",
       alt: null,
       owner: 'Yurae',
       extra: false,
@@ -609,10 +620,16 @@ const config: SiteConfig = {
       question: 'When does dengue peak, and which years were worst?',
       hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/Whendoesdenguepeakandwhichyearswereworst/Whendoesdenguepeakandwhichyearswereworst?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
-      height: null,
-      description: null,
-      howTo: null,
-      takeaway: null,
+      height: 600,
+      description:
+        "Two views of the same weekly cases. On the left, each row is a year and each column a week of the year (weeks 1-53): the darker the square, the more cases that week. On the right, each bar is how much a year's total cases changed from the year before. Bars above zero are rises and bars below are falls. 2012 has no bar because there is no earlier year to compare it with.",
+      howTo:
+        "Read along a row to see when that year's cases built up and peaked. Hover over a square for its weekly count, or over a bar for the exact change.",
+      takeaway:
+        "**Most big waves peak in the middle of the year.** In 2013, 2014, 2019, 2020 and 2022 the darkest weeks fall roughly between weeks 20 and 35 (about May to August), though 2016's wave came at the very start of the year. **The size of a year swings hard.** The biggest jumps were 2022 (about +490% on 2021), 2019 (about +380%) and 2013 (about +370%). 2020 rose a further 120% or so on an already-high 2019, which made 2019-2020 a two-year outbreak. Big years were followed by sharp falls: about -80% in 2017, -85% in 2021 and -70% in 2023. **Our conclusion: dengue follows a mid-year season, but how big each season gets changes a lot from year to year.**",
+      takeawayNote: "Singapore, weekly cases, 2012-2024.",
+      whyItMatters:
+        "A regular mid-year peak points to a seasonal cause, such as weather. But ==the size of the waves changes far more than the seasons do==, so something beyond the calendar must decide how bad a year gets. The next view tests whether local weather leads dengue ([Does local weather lead dengue, and by how many months?](#d10)).",
       alt: null,
       owner: 'Yurae',
       extra: false,
@@ -642,10 +659,17 @@ const config: SiteConfig = {
       question: 'Where did the 2020 outbreak hit, week by week?',
       hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/Wheredidthe2020outbreakhitweekbyweek/Wheredidthe2020outbreakhitweekbyweek?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
-      height: null,
-      description: null,
-      howTo: null,
-      takeaway: null,
+      height: 600,
+      width: 1000,
+      description:
+        "Singapore's 2020 outbreak, week by week. The map shows the active dengue clusters in the chosen week: the darker the blue, the more cluster cases nearby. The chart on the right shows active cluster cases in each of Singapore's five regions from February to June 2020, and the grey band marks the Circuit Breaker period, when most people had to stay home. Only cases in clusters are counted; sporadic and imported cases are left out.",
+      howTo:
+        "Change the week to watch the clusters spread across the map. Hover over a line for a region's count in that week.",
+      takeaway:
+        "**Before Circuit Breaker, the outbreak was small and spread out.** In the week ending 21 February 2020, the clusters were scattered across the island, and the North-East and West regions had the most cluster cases. **Then cases took off from April, during Circuit Breaker, in every region, and fastest in the Central region.** By June, the Central region had passed 3,000 active cluster cases, about twice the North-East (about 1,600). The East (about 900) and West (about 600) followed, and the North stayed below 200. **Our conclusion: the 2020 outbreak grew while people were at home, and it grew most in the Central region.**",
+      takeawayNote: "2020 clusters only, February to June; sporadic and imported cases are excluded. Source: Scientific Data 2022 (Figshare).",
+      whyItMatters:
+        "The outbreak ==grew fastest while people spent their days at home==, which suggests homes and the areas around them mattered more than workplaces. Regions are large, though, so the next view looks at the smaller subzones within them to find exactly where cases per resident were highest ([Which subzones were hit hardest in 2020?](#d11b)).",
       alt: null,
       owner: 'Yurae',
       extra: false,
@@ -657,10 +681,17 @@ const config: SiteConfig = {
       question: 'Which subzones were hit hardest in 2020?',
       hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/Whichsubzoneswerehithardestin2020/Whichsubzoneswerehithardestin2020?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
-      height: null,
-      description: null,
-      howTo: null,
-      takeaway: null,
+      height: 600,
+      width: 1000,
+      description:
+        "Where the 2020 outbreak hit hardest, for the number of people who live there. The map shades each subzone by its 2020 cluster cases per 1,000 residents: the redder, the higher the rate. The bars on the right list the 15 subzones with the highest rates, coloured by region.",
+      howTo:
+        "Hover over a subzone on the map or a bar for its rate. Click a bar to find that subzone on the map.",
+      takeaway:
+        "**A handful of subzones stand far above the rest.** Woodleigh had by far the highest rate in 2020, about 32 cluster cases per 1,000 residents, nearly three times the next subzone, Mount Emily (about 12). Lorong Chuan, Cairnhill and Potong Pasir follow at about 8-10. Most of the island is pale, with rates near zero. **Nine of the top 15 subzones are in the Central region**, four are in the North-East and two in the West. Rates are per resident, so a subzone with few residents can rank high from a modest number of cases. **Our conclusion: the worst of the 2020 outbreak was concentrated in a few, mostly central, subzones.**",
+      takeawayNote: "2020 clusters only; sporadic and imported cases are excluded. Residents from Census 2020.",
+      whyItMatters:
+        "If dengue hits only some neighbourhoods hard, the next question is ==what those neighbourhoods have in common==. Several of the hardest-hit, such as Woodleigh, Mount Emily and Cairnhill, are mostly private housing, so the next view tests whether housing explains the pattern ([Does housing explain which subzones were hit?](#d12a)).",
       alt: null,
       owner: 'Yurae',
       extra: false,
@@ -672,15 +703,21 @@ const config: SiteConfig = {
       question: 'Does housing explain which subzones were hit?',
       hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/Doeshousingexplainwhichsubzoneswerehit/Doeshousingexplainwhichsubzoneswerehit?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
-      height: null,
-      description: null,
-      howTo: null,
-      takeaway: null,
+      height: 550,
+      description:
+        "Whether the type of housing in a subzone explains how hard the 2020 outbreak hit it. On the left, each dot is a subzone, placed by the housing factor you choose (across) and its 2020 cluster cases per 1,000 residents (up). The grey line is the overall trend: the steeper it is, the stronger the link. On the right, each bar shows the mix of homes (condo, HDB or landed) in the hardest-hit subzones, from the highest rate down.",
+      howTo:
+        "Choose a *Housing factor* to change what the dots are plotted against. Hover over a dot to see which subzone it is, and scroll the bars to see more subzones.",
+      takeaway:
+        "**Housing does not explain where the 2020 outbreak hit.** With landed homes as the factor, the trend line rises only slightly, and most subzones have low rates whether they have no landed homes or nearly all landed homes. Woodleigh, the hardest-hit, stands alone at the top with only about 10% landed homes. The hardest-hit subzones cover every kind of housing: Woodleigh, Mount Emily, Cairnhill and Institution Hill are mostly condos, Sembawang Hills and Seletar Hills mostly landed homes, and Potong Pasir, Aljunied and Chong Boon mostly HDB. **Our conclusion: no single type of housing protects a subzone or puts it at risk.**",
+      takeawayNote: "2020 clusters; housing mix from Census 2020.",
+      whyItMatters:
+        "Private condos and landed homes, the ==wealthier kinds of housing, were among the worst hit==. That echoes the global finding that being better off barely protects against dengue. If housing doesn't mark out the risky places, perhaps past outbreaks do, so the next view checks whether the same places are hit again ([Are the same places hit again?](#d12b)).",
       alt: null,
       owner: 'Yurae',
       extra: false,
     },
-    // Will show the current NEA clusters. Once it has a url, the site's own cluster map is hidden.
+    // Shows the current NEA clusters, so the site's own cluster map is hidden while it has a url.
     {
       id: 'D12b',
       title: 'Do hotspots repeat?',
@@ -688,10 +725,16 @@ const config: SiteConfig = {
       question: 'Are the same places hit again?',
       hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/Arethesameplaceshitagain/Arethesameplaceshitagain?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
-      height: null,
-      description: null,
-      howTo: null,
-      takeaway: null,
+      height: 550,
+      description:
+        "Whether the places hit in 2020 are being hit again now. The map colours each subzone by whether it had dengue clusters in 2020 only (orange), in 2020 and again now (red), or in neither (grey). \"Now\" means the clusters NEA listed as active on 23 October 2026. The bars on the right show the size of today's largest clusters in places that were also hit in 2020.",
+      howTo:
+        "Hover over a subzone for its name and status, or over a bar for the cluster's location and number of cases.",
+      takeaway:
+        "**Most places hit in 2020 are clear today.** Most of the subzones with 2020 clusters are orange, and only a handful are red, hit both in 2020 and now. **But the places that are hit again hold today's largest clusters.** Ho Ching Road is by far the biggest, at about 100 cases, several times the next largest, Bishan Street 12 (about 15) and Lentor Gardens / Tung Po Avenue (about 12). The rest have only a few cases each. **Our conclusion: hotspots rarely come back, but when they do, the outbreak can be large.**",
+      takeawayNote: "Current clusters as of 23 October 2026, compared with the 2020 clusters.",
+      whyItMatters:
+        "Past outbreaks are ==a poor guide to where the next one will be==, so Singapore cannot focus only on its old hotspots: control has to cover the whole island. Together with the weak weather and housing links, this shows that Singapore's dengue risk does not follow the simple factors that explain the global picture. The next section sets these results against the global ones.",
       alt: null,
       owner: 'Yurae',
       extra: false,
