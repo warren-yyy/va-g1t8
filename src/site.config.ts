@@ -221,13 +221,14 @@ const config: SiteConfig = {
       question: 'Where is the burden?',
       role: 'Sets the scene',
       intro:
-        'Before asking why some countries are more vulnerable, we need to know where the burden is and how it has changed. D1 introduces both diseases and their trend since 2000; D2 maps where rates are highest, where the cases are and which countries stay on top; D3 checks whether those trends hold in every region and country.',
+        "Before asking why some countries are more vulnerable to mosquito-borne diseases than others, we first need to know where each disease is most common and how that has changed since 2000. We measure this as the rate: cases per 100,000 people, which lets large and small countries be compared fairly. D1 introduces the two diseases and how each disease has changed since 2000. D2 maps where each disease's rates are highest, where most of the cases are, and which countries stay at the top. D3 checks whether the global trends hold in every region, then lets you pick a region and look at its countries one by one. Dengue figures are cases that countries reported; malaria figures are WHO estimates.",
       findings: [
-        'Reported dengue is rising fast: among the {dengueConsistentN} countries that report consistently, it went from {denguePanel2000} cases per 100k in 2000 to {denguePanel2019} in 2019 and {denguePanel2024} in 2024.',
-        'Estimated malaria in the {malariaEndemicN} endemic countries fell from {malariaRate2000} to {malariaRate2019} per 100k between 2000 and 2019 ({malariaChange2019}), then rose to {malariaRate2024} in 2024.',
-        "The two diseases hit different places: in 2019, {malariaSSA2019} of estimated malaria cases were in Sub-Saharan Africa, while {dengueLAC2019} of reported dengue was in Latin America & Caribbean and {dengueEAP2019} in East Asia & Pacific. Africa's dengue is largely unreported before 2023, so part of this gap is reporting.",
+        'Dengue is rising fast, and in waves. Among the countries that report it consistently, the dengue rate in 2019 was about {dengueMultiple2019} times what it was in 2000, and it reached its highest level yet in 2024. It climbs through outbreak years that hit many countries at once, and each big outbreak has been larger than the last.',
+        "Malaria is falling, but slowly and unevenly. In the countries where it is endemic, the rate fell by {malariaDrop2019} between 2000 and 2019, then edged back up. Some regions got rid of it almost completely, but Sub-Saharan Africa improved more slowly, so a growing share of the world's malaria is there.",
+        'The two diseases hit different places in different ways. Almost all malaria ({malariaSSA2019} of estimated cases in 2019) is in Sub-Saharan Africa, and the same countries top the list year after year. Dengue is concentrated in Latin America & the Caribbean and Asia, and its leaders change with each outbreak, rich countries like Singapore included. Africa had no complete dengue reports before 2023, so part of this difference is about reporting.',
       ],
-      bridge: 'So what makes these places different? The next section tests the candidates.',
+      bridge:
+        'So what makes some countries more vulnerable than others, and why does the answer seem to differ by disease? The next section tests ten possible factors, from climate and wealth to clean water, sanitation and how crowded a country is, to see which ones go with more of each disease.',
     },
     {
       number: 2,
@@ -309,10 +310,22 @@ const config: SiteConfig = {
       question: 'What are the two diseases, and how have they moved since 2000?',
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D1Home',
       height: 600,
-      description:
-        'Headline figures for the chosen year (countries reporting dengue, countries with malaria, reported dengue cases, estimated malaria cases) and how each disease has changed since 2000.',
-      howTo: 'Move the year slider to update the figures.',
-      takeaway: null,
+      description: [
+        'The top row gives four headline figures for the year you choose:',
+        [
+          '- how many countries reported a full year of dengue',
+          '- how many countries had malaria, according to WHO estimates',
+          '- how many dengue cases were reported',
+          '- how many malaria cases WHO estimates there were',
+        ].join('\n'),
+        "Below, the line chart shows how each disease has changed since 2000. Both lines start at 100, which stands for each disease's own rate in 2000, so 200 means the rate doubled and 50 means it halved: the 100 is a starting point, not a number of cases. The dengue line covers only countries that reported dengue consistently, so the trend isn't distorted by countries starting or stopping reporting; the malaria line covers the countries where malaria is endemic. The side scale goes up in tenfold steps so both lines fit on one chart.",
+      ].join('\n\n'),
+      howTo:
+        "The year slider changes the four figures only; the line chart always shows every year. Hover over a line to see that year's value.",
+      takeaway:
+        "**Since 2000, dengue and malaria have moved in opposite directions.** Dengue has risen steeply: by 2023, its rate was about ten times what it was in 2000. It didn't rise smoothly but in waves, with a big outbreak every few years, each larger than the last. Malaria has gone the other way, but slowly. Its rate fell by about a quarter between 2000 and 2019, and fewer countries had malaria at all. Yet there were almost as many malaria cases in 2019 as in 2000: the rate fell mainly because populations grew while the number of cases stayed level. Since 2019, the rate has been creeping back up. **Our conclusion: dengue is a growing problem that arrives in outbreaks, while malaria has retreated from many countries but hasn't gone down in total.**",
+      whyItMatters:
+        "Both diseases are carried by mosquitoes, **yet they're heading in opposite directions**. That suggests what makes a country vulnerable to one disease may not be what makes it vulnerable to the other, which is the idea the rest of this site tests. Next, we look at where each disease's rates are highest ([Where are rates highest?](#d2a)).",
       alt: null,
       owner: 'Warren',
       extra: false,
@@ -325,9 +338,13 @@ const config: SiteConfig = {
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D2aAtlas',
       height: 650,
       description:
-        'A world map of cases per 100,000 for the chosen disease and year, beside the countries with the highest rates.',
-      howTo: 'Choose a disease, year and number of countries; click a country in the bar chart to find it on the map.',
-      takeaway: null,
+        "A world map of each country's rate for the chosen disease and year, red for dengue and blue for malaria. The darker the colour, the higher the rate, and each colour band is ten times the one before. A blank country has no complete figures for that year. Beside the map, the bar chart ranks the countries with the highest rates, coloured by region. Countries with fewer than 1 million people are left out of the ranking so tiny islands don't crowd it out, but they still appear on the map.",
+      howTo:
+        'Pick Dengue or Malaria, and use "Show top _ countries" to set how many countries the bar chart ranks. Hover over a country on the map for its exact rate, or click a bar to find that country on the map.',
+      takeaway:
+        "**The places hit hardest by dengue are not the places hit hardest by malaria.** In 2019, the countries with the highest dengue rates were all in Latin America and Asia, led by Nicaragua, Honduras and Brazil; Singapore, one of the richest countries in the world, was 12th. The highest malaria rates were all in Sub-Saharan Africa, where the worst-hit countries had about 2 malaria cases for every 5 people in a single year. No country in the top 12 for one disease is in the top 12 for the other. Most of Africa is blank on the dengue map: no Sub-Saharan country reported complete dengue figures before 2023, so the blank means missing reports, not necessarily missing dengue. **Our conclusion: each disease has its own hotspots, and they barely overlap.**",
+      whyItMatters:
+        'Because the two diseases are concentrated in different countries, **what makes a country vulnerable is probably not the same for both**. Part 2 tests what explains the difference. Rates show where the risk to each person is highest; next, we look at where most of the cases are ([Where are the cases, and are they rising?](#d2b)).',
       alt: null,
       owner: 'Warren',
       extra: false,
@@ -341,9 +358,13 @@ const config: SiteConfig = {
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D2bAtlas',
       height: 800,
       description:
-        "A treemap of cases by country, sized by cases and coloured by the change from the year before, beside each region's share of cases since 2000.",
-      howTo: "Choose a disease and year; hover over a box to see that country's cases and change.",
-      takeaway: null,
+        "On the left, a treemap of the chosen year. Each box is a country: the bigger the box, the more cases it had, and countries from the same region sit next to each other. The colour shows how the country's cases changed from the year before: red means more, green means fewer, and the darker the colour, the bigger the change. Beige means there's no figure for the year before. On the right, each bar shows how one year's cases were split between regions, from 2000 to 2023.",
+      howTo:
+        "Pick Dengue or Malaria and a year; the year changes the treemap only. Hover over a box to see that country's cases and change, or over a bar to see each region's share.",
+      takeaway:
+        "**Dengue cases jump up and down together; malaria cases barely move.** 2019 was a big dengue outbreak year, which is why almost every box is red: most countries reported more dengue than the year before, and more than half of them at least doubled. In a typical year, a country's dengue cases rise or fall by half or more. Switch to malaria and the boxes turn pale, because most countries' malaria cases change only a little from one year to the next. The bars show where the cases are over time. Latin America & the Caribbean has had the largest share of dengue in almost every year since 2000, and the rest shifts with where outbreaks strike. Malaria has become more and more concentrated in Sub-Saharan Africa, not because Africa's rate rose, but because other regions, especially South Asia, cut their malaria much faster. Africa's population has also grown so quickly that it now has more malaria cases than in 2000, even though each person's risk has fallen. **Our conclusion: dengue's burden rises and falls with outbreaks, while malaria's is steady and increasingly African.**",
+      whyItMatters:
+        "Two different kinds of burden call for two different explanations. **Dengue's comes and goes, while malaria's stays in the same places**, and Africa now carries almost all of it. Next, we check whether the same countries stay at the top year after year ([Which countries stay on top?](#d2c)).",
       alt: null,
       owner: 'Warren',
       extra: false,
@@ -357,9 +378,12 @@ const config: SiteConfig = {
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D2cAtlas',
       height: 600,
       description:
-        'How the 10 countries with the highest average rate ranked each year from 2010 to 2023, coloured by region.',
-      howTo: 'Choose a disease, then hover over a line to follow one country.',
-      takeaway: null,
+        'The 10 countries with the highest average rate of the chosen disease from 2010 to 2023, and where each ranked every year, from 1 (highest) to 10. Each line is a country, coloured by region. A flat line means a country kept its place; a zigzag means it moved up and down. Countries with fewer than 1 million people are left out. 2024 is left out because many more countries, mostly in Sub-Saharan Africa, report complete dengue figures that year, which would shift the ranks.',
+      howTo: 'Pick Dengue or Malaria, then hover over a line to follow one country through the years.',
+      takeaway:
+        "**Dengue's top countries keep swapping places; malaria's stay put.** Most of the dengue top ten are in Latin America, joined by Sri Lanka, Malaysia and Singapore. Their order changes almost every year as outbreaks come and go: Paraguay was first in 2020 and last two years later. Nicaragua is the exception, ranked first in almost every year since 2016. Switch to malaria and the lines flatten out. All ten countries are in Sub-Saharan Africa, only two have ever ranked first, and most hold roughly the same place year after year. **Our conclusion: high malaria is a lasting feature of the same countries, while high dengue comes and goes with outbreaks.**",
+      whyItMatters:
+        "Because malaria stays in the same countries year after year, whatever drives it probably changes slowly. Dengue's top ten includes some of the poorest countries in the Americas alongside Singapore, one of the richest in the world, which raises **a question Part 2 takes up: does what protects a country from one disease protect it from the other?** Next, we check whether the global trends from D1 hold in every region ([Is dengue rising and malaria falling everywhere?](#d3a)).",
       alt: null,
       owner: 'Warren',
       extra: false,
@@ -372,9 +396,14 @@ const config: SiteConfig = {
       hideQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D3aTrends',
       height: 600,
-      description: "Each region's dengue and malaria rates since 2000, indexed so that 2000 = 100.",
-      howTo: 'Compare each line with the grey line at 100, which marks no change since 2000.',
-      takeaway: null,
+      description:
+        "One row per region, with dengue in red and malaria in blue from 2000. As in D1, each line starts at 100, the region's own rate in 2000, and the grey line marks no change. The side scale goes up in tenfold steps so very different changes fit. A region with no dengue line has no countries that reported dengue consistently, and a malaria line that stops means the region got rid of malaria.",
+      howTo:
+        "Read each line against the grey line: above it means a higher rate than in 2000, below it means lower. Hover over a line for that year's figures.",
+      takeaway:
+        "**Dengue has risen in every region we can measure, while malaria has fallen in almost every region, at very different speeds.** Every dengue line ends well above the grey line; the Middle East's climbs steepest only because the region started with very few cases. For malaria, Europe & Central Asia got rid of it completely by 2015, and South Asia came close, cutting it by more than 90% between 2000 and 2023. Sub-Saharan Africa carries most of the world's malaria, but it improved more slowly than most other regions, and its line has barely moved since 2015. In the Middle East, North Africa, Afghanistan & Pakistan region, malaria rose again after a surge in Pakistan from 2022, and by 2023 it was back above its 2000 level. **Our conclusion: the global trends hold in most regions, but the region with the most malaria has improved the least.**",
+      whyItMatters:
+        'A global average can hide very different stories. **Malaria fell least where it was worst**, so the gap between the most and least affected regions has grown, and gaps like this are what our main question asks about. Next, we look below the regions at individual countries ([Where is each disease rising or falling?](#d3b)).',
       alt: null,
       owner: 'Warren',
       extra: false,
@@ -387,11 +416,20 @@ const config: SiteConfig = {
       hideQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D3bTrends',
       height: 750,
-      description:
-        "Year-on-year change by region, the countries that changed most between two chosen years, and any one country's history.",
+      description: [
+        'Three linked charts, from regions down to a single country:',
+        [
+          "- Heatmap: how each region's rate changed from one year to the next. Red means it rose and blue means it fell; a grey row means the region has no data for that disease.",
+          "- Slope chart: click a region to see up to 20 of its countries, each one's rate in the two years you choose. A line going up means the rate rose between those years, and the side scale goes up in tenfold steps.",
+          "- Country trend: click a country in the slope chart to see its full history. The bars show each year's rate. The line is a moving average: each point averages that year with the years before it, which evens out one-off outbreak years so the overall trend is easier to see. A malaria line flat at 0 means malaria isn't endemic in that country.",
+        ].join('\n'),
+      ].join('\n\n'),
       howTo:
-        'Choose a disease and years, click a region in the heatmap, then click a line in the slope chart to see that country.',
-      takeaway: null,
+        "Pick a disease and the two years to compare (From and To). Click a region in the heatmap, then click a country's line in the slope chart. The Moving average control sets how many years each point on the line averages. The view opens on East Asia & Pacific and Singapore.",
+      takeaway:
+        "**Dengue swings from year to year, often in many regions at once, while malaria changes slowly and steadily.** In the dengue heatmap, whole columns turn the same colour: in 2019 dengue rose in every region with data, and in 2020 it fell in every one. The malaria heatmap is much paler and more often blue than red: small falls, year after year. The slope chart shows the same contrast between countries. Within East Asia & Pacific, dengue rose between 2010 and 2024 in countries such as Malaysia, Singapore and Thailand, and fell in others such as Lao PDR and Viet Nam, while malaria fell in almost every country in the region, and Cambodia, Lao PDR and Viet Nam now have almost none. Singapore's own history shows the dengue pattern clearly: quiet years broken by large outbreaks, the biggest in 2020, with a moving average that ends well above where it started. One caution: a few extreme changes in the heatmap, such as East Asia & Pacific's in 2022, partly reflect which countries reported that year, not only real change, because China has no complete dengue record for 2022. **Our conclusion: dengue rises and falls with outbreaks that strike many places at once, rich ones included, while malaria declines slowly and steadily.**",
+      whyItMatters:
+        "Outbreaks that rise and fall across many regions in the same years suggest that **vulnerability to dengue changes from year to year, not just from country to country**, while malaria's steady decline points to conditions that change gradually. Singapore has been free of malaria for decades, yet it still has large dengue outbreaks. Part 4 returns to Singapore in detail; first, Part 2 tests what explains why some countries are more vulnerable than others ([Which factor matters most, for which disease?](#d6a)).",
       alt: null,
       owner: 'Warren',
       extra: false,
