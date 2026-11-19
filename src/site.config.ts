@@ -238,7 +238,7 @@ const config: SiteConfig = {
       findings: [
         'Heat decides where these diseases can exist, but not how bad they get. Almost no cooler country has either disease, yet hot countries range from a handful of cases to thousands.',
         'Malaria follows poverty. Out of the ten factors we tested, poor sanitation, unsafe water and low development track malaria most closely, and that has held in every year from 2000 to 2023. As countries gain clean water, toilets and higher incomes, malaria becomes very rare, even in places with the same climate as heavily affected ones.',
-        "Dengue doesn't follow poverty in the same way. Clean water and sanitation barely matter for it in any year from 2000 to 2023, no single factor explains much of it, and its link with wealth keeps shifting over time. Even rich countries with good water and sanitation, such as Singapore, still have a lot of dengue.",
+        "Dengue doesn't follow poverty in the same way. Clean water and sanitation barely matter for it in any year from 2000 to 2023, no single factor explains much of it, and its link with wealth keeps shifting over time. Even rich countries with good water and sanitation, such as Singapore, still have a lot of dengue. And contrary to what we expected, more crowded and more urban countries did not report more dengue.",
       ],
       bridge: 'A country can therefore be resilient to one disease and vulnerable to the other. The next section maps where that split happens.',
     },
@@ -246,7 +246,7 @@ const config: SiteConfig = {
       number: 3,
       slug: 'dengue-vs-malaria',
       title: 'Dengue vs Malaria',
-      question: 'Dengue vs malaria',
+      question: 'Why do the two diseases hit different countries?',
       role: 'Objective 2',
       intro:
         "The same factor may not work the same way for both diseases. D8 groups countries by whether they carry dengue, malaria, both or neither, and D6b shows which factors separate the two diseases most.",
@@ -261,7 +261,7 @@ const config: SiteConfig = {
       number: 4,
       slug: 'singapore',
       title: 'Singapore',
-      question: 'Singapore case study',
+      question: 'Why is Singapore still vulnerable to dengue?',
       role: 'Objective 3',
       intro:
         'Singapore is hot, wet, dense and rich. It has been certified malaria-free since 1982, yet still has recurring dengue outbreaks. D9 measures those waves, D10 tests whether weather leads them, and D11 and D12 zoom in on where outbreaks hit and whether housing explains them.',
@@ -276,7 +276,7 @@ const config: SiteConfig = {
       number: 5,
       slug: 'global-meets-singapore',
       title: 'Global meets Singapore',
-      question: 'Global meets Singapore',
+      question: 'Do the global patterns hold inside Singapore?',
       role: 'Brings it together',
       intro:
         'D13 puts the global findings and the Singapore findings side by side, factor by factor, to answer the main question.',
@@ -724,7 +724,7 @@ const config: SiteConfig = {
   problem: {
     title: 'The problem',
     intro:
-      "Dengue and malaria are both spread by mosquitoes, but they do not strike the same places, and their burden has moved in opposite directions since 2000. A country's risk could come from its climate (heat, rain and humidity), from how developed it is (income, health spending, clean water and sanitation), or from how its people live (urbanisation and density). This project tests those factors against {yearsCovered} years of country data ({firstYear}-{lastYear}) to see which matter most for each disease, then checks whether the global pattern holds inside Singapore, a hot, dense, high-income city that eliminated malaria but still has large dengue outbreaks.",
+      "Dengue and malaria are both spread by mosquitoes, but they do not strike the same places, and their burden has moved in opposite directions since 2000. A country's risk could come from its climate (heat and rain, plus humidity inside Singapore), from how developed it is (income, health spending, clean water and sanitation), or from how its people live (urbanisation and density). Earlier research suggests the answer depends on the disease: a country could be resilient to one and still vulnerable to the other. This project tests that idea against {yearsCovered} years of country data ({firstYear}-{lastYear}) to see which factors matter most for each disease, then checks whether the global pattern holds inside Singapore, a hot, dense, high-income city that eliminated malaria but still has large dengue outbreaks.",
     dataTitle: 'The data',
     guideTitle: 'How to use this site',
     guide: [
@@ -777,7 +777,7 @@ const config: SiteConfig = {
       },
       {
         part: 2,
-        text: 'In 2019, hotter countries reported more of both diseases (r = {rTempDengue2019} for dengue, {rTempMalaria2019} for malaria), but basic sanitation, clean water and income tracked far less malaria (r = {rSanMalaria2019}, {rWaterMalaria2019}, {rGdpMalaria2019}) and only a little less dengue ({rSanDengue2019}, {rWaterDengue2019}, {rGdpDengue2019}).',
+        text: 'Heat decides where both diseases can exist. Beyond that, malaria follows poverty and poor basic services, while dengue barely does: rich countries with clean water and sanitation, like Singapore, still carry plenty of it.',
       },
       { part: 3, text: d8bTakeaway },
       {
@@ -789,8 +789,12 @@ const config: SiteConfig = {
         text: 'Comparing the same countries each year, income tracks malaria in all {yearsMalariaStronger} years from 2000 to 2024 (median r = {medianRMalaria}) but barely tracks dengue ({medianRDengue}), which is how a rich country can be malaria-free yet carry heavy dengue.',
       },
     ],
-    // For the team to write. While null, the "What this means" heading is left out too.
-    implications: null,
+    // Practical takeaways, shown under "What this means". While null, the heading is left out too.
+    implications: [
+      "Fighting malaria and fighting dengue need different tools. For malaria, the things that come with development (clean water, sanitation, better health care) go with the disease almost disappearing. For dengue, those same improvements don't seem to be enough: dengue's mosquito breeds in small pools of water around homes, so even rich, well-serviced places like Singapore still need targeted mosquito control.",
+      "Getting richer won't make a hot country safe from dengue. As poorer tropical countries develop, our data suggests malaria will fade but dengue may stay. And because heat decides where these diseases can exist, a warming climate could bring dengue to places that are too cool for it today. Europe is already reporting more: France went from 9 to 85 cases per 100,000 people between 2019 and 2024.",
+      "Countries should be judged on each disease separately. A country can be resilient to one and vulnerable to the other, so a single risk score for mosquito-borne disease hides the problem.",
+    ],
     closingLead: 'Every figure has limits; see',
   },
 
