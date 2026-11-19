@@ -784,6 +784,73 @@ expect('D10: temperature r at 1 month lag', temperatureLink(1), 0.19, 2);
 expect('D10: temperature r at 2 months lag', temperatureLink(2), 0.19, 2);
 expect('D10: every weather link is weak (largest |r| under 0.2)', Math.abs(strongestLink.r) < 0.2, true);
 
+// D10's labelled text. The typical year averages the lag-0 rows by calendar month over
+// 2012-2024; yearly figures sum dengue and average temperature over each year's 12 months.
+const linksFor = (prefix: string) => lagLinks.filter((link) => link.variable.startsWith(prefix));
+const rainLinks = linksFor('Rainfall');
+const humidityLinks = linksFor('Relative humidity');
+expect('D10: temperature r above 0 at lags 0-3', [0, 1, 2, 3].every((lag) => temperatureLink(lag) > 0), true);
+expect(
+  'D10: every rainfall and humidity |r| below temperature r at 1 month lag',
+  [...rainLinks, ...humidityLinks].every((link) => Math.abs(link.r) < Math.abs(temperatureLink(1))),
+  true,
+);
+expect('D10: every humidity r is below 0', humidityLinks.length === 7 && humidityLinks.every((link) => link.r < 0), true);
+expect('D10: rainfall r below 0 (of 7)', rainLinks.filter((link) => link.r < 0).length >= 5, true);
+
+const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const lagZero = (prefix: string) => lagged.filter((row) => row.lag === 0 && row.variable.startsWith(prefix));
+const monthOf = (row: { month: string }) => Number(row.month.slice(5, 7)) - 1;
+const yearOf = (row: { month: string }) => Number(row.month.slice(0, 4));
+function typicalYear(rows: { month: string }[], pick: (row: (typeof lagged)[number]) => number | null) {
+  return MONTH_NAMES.map((name, index) => {
+    const values = (rows as typeof lagged).filter((row) => monthOf(row) === index).map(pick).filter((v): v is number => v !== null);
+    return { name, value: values.reduce((sum, v) => sum + v, 0) / values.length };
+  });
+}
+const ranked = (months: { name: string; value: number }[]) => [...months].sort((a, b) => b.value - a.value).map((m) => m.name);
+const typicalTemp = ranked(typicalYear(lagZero('Temperature'), (row) => row.weather));
+const typicalDengue = ranked(typicalYear(lagZero('Temperature'), (row) => row.cases));
+const typicalRain = ranked(typicalYear(lagZero('Rainfall'), (row) => row.weather));
+const typicalHumidity = ranked(typicalYear(lagZero('Relative humidity'), (row) => row.weather));
+const topTwo = (names: string[]) => names.slice(0, 2).sort().join(', ');
+expect('D10: typical year, warmest month', typicalTemp[0]!, 'May');
+expect('D10: typical year, dengue highest then second-highest month', typicalDengue.slice(0, 2).join(', '), 'July, June');
+expect('D10: typical year, dengue lowest then second-lowest month', [...typicalDengue].reverse().slice(0, 2).join(', '), 'November, December');
+expect('D10: typical year, two wettest months', topTwo(typicalRain), 'December, November');
+expect('D10: typical year, two most humid months', topTwo(typicalHumidity), 'December, November');
+
+const lagYears = [...new Set(lagZero('Temperature').map(yearOf))].sort();
+const yearly = lagYears.map((year) => {
+  const rows = lagZero('Temperature').filter((row) => yearOf(row) === year);
+  return {
+    year,
+    months: rows.length,
+    dengue: rows.reduce((sum, row) => sum + row.cases!, 0),
+    temp: rows.reduce((sum, row) => sum + row.weather!, 0) / rows.length,
+  };
+});
+const meanOfYearlyTemps = yearly.reduce((sum, y) => sum + y.temp, 0) / yearly.length;
+const worstYears = [...yearly].sort((a, b) => b.dengue - a.dengue).slice(0, 2);
+const hottestYears = [...yearly].sort((a, b) => b.temp - a.temp).slice(0, 3);
+console.log(
+  `D10 yearly: mean of ${yearly.length} yearly temperatures ${meanOfYearlyTemps.toFixed(2)} °C; ` +
+    yearly.map((y) => `${y.year} ${y.dengue} cases ${y.temp.toFixed(2)} °C`).join('; '),
+);
+expect('D10: 13 years with 12 months each', yearly.length === 13 && yearly.every((y) => y.months === 12), true);
+expect('D10: two years with the most dengue', worstYears.map((y) => y.year).sort().join(', '), '2020, 2022');
+expect(
+  'D10: those two years within 0.2 °C of the average yearly temperature',
+  worstYears.every((y) => Math.abs(y.temp - meanOfYearlyTemps) <= 0.2),
+  true,
+);
+expect('D10: three hottest years', hottestYears.map((y) => y.year).sort().join(', '), '2016, 2019, 2024');
+expect(
+  'D10: each hottest year had fewer dengue cases than 2020 and 2022',
+  hottestYears.every((y) => worstYears.every((worst) => y.dengue < worst.dengue)),
+  true,
+);
+
 // ----------------------------------------------- Singapore subzones and clusters
 
 interface SubzoneFile {
