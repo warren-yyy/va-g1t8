@@ -659,7 +659,7 @@ const config: SiteConfig = {
         "**Most big waves peak in the middle of the year.** In 2013, 2014, 2019, 2020 and 2022 the darkest weeks fall roughly between weeks 20 and 35 (about May to August), though 2016's wave came at the very start of the year. **The size of a year swings hard.** The biggest jumps were 2022 (about +490% on 2021), 2019 (about +380%) and 2013 (about +370%). 2020 rose a further 120% or so on an already-high 2019, which made 2019-2020 a two-year outbreak. Big years were followed by sharp falls: about -80% in 2017, -85% in 2021 and -70% in 2023. **Our conclusion: dengue follows a mid-year season, but how big each season gets changes a lot from year to year.**",
       takeawayNote: "Singapore, weekly cases, 2012-2024.",
       whyItMatters:
-        "A regular mid-year peak points to a seasonal cause, such as weather. But ==the size of the waves changes far more than the seasons do==, so something beyond the calendar must decide how bad a year gets. The next view tests whether local weather leads dengue ([Does local weather lead dengue, and by how many months?](#d10)).",
+        "A regular mid-year peak points to a seasonal cause, such as weather. But ==the size of the waves changes far more than the seasons do==, so something beyond the calendar must decide how bad a year gets. The next view tests whether local weather leads dengue ([Does Singapore's dengue follow the weather?](#d10)).",
       alt: null,
       owner: 'Yurae',
       extra: false,
@@ -668,16 +668,26 @@ const config: SiteConfig = {
       id: 'D10',
       title: 'Weather lag',
       part: 4,
-      question: 'Does local weather lead dengue, and by how many months?',
+      question: "Does Singapore's dengue follow the weather?",
       hideQuestion: true,
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D10WeatherLag',
       height: 800,
-      description:
-        "How strongly each weather variable tracks dengue at lags of 0-6 months, the chosen weather series overlaid on monthly dengue cases, a month-by-month scatter, and Singapore's typical year.",
-      howTo: 'Choose a weather variable and a lag in months, then compare the charts.',
+      description: [
+        "Four linked charts test whether Singapore's weather leads its dengue, using monthly data from 2012 to 2024. The lag is how many months earlier the weather is measured: at a lag of 2, each month's dengue cases are compared with the weather two months before, since mosquitoes take weeks to breed and spread the virus.",
+        [
+          '- Correlation by lag (top left): how closely monthly dengue follows rainfall, humidity and temperature at lags of 0 to 6 months. Each bar is a correlation (r) from −1 to 1: near 0 means no link, above 0 means more dengue after higher values, and below 0 means less.',
+          '- Dengue and weather over time (top right): monthly dengue cases as grey bars, with the chosen weather measure from the chosen number of months earlier as a red line.',
+          "- Scatter (bottom left): each dot is one month, placed by that earlier weather and that month's dengue cases, and coloured by year. The grey line shows the overall trend: the flatter it is, the weaker the link.",
+          "- Typical year (bottom right): the average dengue cases and the average weather for each calendar month, which shows Singapore's seasons.",
+        ].join('\n'),
+        'Dengue and the weather both follow the seasons and longer cycles, which can make a link look stronger than it is, so read r as a hint, not a forecast.',
+      ].join('\n\n'),
+      howTo:
+        'Pick a weather measure and a lag with the controls, or click any bar in the top-left chart to load that measure and lag into the other three charts. Hover over a bar, dot or point for its exact figures.',
       takeaway:
-        'Temperature leads dengue by about 1-2 months, but the link is weak (r about {sgTempLagR}), as is every other weather link.',
-      takeawayNote: 'Singapore, monthly data, 2012-2024 (156 months).',
+        "**Weather gives only a weak hint of when dengue will rise in Singapore.** Temperature has the clearest link of the three: warmer months tend to be followed by more dengue one to two months later. The typical year shows the same timing, with Singapore warmest in May and dengue usually highest about two months later, in June and July. But the link is weak: temperature explains only a small part of why some months have far more dengue than others. Rainfall and humidity show even weaker links, and they lean the other way: November and December, the wettest and most humid months, are also the quietest for dengue. Weather can't explain the big outbreak years either. The two worst years, 2020 and 2022, were no hotter than usual, and the three hottest years (2016, 2019 and 2024) were not the worst. **Our conclusion: Singapore's seasons nudge dengue up and down, but they don't decide how big an outbreak gets.**",
+      whyItMatters:
+        "Across countries, Part 2 found that hotter countries tend to have more dengue. Inside Singapore, which is hot all year round, **the small changes in temperature from season to season matter only a little**, and rain barely matters at all. Singapore's weather sets a rough seasonal rhythm, but something else turns an ordinary year into a major outbreak. Next, we look at where the biggest outbreak, in 2020, actually hit ([Where did the 2020 outbreak hit, week by week?](#d11a)).",
       alt: null,
       owner: 'Warren',
       extra: false,
