@@ -175,7 +175,7 @@ export interface SiteConfig {
 
 // DRAFT until D13 is built. It opens the Conclusion, with a "Draft" tag while D13's url is empty.
 const answerSentence =
-  "Countries escape malaria as they develop, above all as they gain clean water and sanitation. But nothing in a country's development statistics explains dengue, so dengue has to be fought directly, by controlling the mosquito.";
+  "Countries escape malaria as they develop, above all as they gain ==clean water and sanitation==. But nothing in a country's development statistics explains dengue, so ==dengue has to be fought directly, by controlling the mosquito==.";
 
 // D8b's takeaway, which is also the Conclusion's key finding for Part 3.
 const d8bTakeaway =
@@ -846,28 +846,28 @@ const config: SiteConfig = {
     keyFindings: [
       {
         part: 1,
-        text: 'Reported dengue rose from {denguePanel2000} to {denguePanel2024} cases per 100k between 2000 and 2024 among consistent reporters, while estimated malaria in endemic countries fell {malariaDrop2019} by 2019 before rising again.',
+        text: 'Reported dengue ==rose from {denguePanel2000} to {denguePanel2024} cases per 100k== between 2000 and 2024 among consistent reporters, while estimated malaria in endemic countries fell {malariaDrop2019} by 2019 before rising again.',
       },
       {
         part: 2,
-        text: "Heat decides where both diseases can exist, but not how much. Malaria is tied most closely to clean water and sanitation, in every year from 2000 to 2023. Dengue isn't explained by any factor we tested: not wealth, basic services, crowding or rainfall. Crowded and urban countries even have less dengue, the opposite of what we expected.",
+        text: "==Heat decides where both diseases can exist, but not how much.== Malaria is tied most closely to clean water and sanitation, in every year from 2000 to 2023. ==Dengue isn't explained by any factor we tested==: not wealth, basic services, crowding or rainfall. Crowded and urban countries even have less dengue, the opposite of what we expected.",
       },
       { part: 3, text: d8bTakeaway },
       {
         part: 4,
-        text: 'In 2019, Singapore had about {ratio2019} times as much dengue as the typical high-income country, and its local weather barely explains when outbreaks come.',
+        text: 'In 2019, Singapore had ==about {ratio2019} times as much dengue== as the typical high-income country, and its local weather barely explains when outbreaks come.',
       },
       {
         part: 5,
-        text: 'Singapore fits the global pattern: like other rich countries, it has escaped malaria but not dengue. Across countries, income tracks malaria in every one of the {yearsMalariaStronger} years from 2000 to 2024 but barely tracks dengue.',
+        text: 'Singapore fits the global pattern: like other rich countries, ==it has escaped malaria but not dengue==. Across countries, income tracks malaria in every one of the {yearsMalariaStronger} years from 2000 to 2024 but barely tracks dengue.',
       },
     ],
     // Practical takeaways, shown under "What this means". While null, the heading is left out too.
     implications: [
-      "Fighting malaria and fighting dengue need different tools. Malaria fades as countries gain clean water and sanitation. Dengue doesn't, because its mosquito breeds in small pools of water around homes, so it has to be fought directly. Singapore shows this can work: the National Environment Agency reports up to 88% fewer dengue cases in areas where it released Wolbachia mosquitoes, which stop the dengue mosquito from breeding (NEA, 2021).",
-      'Even success has a cost. A 2006 study found that decades of strong mosquito control had left few people in Singapore immune to dengue: only 6.7% of primary school children had been infected, against 71% in a province of Thailand (Ooi et al., 2006). With so little immunity, dengue can spread even when mosquitoes are scarce, which helps explain why Singapore still has outbreaks.',
-      "Getting richer won't make a hot country safe from dengue. As poorer tropical countries develop, our data suggests malaria will fade but dengue may stay. And because heat decides where these diseases can exist, a warming climate could bring dengue to places that are too cool for it today. Europe is already reporting more: France went from 9 to 85 cases per 100,000 people between 2019 and 2024.",
-      'Countries should be judged on each disease separately. A country can be resilient to one and vulnerable to the other, so a single risk score for mosquito-borne disease hides the problem.',
+      "**Fighting malaria and fighting dengue need different tools.** Malaria fades as countries gain clean water and sanitation. Dengue doesn't, because its mosquito breeds in small pools of water around homes, so it has to be fought directly. Singapore shows this can work: the National Environment Agency reports ==up to 88% fewer dengue cases== in areas where it released Wolbachia mosquitoes, which stop the dengue mosquito from breeding (NEA, 2021).",
+      '**Even success has a cost.** A 2006 study found that decades of strong mosquito control had left few people in Singapore immune to dengue: ==only 6.7% of primary school children had been infected, against 71%== in a province of Thailand (Ooi et al., 2006). With so little immunity, dengue can spread even when mosquitoes are scarce, which helps explain why Singapore still has outbreaks.',
+      "**Getting richer won't make a hot country safe from dengue.** As poorer tropical countries develop, our data suggests malaria will fade but dengue may stay. And because heat decides where these diseases can exist, a warming climate could bring dengue to places that are too cool for it today. Europe is already reporting more: France went from ==9 to 85 cases per 100,000 people== between 2019 and 2024.",
+      '**Countries should be judged on each disease separately.** A country can be resilient to one and vulnerable to the other, so a single risk score for mosquito-borne disease hides the problem.',
     ],
     closingLead: 'Every figure has limits; see',
   },

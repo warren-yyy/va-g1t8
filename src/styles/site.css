@@ -795,12 +795,25 @@ html:not(.js) .embed__message {
   line-height: 1.25;
 }
 
-/* Conclusion: the answer, then one key finding per part, each led by a link to its part. */
+/* Conclusion: the answer as one big statement, then one numbered row per part, then
+   "What this means" in a raised panel. Blue (==...==) marks the phrase to catch. */
+.conclusion__kicker {
+  margin-top: clamp(8px, 2vw, 24px);
+}
+
 .conclusion__answer {
-  max-width: 50rem;
+  max-width: 62rem;
+  margin-top: 0.5rem;
+  padding-left: clamp(16px, 2.4vw, 32px);
+  border-left: 3px solid var(--highlight);
   font-family: var(--serif);
-  font-size: clamp(1.75rem, 3.4vw, 2.75rem);
-  line-height: 1.15;
+  font-size: clamp(1.875rem, 4.4vw, 3.5rem);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+}
+
+.conclusion__answer .hl {
+  font-weight: 400;
 }
 
 .conclusion__answer .draft-tag {
@@ -808,7 +821,7 @@ html:not(.js) .embed__message {
 }
 
 .conclusion__block {
-  max-width: 50rem;
+  max-width: 62rem;
   margin-top: clamp(56px, 8vw, 104px);
   padding-top: clamp(20px, 3vw, 32px);
   border-top: 1px solid var(--line);
@@ -820,15 +833,37 @@ html:not(.js) .embed__message {
   list-style: none;
 }
 
-.conclusion__finding + .conclusion__finding {
-  margin-top: 1.5rem;
+.conclusion__finding {
+  display: grid;
+  grid-template-columns: clamp(2.5rem, 6vw, 4.5rem) minmax(0, 1fr);
+  gap: clamp(8px, 2vw, 24px);
+  padding-block: clamp(18px, 2.4vw, 28px);
+  border-top: 1px solid var(--line);
+}
+
+.conclusion__finding:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.conclusion__num {
+  color: var(--highlight);
+  font-family: var(--serif);
+  font-size: clamp(2.25rem, 5vw, 3.75rem);
+  line-height: 1;
 }
 
 .conclusion__part {
   display: inline-block;
   padding-block: 0.15rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.conclusion__part:hover {
   color: var(--fg);
-  font-size: 0.9375rem;
 }
 
 .conclusion__finding p {
@@ -838,8 +873,21 @@ html:not(.js) .embed__message {
   line-height: 1.55;
 }
 
+/* "What this means": the practical takeaways, in a panel so they read as the payoff. */
+.conclusion__block[aria-labelledby='implications-title'] {
+  padding: clamp(24px, 4vw, 48px);
+  background: var(--bg-raised);
+  border: 1px solid var(--line);
+  border-radius: 4px;
+}
+
+.conclusion__block[aria-labelledby='implications-title'] .findings__item strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+
 .conclusion__closing {
-  max-width: 50rem;
+  max-width: 62rem;
   margin-top: clamp(40px, 6vw, 72px);
   color: var(--muted);
 }
