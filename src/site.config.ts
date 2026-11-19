@@ -189,7 +189,7 @@ const config: SiteConfig = {
     course: 'IS428 Visual Analytics for Business Intelligence, Singapore Management University',
     group: 'Group G1T8',
     mainQuestion: 'Why are some countries more vulnerable to mosquito-borne diseases than others?',
-    scope: 'Dengue and malaria, global 2000-2024, then Singapore as a case study.',
+    scope: 'Exploring why dengue and malaria strike different countries, using global data from 2000 to 2024 and a case study of Singapore.',
   },
 
   // Anchors to the sections of the one page. Items in extraPages are added to the end
