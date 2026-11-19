@@ -814,26 +814,26 @@ const config: SiteConfig = {
       id: 'years',
       year: '{firstYear}-{lastYear}',
       value: '{yearsCovered}',
-      text: 'years of country data, {firstYear}-{lastYear}',
+      text: 'years of data for every country, one figure per country per year',
     },
     {
       id: 'malaria-endemic',
       year: '{firstYear}-{lastYear}',
       value: '{malariaEndemicN}',
-      text: 'malaria-endemic countries with WHO estimates',
+      text: 'countries where malaria is found, each with WHO case estimates',
     },
     {
       id: 'dengue-reporting',
       year: '2019',
       value: '{dengueComplete2019}',
-      text: 'countries and territories with complete dengue reporting in 2019',
+      text: 'countries and territories that report their dengue cases in full',
     },
     {
       id: 'factors',
       year: '2019',
       // Ten: the nine in {factorCount2019} plus poverty, which D6a also scores. A literal, not a token.
       value: '10',
-      text: 'climate and development factors in 2019: nine with data for at least {factorMinCoverage2019} countries, and poverty for {povertyCountries2019}',
+      text: 'climate and development factors compared, such as temperature, income and sanitation (poverty data covers only {povertyCountries2019} countries)',
     },
   ],
 
