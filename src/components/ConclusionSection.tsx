@@ -3,6 +3,7 @@ import HeadlineReveal from '@/components/HeadlineReveal';
 import Reveal from '@/components/Reveal';
 import { answerIsDraft, getPart } from '@/lib/dashboards';
 import { fill } from '@/lib/fill';
+import { fillRich } from '@/lib/rich';
 
 /**
  * The Conclusion, text only, between Part 5 and Data, methods & limitations: the answer,
@@ -35,7 +36,7 @@ export default function ConclusionSection() {
                 <a className="conclusion__part" href={`#${part.slug}`}>
                   <span className="nav-number">{part.number}</span> {part.title}
                 </a>
-                <p>{fill(finding.text)}</p>
+                <p>{fillRich(finding.text)}</p>
               </Reveal>
             );
           })}

@@ -473,6 +473,11 @@ html:not(.js) .tabs__panel[hidden] {
   line-height: 1.4;
 }
 
+.hl {
+  color: var(--highlight);
+  font-weight: 600;
+}
+
 .dash__description {
   max-width: 60rem;
   margin-top: 0.9em;
