@@ -5,8 +5,9 @@ import CountUp from '@/components/CountUp';
 import Reveal from '@/components/Reveal';
 import { fill } from '@/lib/fill';
 
-// Each card's accent. The other fields come from disease_info.csv via src/data/diseases.json.
-const ACCENTS: Record<string, string> = { Dengue: '#E15759', Malaria: '#4E79A7' };
+// Each card's accent, the disease's fill token, the same in both themes. The other fields come
+// from disease_info.csv via src/data/diseases.json.
+const ACCENTS: Record<string, string> = { Dengue: 'var(--dengue)', Malaria: 'var(--malaria)' };
 
 /**
  * #problem, straight under the hero: what the project asks, a card for each disease,

@@ -249,6 +249,14 @@ Vercel reads [`vercel.json`](vercel.json) for the redirects from the old part UR
 
 To test the exact output first: `npm run build`, then `npm run preview`.
 
+## Light mode
+
+Dark is the default. The sun/moon button at the right of the navbar (in the menu below 1200px) switches to light mode, sets `data-theme="light"` on `<html>` and saves the choice in `localStorage` under `theme`. The head script in `src/app/layout.tsx` applies the saved theme before the first paint (see `src/lib/theme.ts`).
+
+- **Page colours** are tokens in `:root` at the top of `src/styles/site.css`. The `:root[data-theme='light']` block under it overrides them for light mode, including the header background and the panel, button and popup shadows. Add any new colour as a token in both blocks, and keep text at 4.5:1 or more on `--bg` and `--bg-raised` in both themes.
+- **The globe** draws on a canvas, so its colours are in `GLOBE_PALETTES` in `src/lib/globe-scale.ts`, one palette per theme: ocean, no-data hatch, zero colour, the two disease ramps, and the borders and outlines. In light mode the ramps run from a light tint to the disease colour, and outlines are dark. The legend reads the same palette, and the globe redraws when the theme changes.
+- The Tableau dashboards are white in both themes and cannot be themed.
+
 ## How a few things work
 
 - **The iframe is 27px taller than the view.** Tableau draws a 27px toolbar under the dashboard, inside the same iframe. With an iframe only as tall as the dashboard, the toolbar is clipped and the inner page scrolls. `vizSize(height, width)` in `src/lib/tableau.ts` is the one place this is worked out: `width` wide (1200 by default), `height` + 27 tall, 800 + 27 while `height` is `null`.

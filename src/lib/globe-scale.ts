@@ -1,8 +1,9 @@
 /*
  * Colours and data types shared by the globe and its legend. Each disease has its own
- * log scale whose ramp ends at that disease's accent colour.
+ * log scale whose ramp ends at that disease's accent colour. There is one palette per theme.
  */
 import { formatRate } from '@/lib/format';
+import type { Theme } from '@/lib/theme';
 
 export type Disease = 'dengue' | 'malaria';
 
@@ -39,16 +40,69 @@ export interface GlobeData {
   countries: Record<string, GlobeCountry>;
 }
 
-export const RAMPS: Record<Disease, readonly [string, string]> = {
-  dengue: ['#5a2a2c', '#E15759'],
-  malaria: ['#223c58', '#4E79A7'],
+/** Every colour the globe and its legend use, for one theme. */
+export interface GlobePalette {
+  /** Each ramp runs from the lowest rate to the highest, ending at the disease's colour. */
+  ramps: Record<Disease, readonly [string, string]>;
+  ocean: string;
+  zero: string;
+  noDataFill: string;
+  noDataHatch: string;
+  /** Older data is mixed towards this, by STALE_MIX. */
+  staleTint: string;
+  graticule: string;
+  /** Country borders. */
+  border: string;
+  /** The extra outline round countries with older data. */
+  staleOutline: string;
+  /** The globe's edge. */
+  rim: string;
+  /** Singapore's marker and label, and the hovered country's outline. */
+  marker: string;
+  /** The halo behind the Singapore label. */
+  labelHalo: string;
+}
+
+export const GLOBE_PALETTES: Record<Theme, GlobePalette> = {
+  // On the dark page: ramps rise from dark to the disease colour, outlines are white.
+  dark: {
+    ramps: {
+      dengue: ['#5a2a2c', '#E15759'],
+      malaria: ['#223c58', '#4E79A7'],
+    },
+    ocean: '#101317',
+    zero: '#565a61',
+    noDataFill: '#16181c',
+    noDataHatch: '#34383f',
+    staleTint: '#c9ccd1',
+    graticule: 'rgba(241, 239, 233, 0.05)',
+    border: 'rgba(11, 12, 14, 0.7)',
+    staleOutline: 'rgba(241, 239, 233, 0.85)',
+    rim: 'rgba(241, 239, 233, 0.22)',
+    marker: '#ffffff',
+    labelHalo: 'rgba(11, 12, 14, 0.85)',
+  },
+  // On the light page: a pale ocean and land, ramps from a light tint to the disease colour,
+  // and dark outlines.
+  light: {
+    ramps: {
+      dengue: ['#f6d3d3', '#E15759'],
+      malaria: ['#d3dfec', '#4E79A7'],
+    },
+    ocean: '#e4eaef',
+    zero: '#a9adb3',
+    noDataFill: '#f7f6f3',
+    noDataHatch: '#c8c5be',
+    staleTint: '#ffffff',
+    graticule: 'rgba(23, 24, 26, 0.06)',
+    border: 'rgba(23, 24, 26, 0.4)',
+    staleOutline: 'rgba(23, 24, 26, 0.75)',
+    rim: 'rgba(23, 24, 26, 0.28)',
+    marker: '#17181a',
+    labelHalo: 'rgba(250, 249, 246, 0.9)',
+  },
 };
 
-export const OCEAN = '#101317';
-export const ZERO_COLOUR = '#565a61';
-export const NO_DATA_FILL = '#16181c';
-export const NO_DATA_HATCH = '#34383f';
-export const STALE_TINT = '#c9ccd1';
 export const STALE_MIX = 0.45;
 
 function hexToRgb(hex: string): [number, number, number] {
