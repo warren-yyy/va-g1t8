@@ -310,16 +310,8 @@ const config: SiteConfig = {
       question: 'What are the two diseases, and how have they moved since 2000?',
       url: 'https://public.tableau.com/views/G1T8_D1-D3_D10/D1Home',
       height: 600,
-      description: [
-        'The top row gives four headline figures for the year you choose:',
-        [
-          '- how many countries reported a full year of dengue',
-          '- how many countries had malaria, according to WHO estimates',
-          '- how many dengue cases were reported',
-          '- how many malaria cases WHO estimates there were',
-        ].join('\n'),
-        "Below, the line chart shows how each disease has changed since 2000. Both lines start at 100, which stands for each disease's own rate in 2000, so 200 means the rate doubled and 50 means it halved: the 100 is a starting point, not a number of cases. The dengue line covers only countries that reported dengue consistently, so the trend isn't distorted by countries starting or stopping reporting; the malaria line covers the countries where malaria is endemic. The side scale goes up in tenfold steps so both lines fit on one chart.",
-      ].join('\n\n'),
+      description:
+        "The top row gives four headline figures for the year you choose: how many countries reported a full year of dengue, how many had malaria according to WHO estimates, how many dengue cases were reported, and how many malaria cases WHO estimates there were. Below, the line chart shows how each disease has changed since 2000. Both lines start at 100, which stands for each disease's own rate in 2000, so 200 means the rate doubled and 50 means it halved: the 100 is a starting point, not a number of cases. The dengue line covers only countries that reported dengue consistently, so the trend isn't distorted by countries starting or stopping reporting; the malaria line covers the countries where malaria is endemic. The side scale goes up in tenfold steps so both lines fit on one chart.",
       howTo:
         "The year slider changes the four figures only; the line chart always shows every year. Hover over a line to see that year's value.",
       takeaway:
