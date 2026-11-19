@@ -659,7 +659,7 @@ const config: SiteConfig = {
         "**Most big waves peak in the middle of the year.** In 2013, 2014, 2019, 2020 and 2022 the darkest weeks fall roughly between weeks 20 and 35 (about May to August), though 2016's wave came at the very start of the year. **The size of a year swings hard.** The biggest jumps were 2022 (about +490% on 2021), 2019 (about +380%) and 2013 (about +370%). 2020 rose a further 120% or so on an already-high 2019, which made 2019-2020 a two-year outbreak. Big years were followed by sharp falls: about -80% in 2017, -85% in 2021 and -70% in 2023. **Our conclusion: dengue follows a mid-year season, but how big each season gets changes a lot from year to year.**",
       takeawayNote: "Singapore, weekly cases, 2012-2024.",
       whyItMatters:
-        "A regular mid-year peak points to a seasonal cause, such as weather. But ==the size of the waves changes far more than the seasons do==, so something beyond the calendar must decide how bad a year gets. The next view tests whether local weather leads dengue ([Does local weather lead dengue, and by how many months?](#d10)).",
+        "A regular mid-year peak points to a seasonal cause, such as weather. But ==the size of the waves changes far more than the seasons do==, so something beyond the calendar must decide how bad a year gets. The next view tests whether local weather leads dengue ([Does Singapore's dengue follow the weather?](#d10)).",
       alt: null,
       owner: 'Yurae',
       extra: false,
