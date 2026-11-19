@@ -175,9 +175,9 @@ export interface SiteConfig {
 
 // DRAFT until D13 is built. It opens the Conclusion, with a "Draft" tag while D13's url is empty.
 const answerSentence =
-  "Countries escape malaria as they develop, above all as they gain ==clean water and sanitation==. But nothing in a country's development statistics explains dengue, so ==dengue has to be fought directly, by controlling the mosquito==.";
+  "Which countries are most vulnerable ==depends on the disease==. Heat decides where either can spread. Within that hot belt, ==poor sanitation, unsafe water and poverty mark out the countries with malaria==, but no single factor we tested marks out the countries with dengue, so even rich ones like Singapore stay vulnerable.";
 
-// D8b's takeaway, which is also the Conclusion's key finding for Part 3.
+// D8b's takeaway.
 const d8bTakeaway =
   "**Malaria fades as countries get richer; dengue doesn't.** In 2019, nearly all low-income countries had high malaria, with dengue low or unreported. Among high-income countries, very few still had high malaria. The dengue-only group grows with income because richer countries lose their malaria, not because their dengue rises. The regions tell the same story from another angle: high malaria dominates Sub-Saharan Africa, while high dengue, alone or with malaria, is concentrated in Latin America and the Caribbean, East Asia and the Pacific, and South Asia. **Our conclusion: wealth takes countries out of the malaria group, but not out of the dengue group.**";
 
@@ -856,16 +856,19 @@ const config: SiteConfig = {
     keyFindings: [
       {
         part: 1,
-        text: 'Reported dengue ==rose from {denguePanel2000} to {denguePanel2024} cases per 100k== between 2000 and 2024 among consistent reporters, while estimated malaria in endemic countries fell {malariaDrop2019} by 2019 before rising again.',
+        text: '==Dengue is rising, and in waves==: about {dengueMultiple2019} times higher in 2019 than in 2000, and at its highest yet in 2024. Malaria fell by {malariaDrop2019} from 2000 to 2019, then edged back up, and it stays concentrated in Sub-Saharan Africa.',
       },
       {
         part: 2,
-        text: "==Heat decides where both diseases can exist, but not how much.== Malaria is tied most closely to clean water and sanitation, in every year from 2000 to 2023. ==Dengue isn't explained by any factor we tested==: not wealth, basic services, crowding or rainfall. Crowded and urban countries even have less dengue, the opposite of what we expected.",
+        text: '==Heat decides where both diseases can exist, but not how much.== Malaria is tied most closely to clean water and sanitation, in every year from 2000 to 2023. ==No single factor explains dengue well==: water and sanitation barely matter, and its link with wealth comes and goes over the years.',
       },
-      { part: 3, text: d8bTakeaway },
+      {
+        part: 3,
+        text: '==A country can escape malaria and still carry dengue.== Richer countries leave the malaria group but not the dengue group, and clean water and sanitation separate the two diseases more than any other factor.',
+      },
       {
         part: 4,
-        text: 'In 2019, Singapore had ==about {ratio2019} times as much dengue== as the typical high-income country, and its local weather barely explains when outbreaks come.',
+        text: 'In 2019, Singapore had ==about {ratio2019} times as much dengue== as the typical high-income country. Neither its weather, its housing nor its past hotspots predict when or where outbreaks hit.',
       },
       {
         part: 5,
@@ -874,7 +877,7 @@ const config: SiteConfig = {
     ],
     // Practical takeaways, shown under "What this means". While null, the heading is left out too.
     implications: [
-      "**Fighting malaria and fighting dengue need different tools.** Malaria fades as countries gain clean water and sanitation. Dengue doesn't, because its mosquito breeds in small pools of water around homes, so it has to be fought directly. Singapore shows this can work: the National Environment Agency reports ==up to 88% fewer dengue cases== in areas where it released Wolbachia mosquitoes, which stop the dengue mosquito from breeding (NEA, 2021).",
+      "**Fighting malaria and fighting dengue need different tools.** Malaria fades as countries gain clean water and sanitation. Dengue doesn't. Its mosquito breeds in small pools of water around homes, and outside research suggests it has to be fought directly. Singapore shows this can work: the National Environment Agency reports ==up to 88% fewer dengue cases== in areas where it released Wolbachia mosquitoes, which stop the dengue mosquito from breeding (NEA, 2021).",
       '**Even success has a cost.** A 2006 study found that decades of strong mosquito control had left few people in Singapore immune to dengue: ==only 6.7% of primary school children had been infected, against 71%== in a province of Thailand (Ooi et al., 2006). With so little immunity, dengue can spread even when mosquitoes are scarce, which helps explain why Singapore still has outbreaks.',
       "**Getting richer won't make a hot country safe from dengue.** As poorer tropical countries develop, our data suggests malaria will fade but dengue may stay. And because heat decides where these diseases can exist, a warming climate could bring dengue to places that are too cool for it today. Europe is already reporting more: France went from ==9 to 85 cases per 100,000 people== between 2019 and 2024.",
       '**Countries should be judged on each disease separately.** A country can be resilient to one and vulnerable to the other, so a single risk score for mosquito-borne disease hides the problem.',
