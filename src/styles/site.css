@@ -1407,6 +1407,45 @@ html:not(.js) .globe-only {
   color: var(--fg);
 }
 
+.howto__button {
+  position: relative;
+}
+
+/* A label that slides out to the left on hover or keyboard focus, so the button is not a mystery.
+   It stays hidden while the card is open, since the card's own title says the same. */
+.howto__tip {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 12px);
+  padding: 0.4em 0.8em;
+  background: var(--fg);
+  color: var(--bg);
+  font-family: var(--sans);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.2;
+  white-space: nowrap;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.howto__button:hover .howto__tip,
+.howto__button:focus-visible .howto__tip {
+  opacity: 1;
+}
+
+.howto__button[aria-expanded='true'] .howto__tip {
+  display: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .howto__tip {
+    transition: opacity 0.15s ease-out;
+  }
+}
+
 .howto__button:hover {
   background: var(--highlight);
   color: var(--bg);

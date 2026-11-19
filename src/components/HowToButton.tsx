@@ -99,6 +99,9 @@ export default function HowToButton({ title, items }: HowToButtonProps) {
       >
         <span aria-hidden="true">?</span>
         <span className="sr-only">{title}</span>
+        <span className="howto__tip" aria-hidden="true">
+          {title}
+        </span>
       </button>
     </div>
   );
