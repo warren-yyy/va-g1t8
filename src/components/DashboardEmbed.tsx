@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react';
-import { loadTableauApi, vizSize } from '@/lib/tableau';
+import { loadTableauApi, VIZ_WIDTH, vizSize } from '@/lib/tableau';
 
 type Status = 'loading' | 'ready' | 'error';
 
@@ -14,11 +14,15 @@ interface DashboardEmbedProps {
   title: string;
   /** The view's own height from site.config.ts; null falls back to the default. */
   height: number | null;
+  /** The view's own width from site.config.ts; undefined means 1200. */
+  width?: number;
 }
 
-export default function DashboardEmbed({ url, id, title, height }: DashboardEmbedProps) {
-  const size = vizSize(height);
-  const frameVars = { '--viz-w': size.width, '--viz-h': size.height } as CSSProperties;
+export default function DashboardEmbed({ url, id, title, height, width }: DashboardEmbedProps) {
+  const size = vizSize(height, width);
+  // A view narrower than 1200 is scaled up to fill the same width as the others.
+  const maxScale = Math.max(1, VIZ_WIDTH / size.width);
+  const frameVars = { '--viz-w': size.width, '--viz-h': size.height, '--viz-max-w': VIZ_WIDTH } as CSSProperties;
   const hostRef = useRef<HTMLDivElement>(null);
   const frameRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
@@ -61,8 +65,8 @@ export default function DashboardEmbed({ url, id, title, height }: DashboardEmbe
         abandonUnfinished();
         return;
       }
-      const scale = Math.min(1, host.clientWidth / size.width);
-      stage.style.transform = scale < 1 ? `scale(${scale})` : 'none';
+      const scale = Math.min(maxScale, host.clientWidth / size.width);
+      stage.style.transform = scale !== 1 ? `scale(${scale})` : 'none';
       frame.style.height = `${size.height * scale}px`;
     };
 
@@ -133,7 +137,7 @@ export default function DashboardEmbed({ url, id, title, height }: DashboardEmbe
       window.clearTimeout(timeout);
       viz?.remove();
     };
-  }, [url, size.width, size.height]);
+  }, [url, size.width, size.height, maxScale]);
 
   return (
     <div className="embed" ref={hostRef} data-state={status}>
