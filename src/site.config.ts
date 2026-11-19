@@ -177,7 +177,7 @@ const answerSentence =
 
 // D8b's takeaway, which is also the Conclusion's key finding for Part 3.
 const d8bTakeaway =
-  'In 2019, 96% of low-income countries had high malaria with no dengue reporting, while 45% of high-income countries were dengue only.';
+  "**Malaria fades as countries get richer; dengue doesn't.** In 2019, nearly all low-income countries had high malaria, with dengue low or unreported. Among high-income countries, very few still had high malaria. The dengue-only group grows with income because richer countries lose their malaria, not because their dengue rises. The regions tell the same story from another angle: high malaria dominates Sub-Saharan Africa, while high dengue, alone or with malaria, is concentrated in Latin America and the Caribbean, East Asia and the Pacific, and South Asia. **Our conclusion: wealth takes countries out of the malaria group, but not out of the dengue group.**";
 
 // In Part 4's findings and in Part 5's.
 const sgMalariaStatus =
@@ -234,7 +234,7 @@ const config: SiteConfig = {
       question: 'What drives it?',
       role: 'Objective 1',
       intro:
-        'With the burden mapped, this section tests the possible explanations. D4 looks at climate and D5 at development and infrastructure; D6 ranks every factor for each disease and shows how stable those links are over time. D7 compares countries with similar climates to separate climate from everything else.',
+        'With the burden mapped, this section tests the possible explanations. D6 first ranks every factor for each disease and shows how stable those links are over time; D4 then looks at climate and D5 at development and infrastructure. D7 compares countries with similar climates to separate climate from everything else.',
       findings: [
         'Heat decides where these diseases can exist, but not how bad they get. Almost no cooler country has either disease, yet hot countries range from a handful of cases to thousands.',
         'Malaria follows poverty. Out of the ten factors we tested, poor sanitation, unsafe water and low development track malaria most closely, and that has held in every year from 2000 to 2023. As countries gain clean water, toilets and higher incomes, malaria becomes very rare, even in places with the same climate as heavily affected ones.',
@@ -250,8 +250,11 @@ const config: SiteConfig = {
       role: 'Objective 2',
       intro:
         "The same factor may not work the same way for both diseases. D8 groups countries by whether they carry dengue, malaria, both or neither, and D6b shows which factors separate the two diseases most.",
-      // D8b's takeaway already carries this part's finding.
-      findings: null,
+      findings: [
+        'Many countries carry one disease but not the other. In 2019, Singapore had {sgDengue2019} dengue cases per 100k and no malaria, while countries such as Brazil, Nicaragua and Lao PDR carried both.',
+        'Malaria fades as countries get richer, but dengue does not: in 2019, 96% of low-income countries had high malaria, while 45% of high-income countries had high dengue but low malaria.',
+        'Clean water and sanitation separate the two diseases most: where sanitation and water are poor, malaria is far more common but dengue barely changes, while temperature tracks both about equally.',
+      ],
       bridge: 'Next, we test whether the global pattern holds in one city: Singapore.',
     },
     {
@@ -279,8 +282,11 @@ const config: SiteConfig = {
         'D13 puts the global findings and the Singapore findings side by side, factor by factor, to answer the main question.',
       // The answer sentence is in the Conclusion, just after this section.
       findings: [
-        'Comparing the same countries each year, income tracks malaria in all {yearsMalariaStronger} years from 2000 to 2024 (median r = {medianRMalaria}) but barely tracks dengue ({medianRDengue}).',
-        sgMalariaStatus,
+        'Comparing the same countries each year, income closely tracks malaria in all {yearsMalariaStronger} years from 2000 to 2024 but barely tracks dengue.',
+        'Singapore fits the malaria pattern but breaks the dengue one: certified malaria-free since 1982, yet in 2019 its dengue rate was about {ratio2019} times the high-income median ({hiMedian2019} per 100k).',
+        'Water and sanitation tell the same story: Singapore has universal access to both and no malaria, yet still has dengue, just as across countries they matter for malaria but barely for dengue.',
+        'Inside Singapore, heat still matters but weakly: warmer months are followed by more dengue 1-2 months later (monthly data, 2012-2024). Rainfall, which goes with more dengue across countries, does not in Singapore.',
+        'Crowding points the same way at both scales: more urban countries report less dengue, and in 2020 denser Singapore subzones had lower dengue cluster rates.',
       ],
       bridge: null,
     },
@@ -386,6 +392,45 @@ const config: SiteConfig = {
       extra: false,
     },
     {
+      id: 'D6a',
+      title: 'Scorecard',
+      part: 2,
+      question: 'Which factor matters most, for which disease?',
+      hideQuestion: true,
+      url: 'https://public.tableau.com:9443/views/G1T8_D6-D8/d6aScorecard?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
+      height: 800,
+      description:
+        "A scorecard of how strongly each of ten factors is linked to each disease across countries. Each coloured cell is a correlation (r) from −1 to 1 that shows how strong that link is: green means countries with more of that factor have more cases, purple means they have fewer, and pale means little or no link. The two count columns show how many countries each r value is calculated from, which tells you how reliable it is: the more countries, the more reliable the value. Factors are grouped into climate, demographic, infrastructure and socioeconomic.",
+      howTo:
+        'Move the year slider. Read across a row to compare the two diseases, and check the country counts: a value based on few countries, such as poverty, is less reliable.',
+      takeaway:
+        "**Malaria is tied to basic services and development; dengue mostly isn't.** Countries with poor sanitation and unsafe drinking water had far more malaria, while the same factors made little difference to dengue. Income, human development and health spending also followed malaria more closely than dengue. Heat is the one factor that matters in much the same way for both: hotter countries reported more of each disease. How crowded a country is made almost no difference to either. Poverty looks important for both, but only a small number of countries have poverty data, so treat it with caution. **Our conclusion: both diseases need heat, but malaria also depends on how developed a country is, and dengue largely doesn't.**",
+      whyItMatters:
+        "This is the clearest answer to *which factor matters most*: for ==malaria it is sanitation and clean water, while for dengue no infrastructure factor stands out==. But one year could be a fluke, so the next view checks how stable these links are over time ([How stable is each correlation over time?](#d6c)).",
+      alt: null,
+      owner: 'Shredha',
+      extra: false,
+    },
+    {
+      id: 'D6c',
+      title: 'How stable',
+      part: 2,
+      question: 'How stable is each correlation over time?',
+      hideQuestion: true,
+      url: 'https://public.tableau.com:9443/views/G1T8_D6-D8/d6cStability?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
+      height: 800,
+      description:
+        "Each small chart follows one factor's correlation (r) with the chosen disease, year by year from 2000 to 2023. Charts are grouped and coloured by type of factor, and the dotted line marks 0, meaning no link. A line that stays on one side of 0 is a stable finding; one that wanders across 0 is not.",
+      howTo: 'Choose Dengue or Malaria, then hover over a line for the exact value in any year.',
+      takeaway:
+        "**For malaria, the links are rock-steady.** From 2000 to 2023, countries with better sanitation, cleaner water, higher incomes, more human development and more health spending consistently had less malaria, and hotter countries consistently had more. Only poverty jumps around, because few countries have poverty data. **For dengue, the links are weaker and less settled.** Heat and rainfall point the same way throughout, but water and sanitation make little difference for most of the period, and the link with income was close to non-existent in the 2000s and only became clear from the mid-2010s. **Our conclusion: malaria's link to infrastructure is a lasting pattern, not a one-year result, while dengue has no infrastructure factor that holds steadily over time.**",
+      whyItMatters:
+        "Because the malaria pattern holds year after year, it supports our main finding that ==vulnerability depends on the disease==. Next, we look at climate on its own, starting with where each disease sits against how hot each country is ([Is disease highest where it's hottest?](#d4a)).",
+      alt: null,
+      owner: 'Shredha',
+      extra: false,
+    },
+    {
       id: 'D4a',
       title: 'Hottest places',
       part: 2,
@@ -400,7 +445,7 @@ const config: SiteConfig = {
       takeaway:
         "**Both diseases live in the hot belt around the equator**: almost every large dot sits on a dark-pink country, while the cooler north is nearly empty. But they don't live in the *same* hot places. Malaria is overwhelmingly an African disease (nearly all estimated cases in 2019 were in Sub-Saharan Africa), while dengue is concentrated in Latin America and the Caribbean, followed by East and Southeast Asia, the Pacific and South Asia. Much of Africa shows no dengue dot, which mostly means it isn't reported, not that it's absent. **Our conclusion: a country has to be hot to carry either disease, but being hot doesn't decide which one it gets.**",
       whyItMatters:
-        "This is the first clue to our main question: heat decides *where* a country can be vulnerable at all. But **equally hot countries end up very differently**, so heat can't be the whole answer. The next view looks at how far temperature really goes ([Is there a best temperature for the disease?](#d4b)).",
+        "This is the climate clue to our main question: heat decides *where* a country can be vulnerable at all. But **equally hot countries end up very differently**, so heat can't be the whole answer. The next view looks at how far temperature really goes ([Is there a best temperature for the disease?](#d4b)).",
       alt: null,
       owner: 'Yubing',
       extra: false,
@@ -459,39 +504,9 @@ const config: SiteConfig = {
       takeaway:
         "**As countries get richer, malaria drops sharply.** From 2005 to 2024, roughly one person in four or five caught malaria each year in the typical low-income country, while in upper-middle- and high-income countries almost no one did. Dengue doesn't follow that pattern: in every one of those years, setting aside low-income countries, it was heaviest in upper-middle-income countries, fast-growing places such as Brazil, Mexico and Malaysia. It was lower but still present in high-income countries, including Singapore and several tropical islands. Very few low-income countries report dengue at all, so that column says more about reporting than about risk. **Our conclusion: getting richer goes with the end of malaria, but not with the end of dengue.**",
       whyItMatters:
-        "This shows the split behind our main question in its simplest form: **richer countries escape malaria, but not dengue.** That's why a rich country like Singapore can be free of malaria yet still have large dengue outbreaks. Next, we put all ten factors side by side to see which matters most for each disease ([Which factor matters most, for which disease?](#d6a)).",
+        "This shows the split behind our main question in its simplest form: **richer countries escape malaria, but not dengue.** That's why a rich country like Singapore can be free of malaria yet still have large dengue outbreaks. Comparisons across countries still mix climate with wealth, since hotter countries tend to be poorer, so the last view compares countries that share the same climate ([Does the same climate mean the same disease?](#d7)).",
       alt: null,
       owner: 'Yubing',
-      extra: false,
-    },
-    {
-      id: 'D6a',
-      title: 'Scorecard',
-      part: 2,
-      question: 'Which factor matters most, for which disease?',
-      hideQuestion: true,
-      url: 'https://public.tableau.com:9443/views/G1T8_D6-D8/d6aScorecard?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
-      height: 800,
-      description: 'Correlation of ten climate and development factors with dengue and with malaria, with the number of countries behind each value.',
-      howTo: 'Pick a year; read across a row to compare the two diseases.',
-      takeaway: 'In 2019, basic sanitation tracked malaria strongly (r = −0.86) but dengue only weakly (r = −0.15).',
-      alt: null,
-      owner: 'Shredha',
-      extra: false,
-    },
-    {
-      id: 'D6c',
-      title: 'How stable',
-      part: 2,
-      question: 'How stable is each correlation over time?',
-      hideQuestion: true,
-      url: 'https://public.tableau.com:9443/views/G1T8_D6-D8/d6cStability?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
-      height: 800,
-      description: 'Each factor’s correlation with the chosen disease in every year from 2000 to 2023.',
-      howTo: 'Switch disease to see how each correlation moves across the years.',
-      takeaway: 'Water, sanitation, income and health spending stayed strongly linked to malaria in every year from 2000 to 2023.',
-      alt: null,
-      owner: 'Shredha',
       extra: false,
     },
     {
@@ -523,9 +538,13 @@ const config: SiteConfig = {
       url: 'https://public.tableau.com:9443/views/G1T8_D6-D8/D8aWhichcountries?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: 800,
       description:
-        "Each country's dengue rate against its malaria rate, grouped by which disease is above its threshold, with the factor profiles of any countries you select.",
-      howTo: 'Adjust the year and thresholds, then select countries in the scatter to compare their factor profiles.',
-      takeaway: 'In 2019, Singapore was dengue only: malaria-free, with 281 dengue cases per 100,000.',
+        "Every country is placed by its dengue rate (across) and its malaria rate (up); both scales jump in tenfold steps, so 1 means 10, 2 means 100 and 3 means 1,000 cases per 100,000 people. The dashed lines are the thresholds: a country right of the vertical line has high dengue, and one above the horizontal line has high malaria. That splits countries into four profiles, shown by colour. Select countries to draw their profiles in the chart below, where each factor is rescaled from 0 (the lowest country that year) to 1 (the highest), so you can see where each country stands on climate, wealth and basic services.",
+      howTo:
+        'Move the year and change the thresholds to see countries switch profile. Click the dots to select countries, compare their lines below, and click empty space to clear.',
+      takeaway:
+        "**Significant numbers of countries carry one disease but not the other.** Singapore is a clear example: in 2019 it had heavy dengue and no malaria, while countries such as Brazil, Nicaragua and Lao PDR carried both. The profiles show what separates the groups: countries with high malaria tend to have low income, low health spending and poor sanitation, while dengue-high, malaria-low countries such as Singapore sit near the top on all three. Both groups are hot. **Our conclusion: a country can be resilient to malaria and vulnerable to dengue at the same time, and infrastructure is what tells the two apart.**",
+      whyItMatters:
+        "This is the split behind our main question, shown country by country. ==A country that has left malaria behind can still be vulnerable to dengue==, because the things that go with less malaria (income, health spending and sanitation) don't appear to protect against dengue. ==Heat is shared by both groups, so it can't be what separates them.== Next, we step back to see how the four profiles spread across income levels and regions ([How does it vary by income and region?](#d8b)).",
       alt: null,
       owner: 'Shredha',
       extra: false,
@@ -538,9 +557,12 @@ const config: SiteConfig = {
       hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/G1T8_D6-D8/D8bIncomeandRegion?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: 800,
-      description: 'How those groups split by income level, and the typical dengue and malaria rate in each region.',
-      howTo: 'Adjust the year and thresholds to see how the groups shift.',
+      description:
+        "Two summaries of the four profiles from the previous view. The top chart takes the countries in each World Bank income group and shows what share fall into each profile; the bottom chart does the same for each region. High means at least 10 cases per 100,000 people a year, the default thresholds in the previous view. Countries with low malaria and no complete dengue record are left out.",
+      howTo: 'Move the year slider, and hover over a profile to highlight it in both charts.',
       takeaway: d8bTakeaway,
+      whyItMatters:
+        "The split follows income for malaria and geography for both diseases. ==Richer countries lose their malaria but not their dengue==, and the regions show where each disease concentrates: malaria in Sub-Saharan Africa, dengue across Latin America, Asia and the Pacific. Next, we pin down which factors separate the two diseases most ([Which factors separate dengue from malaria?](#d6b)).",
       alt: null,
       owner: 'Shredha',
       extra: false,
@@ -554,9 +576,13 @@ const config: SiteConfig = {
       hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/G1T8_D6-D8/d6bDumbbell?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: 800,
-      description: "Each factor's correlation with dengue and with malaria side by side, sorted by the gap between them.",
-      howTo: 'Pick a year; a longer line means the factor relates differently to each disease.',
-      takeaway: 'In 2019, basic sanitation and drinking water separated the two diseases most.',
+      description:
+        "For each factor, the red dot is its correlation (r) with dengue and the blue dot its correlation with malaria, from −1 to 1. The grey line joins the two: the longer the line, the more differently that factor relates to each disease. Factors are sorted with the biggest gap at the top.",
+      howTo: 'Move the year slider, and hover over a dot for its exact value.',
+      takeaway:
+        "**Basic services separate the two diseases most.** In 2019, sanitation and clean water showed the biggest difference: where they were poor, malaria was far more common, but dengue barely changed. Poverty and human development also separate the two diseases, with malaria showing the stronger link. At the other end, temperature barely separates them at all: hotter countries have more of both. **Our conclusion: heat is shared, but clean water, sanitation and development are what set malaria apart from dengue.**",
+      whyItMatters:
+        "This explains how a country can escape one disease and not the other: ==better water and sanitation go with far less malaria but barely touch dengue==. Singapore, with universal clean water and sanitation, is the natural test case, so the next section looks inside it.",
       alt: null,
       owner: 'Shredha',
       extra: false,
@@ -678,10 +704,14 @@ const config: SiteConfig = {
       hideQuestion: true,
       url: 'https://public.tableau.com:9443/views/G1T8_D6-D8/D13GlobalmeetsSingapore?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link',
       height: 800,
-      description: 'Income against dengue and malaria in 2019 with Singapore highlighted, beside a factor-by-factor check of whether each global finding holds inside Singapore.',
-      howTo: 'Compare each factor’s global finding with what was found inside Singapore.',
-      // Was the answer sentence, which now opens the Conclusion.
-      takeaway: null,
+      description:
+        "On the left, every country is placed by GDP (across) against dengue (top) and malaria (bottom) in 2019, with Singapore highlighted; the grey lines show the overall trend, and both side scales jump in tenfold steps. On the right, each row compares a factor's pattern across countries with the same factor inside Singapore, and the last column says whether it holds. Singapore has no local malaria, so the Singapore column tests dengue only.",
+      howTo:
+        'Read each row from left to right, then check the verdict. Hover over a dot in the chart for a country’s exact figures.',
+      takeaway:
+        "**Some global patterns hold inside Singapore, and some break.** Heat holds, weakly: warmer months are followed by more dengue a month or two later, matching how hotter countries report more dengue. Rainfall doesn't: wet months are followed by slightly fewer cases, the opposite of the global pattern. Crowding points the same way as it does globally: denser subzones had lower dengue cluster rates in 2020, just as more urban countries report less dengue, although urban countries are also richer, so this is the same direction rather than proof of the same cause. Water and sanitation fit the global pattern too: Singapore has universal access to both and no malaria, yet still has dengue, just as across countries they matter for malaria but barely for dengue. Income is where Singapore stands out. It fits the malaria pattern, with no malaria at all, but breaks the dengue one: it is one of the richest countries, yet in 2019 its dengue rate was many times the typical high-income country's. Across the years, income tracked malaria in every year but barely tracked dengue. **Our conclusion: wealth explains resilience to malaria but not to dengue, while heat sets the stage for both.**",
+      whyItMatters:
+        "This answers our main question. Countries are vulnerable for different reasons depending on the disease: ==malaria follows poverty and poor basic services, while dengue follows heat and persists even in rich, well-serviced cities like Singapore==. Tackling one disease therefore does not solve the other.",
       alt: null,
       owner: 'Shredha',
       extra: false,
@@ -728,8 +758,9 @@ const config: SiteConfig = {
     {
       id: 'factors',
       year: '2019',
-      value: '{factorCount2019}',
-      text: 'climate and development factors, each with data for at least {factorMinCoverage2019} countries in 2019',
+      // Ten: the nine in {factorCount2019} plus poverty, which D6a also scores. A literal, not a token.
+      value: '10',
+      text: 'climate and development factors in 2019: nine with data for at least {factorMinCoverage2019} countries, and poverty for {povertyCountries2019}',
     },
   ],
 
@@ -899,7 +930,7 @@ const config: SiteConfig = {
         title: 'The data, in four numbers',
         body: [
           'Years: the distinct years in the country-year table, {firstYear}-{lastYear} ({yearsCovered}). Malaria-endemic countries: as above, {malariaEndemicN}. Complete dengue reporting: rows with dengue_complete = 1 in 2019 ({dengueComplete2019}).',
-          'Factors: temp_c, precip_mm, gdp_pc_ppp, hdi, urban_pct, pop_density, water_basic_pct, sanitation_basic_pct and health_exp_pc, {factorCount2019} in all, each with a value for at least {factorMinCoverage2019} countries in 2019. Two columns are left out: rh_pct, which only Singapore has ({rhCountries2019} country in 2019), and poverty_pct, which has survey values for only {povertyCountries2019} countries in 2019.',
+          'Factors: ten in all. Nine are temp_c, precip_mm, gdp_pc_ppp, hdi, urban_pct, pop_density, water_basic_pct, sanitation_basic_pct and health_exp_pc, each with a value for at least {factorMinCoverage2019} countries in 2019. The tenth is poverty_pct, which has survey values for only {povertyCountries2019} countries in 2019, so its scores are the least reliable. One column is left out: rh_pct, which only Singapore has ({rhCountries2019} country in 2019).',
         ],
       },
       {

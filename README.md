@@ -15,7 +15,7 @@ Everything is on `/`, in this order. Each section's id is its link, and the navb
 | Hero | `#home` | The main question, centred, above the globe and its legend, which are centred together as one unit. Exactly one screen tall. |
 | The problem | `#problem` | The question in prose, a card for each disease, four numbers about the data, then how to use the site. |
 | Part 1 Burden | `#burden` | D1, D2a-D2c, D3a-D3b |
-| Part 2 Drivers | `#drivers` | D4a-D4b, D5a-D5b, D6a, D6c, D7 |
+| Part 2 Drivers | `#drivers` | D6a, D6c, D4a-D4b, D5a-D5b, D7 |
 | Part 3 Dengue vs Malaria | `#dengue-vs-malaria` | D8a, D8b, D6b |
 | Part 4 Singapore | `#singapore` | D9a-D9b, D10, D11a-D11b, D12a-D12b, then the NEA cluster map until D12b is published |
 | Part 5 Global meets Singapore | `#global-meets-singapore` | D13 |
