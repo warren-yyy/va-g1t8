@@ -294,6 +294,10 @@ expect('Burden: malaria share in Sub-Saharan Africa, 2019, %', malariaSSA2019, 9
 expect('Burden: dengue share in Latin America & Caribbean, 2019, %', dengueLAC2019, 63.3, 1);
 expect('Burden: dengue share in East Asia & Pacific, 2019, %', dengueEAP2019, 26.5, 1);
 
+// The Conclusion's third implication gives France's reported dengue cases.
+expect('Conclusion: France dengue cases, 2019', y2019.find((row) => row.iso3 === 'FRA')!.dengueCases!, 9);
+expect('Conclusion: France dengue cases, 2024', inYear(2024).find((row) => row.iso3 === 'FRA')!.dengueCases!, 85);
+
 // ------------------------------------------------------ Part 1 labelled sections
 //
 // The claims in Part 1's view text (D1-D3b) and findings. Same rules as above: dengue uses
