@@ -868,11 +868,11 @@ const config: SiteConfig = {
       },
       {
         part: 4,
-        text: 'In 2019, Singapore had ==about {ratio2019} times as much dengue== as the typical high-income country. Neither its weather, its housing nor its past hotspots predict when or where outbreaks hit.',
+        text: "Singapore's dengue comes in ==irregular waves==, and neither its weather, its housing nor its past hotspots predict when or where outbreaks hit.",
       },
       {
         part: 5,
-        text: 'Singapore fits the global pattern: like other rich countries, ==it has escaped malaria but not dengue==. Across countries, income tracks malaria in every one of the {yearsMalariaStronger} years from 2000 to 2024 but barely tracks dengue.',
+        text: 'Singapore shows the global split at its sharpest: rich enough to have no malaria, yet in 2019 it had ==about {ratio2019} times the dengue of the typical high-income country==. Some local patterns break, though: wetter months bring slightly less dengue in Singapore, not more.',
       },
     ],
     // Practical takeaways, shown under "What this means". While null, the heading is left out too.
