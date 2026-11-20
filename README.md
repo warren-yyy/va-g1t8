@@ -6,6 +6,40 @@ A website for IS428 Visual Analytics for Business Intelligence (SMU) that presen
 
 It is a Next.js static export, prerendered to HTML in `out/`, with no server. All the editable content is in one file, [`src/site.config.ts`](src/site.config.ts).
 
+## Run it on your machine
+
+You need [Node.js](https://nodejs.org) 20.9 or newer (check with `node -v`) and [Git](https://git-scm.com). You don't need the source CSVs or any environment variables.
+
+1. Clone the repo and go into it:
+
+   ```
+   git clone https://github.com/warren-yyy/va-g1t8.git
+   cd va-g1t8
+   ```
+
+2. Install the dependencies (once):
+
+   ```
+   npm install
+   ```
+
+3. Start the dev server:
+
+   ```
+   npm run dev
+   ```
+
+4. Open http://localhost:3000. The page reloads when you save a file. Stop the server with `Ctrl+C`.
+
+To see the exact site that gets deployed, including the `vercel.json` redirects (they don't work in `npm run dev`), run `npm run build`, then `npm run preview` and open http://localhost:4173.
+
+If something goes wrong:
+
+- **`npm: command not found` or an engine error on install:** install or update Node to 20.9 or newer.
+- **Port already in use:** stop the other server, or run `PORT=3001 npm run dev` (macOS, Linux, Git Bash). In PowerShell, set `$env:PORT=3001` first. For `preview`, `PORT` works the same way.
+- **A view says "Dashboard coming soon":** its owner hasn't added the Tableau link yet. See [Swap in a Tableau link](#swap-in-a-tableau-link).
+- **A view stays blank or empty:** the Tableau views load from Tableau Public, so you need an internet connection.
+
 ## The page
 
 Everything is on `/`, in this order. Each section's id is its link, and the navbar links to them.
